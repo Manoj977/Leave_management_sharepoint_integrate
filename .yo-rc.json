@@ -1,0 +1,21 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "16.13.0",
+    "sdksVersions": {
+      "@microsoft/microsoft-graph-client": "3.0.2",
+      "@microsoft/teams-js": "2.4.1"
+    },
+    "version": "1.16.1",
+    "libraryName": "leave-management",
+    "libraryId": "ba82c291-146f-4ffc-a235-d1efdd1fa793",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "Leave Management",
+    "solutionShortDescription": "Leave Management description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}
