@@ -1,5 +1,5 @@
-import * as React from 'react';
-import styles from './LeaveManagement.module.scss';
+import * as React from "react";
+import styles from "./LeaveManagement.module.scss";
 
 export default class LeaveManagement extends React.Component {
   public render(): React.ReactElement {
@@ -8,7 +8,7 @@ export default class LeaveManagement extends React.Component {
         <div className={styles.welcome}>
           <img
             alt=""
-            src={require('../assets/welcome-light.png')}
+            src={require("../assets/welcome-light.png")}
             className={styles.welcomeImage}
           />
           <h2>Well done,</h2>
