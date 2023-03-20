@@ -1,10 +1,10 @@
 .leaveManagement {
   overflow: hidden;
   padding: 1em;
-  color: "[theme:bodyText, default: #323130]";
+  color: '[theme:bodyText, default: #323130]';
   color: var(--bodyText);
   &.teams {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   }
 }
 
@@ -20,13 +20,17 @@
 .links {
   a {
     text-decoration: none;
-    color: "[theme:link, default:#03787c]";
-    color: var(--link); // note: CSS Custom Properties support is limited to modern browsers only
+    color: '[theme:link, default:#03787c]';
+    color: var(
+      --link
+    ); // note: CSS Custom Properties support is limited to modern browsers only
 
     &:hover {
       text-decoration: underline;
-      color: "[theme:linkHovered, default: #014446]";
-      color: var(--linkHovered); // note: CSS Custom Properties support is limited to modern browsers only
+      color: '[theme:linkHovered, default: #014446]';
+      color: var(
+        --linkHovered
+      ); // note: CSS Custom Properties support is limited to modern browsers only
     }
   }
 }
@@ -34,7 +38,7 @@
 .sidebar{
   height: 100vh;
   padding-bottom: 2.5rems;
- 
+  
   width: 18rem/* 288px */;
   box-shadow: rgb(113 122 131 / 11%) 0px 7px 30px 0px;
   --tw-bg-opacity: 1;
@@ -141,155 +145,9 @@ line-height: 1.5rem;
   flex-direction: column;
   padding: 1rem/* 16px */;
   justify-content: center;
-    margin-left:21vw;
+    margin-left:30vw;
     margin-right: auto;
     width: 66.666667%;
     position: relative;
     bottom: 100vh;
-}
-.leaveFormH1{
- text-align: center;
-  margin-top: 4rem/* 64px */;
-  font-size: 1.25rem/* 20px */;
-  line-height: 1.75rem/* 28px */;
-  margin-bottom: 1.25rem/* 20px */;
-  font-weight: 600;
-  padding-top: 0.5rem/* 8px */;
-    padding-bottom: 0.5rem/* 8px */;
-}
- .formAlign {
-  display: flex;
-  padding: 0.5em;
-}
-.formAlign label:after {
-  content: " *";
-  color: red;
-}
-.formLabel {
-  padding: 0.5em 1em 0.5em 0;
-  width: 10vw;
-  flex-shrink: 0;
-  display: inline-flex;
-  padding-top: 0.5rem/* 8px */;
-  padding-left: 1rem/* 16px */;
-  padding-bottom: 0.5rem/* 8px */;
-  font-weight: 700;
-  text-align: center;
-  --tw-text-opacity: 1;
-  color: rgb(55 65 81 / var(--tw-text-opacity));
-  font-size: 1rem/* 16px */;
-    line-height: 1.5rem/* 24px */;
-}
-.formInput {
-  width: 20vw;
-  
-    width: 100%;
-    padding-top: 0.5rem/* 8px */;
-    padding-bottom: 0.5rem/* 8px */;
-    --tw-text-opacity: 1;
-    color: rgb(55 65 81 / var(--tw-text-opacity));
-    line-height: 1.25;
-    outline: 2px solid transparent;
-    outline-offset: 2px;
-   
-}
-.formButtonAlign{
-  display: flex;
-  justify-content: flex-end;
-}
-.formButton{
-  --tw-text-opacity: 1;
-  color: rgb(255 255 255 / var(--tw-text-opacity));
-  background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
-  --tw-gradient-from: #ef4444;
-  --tw-gradient-to: rgb(239 68 68 / 0);
-  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
-  --tw-gradient-to: #fb923c;
-  font-size: 0.875rem/* 14px */;
-  line-height: 1.25rem/* 20px */;
-  font-weight: 500;
-  border-radius: 0.5rem/* 8px */;
-  font-size: 0.875rem/* 14px */;
-  line-height: 1.25rem/* 20px */;
-  padding-left: 1.25rem/* 20px */;
-    padding-right: 1.25rem/* 20px */;
-    padding-top: 0.625rem/* 10px */;
-    padding-bottom: 0.625rem/* 10px */;
-    text-align: center;
-    margin-right: 0.5rem/* 8px */;
-    margin-bottom: 0.5rem/* 8px */;
-    border: none;
-}
-
-.formButton:hover{
-  background-image: linear-gradient(to bottom left, var(--tw-gradient-stops));
-}
-.formCursorOff{
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-.formCursorOn{
-  cursor: pointer;
-}
-.formDivError{
-  margin-left: 9rem/* 144px */;
-  margin-right: 9rem/* 144px */;
-}
-@media not all and (min-width: 640px) {
-  .formDivError {
-      margin-bottom: 0px;
-      margin-left: 0.5rem/* 8px */;
-      margin-bottom: 1rem/* 16px */;
-  }
-}
-.formError{
-  --tw-text-opacity: 1;
-  color: rgb(239 68 68 / var(--tw-text-opacity));
-  font-size: 0.75rem/* 12px */;
-  line-height: 1rem/* 16px */;
-  font-style: italic;
-  margin-top: 0.5rem/* 8px */;
-}
-.formLeaveInfo{
-  font-size: 0.875rem/* 14px */;
-    line-height: 1rem/* 20px */;
-    --tw-text-opacity: 1;
-    color: rgb(55 65 81 / var(--tw-text-opacity));
-    --tw-bg-opacity: 1;
-    background-color: rgb(254 215 170 / var(--tw-bg-opacity));
-    --tw-text-opacity: 1;
-    color: rgb(234 88 12 / var(--tw-text-opacity));
-    border-radius: 0.25rem/* 4px */;
-    padding-left: 1rem/* 16px */;
-    padding-right: 1rem/* 16px */;
-    padding-top: 4px;
-    padding-bottom: 4px;
-    margin-left: 10rem;
-    font-weight: 500;
-}
-@media not all and (min-width: 640px) {
-  .formLeaveinfo {
-      margin-left: 0.5rem/* 8px */;
-      width: 16rem/* 256px */;
-  }
-}
-.formLeaveInfoDisplay{
-  display: flex;
-}
-.formLeaveInfoIcon{
-  fill: currentColor;
-  height: 1.5rem/* 24px */;
-  width: 1.5rem/* 24px */;
-  --tw-text-opacity: 1;
-  color: rgb(249 115 22 / var(--tw-text-opacity));
-  margin-right: 1rem/* 16px */;
-  padding-top: 12px;
-  padding-bottom: 0.25rem/* 4px */;
-}
-.leaveDetail{
-  margin-top: 5rem/* 80px */;
-    margin-bottom: 5rem/* 80px */;
-    margin-left: 0.75rem/* 12px */;
-    margin-right: 0.75rem/* 12px */;
-    overflow: hidden;
 }

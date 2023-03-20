@@ -14,9 +14,6 @@
     "inlineSources": false,
     "strictNullChecks": false,
     "noImplicitAny": true,
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-   
 
     "typeRoots": [
       "./node_modules/@types",
@@ -32,11 +29,5 @@
       "es2015.promise"
     ]
   },
-  "include": [
-
-    "src/**/*.ts",
-    "src/**/*.tsx",
-   
-  ],
- 
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
 }
