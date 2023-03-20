@@ -1,32 +1,40 @@
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
-
 import { Version } from '@microsoft/sp-core-library';
 import {
   IPropertyPaneConfiguration,
   PropertyPaneTextField
 } from '@microsoft/sp-property-pane';
-
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
-import * as strings from 'LeaveManagementWebPartStrings';
+import { IReadonlyTheme } from '@microsoft/sp-component-base';
 
-// import Testing from "./components/App/Testing";
-// import Profile from "./components/Profile/Profile";
-import App from "./components/App/App";
-// import About from "./components/About";
-// import { SPComponentLoader } from "@microsoft/sp-loader";
-import { setup as pnpSetup } from "@pnp/common";
+import * as strings from 'LeaveManagementWebPartStrings';
+import LeaveManagement from './components/LeaveManagement';
+
+
 export interface ILeaveManagementWebPartProps {
   description: string;
 }
 export default class LeaveManagementWebPart extends BaseClientSideWebPart<ILeaveManagementWebPartProps> {
 
+
+
   public render(): void {
     const element: React.ReactElement = React.createElement(
-      App
+      LeaveManagement,
+
+
     );
-  
+
     ReactDom.render(element, this.domElement);
+  }
+
+  protected onThemeChanged(currentTheme: IReadonlyTheme | undefined): void {
+    if (!currentTheme) {
+      return;
+    }
+
+
   }
 
   protected onDispose(): void {
@@ -34,7 +42,7 @@ export default class LeaveManagementWebPart extends BaseClientSideWebPart<ILeave
   }
 
   protected get dataVersion(): Version {
-    return Version.parse('1.0');
+    return Version.parse("1.0");
   }
   public onInit(): Promise<void> {
     //     SPComponentLoader.loadCss(
@@ -54,20 +62,20 @@ export default class LeaveManagementWebPart extends BaseClientSideWebPart<ILeave
       pages: [
         {
           header: {
-            description: strings.PropertyPaneDescription
+            description: strings.PropertyPaneDescription,
           },
           groups: [
             {
               groupName: strings.BasicGroupName,
               groupFields: [
-                PropertyPaneTextField('description', {
-                  label: strings.DescriptionFieldLabel
-                })
-              ]
-            }
-          ]
-        }
-      ]
+                PropertyPaneTextField("description", {
+                  label: strings.DescriptionFieldLabel,
+                }),
+              ],
+            },
+          ],
+        },
+      ],
     };
   }
 }
