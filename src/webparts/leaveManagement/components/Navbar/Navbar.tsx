@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useContext } from 'react';
-// import { AiOutlineMenu } from 'react-icons/ai';
 import styles from './Navbar.module.scss';
 import { MyContext } from '../../context/contextProvider';
 import { debounce } from '@syncfusion/ej2-base';
@@ -21,7 +20,7 @@ const NavButton: React.FC<NavButtonProps> = ({
   icon,
   color,
   dotColor,
-}) => (
+}: NavButtonProps) => (
   <>
     <button
       type="button"
@@ -85,10 +84,6 @@ const Navbar: React.FC = () => {
           dotColor=""
         />
       </div>
-      {/* <div>
-        {shown}
-        {screenSize}
-      </div> */}
       <div className={styles.navbarSection}>
         <div className={styles.navbarSectionOne}>
           <img

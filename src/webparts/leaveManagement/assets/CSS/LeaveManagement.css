@@ -1,8 +1,7 @@
-
-
 #pageNavBar,
 #pageContent {
-    font-family: 'Open Sans', sans-serif;}
+    font-family: 'Open Sans', sans-serif;
+}
 
 /* body,
 * {
@@ -115,5 +114,21 @@ font-family: 'Open Sans', sans-serif;} */
 }
 
 #RecommendedItems {
+    display: none !important;
+}
+
+
+
+
+
+
+
+/* ////////////////////////// */
+.spAppAndPropertyPanelContainer .sp-appBar {
+    display: none !important;
+}
+
+.root-43 {
+    padding: 0 !important;
     display: none !important;
 }

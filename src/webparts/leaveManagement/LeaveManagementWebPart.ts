@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import { Version } from '@microsoft/sp-core-library';
@@ -9,8 +10,10 @@ import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import { IReadonlyTheme } from '@microsoft/sp-component-base';
 
 import * as strings from 'LeaveManagementWebPartStrings';
-import LeaveManagement from './components/LeaveManagement';
-
+// import LeaveManagement from './components/LeaveManagement';
+// import { SPComponentLoader } from "@microsoft/sp-loader";
+import { setup as pnpSetup } from "@pnp/common";
+import App from "./components/App/App";
 
 export interface ILeaveManagementWebPartProps {
   description: string;
@@ -21,7 +24,7 @@ export default class LeaveManagementWebPart extends BaseClientSideWebPart<ILeave
 
   public render(): void {
     const element: React.ReactElement = React.createElement(
-      LeaveManagement,
+      App,
 
 
     );
@@ -45,7 +48,8 @@ export default class LeaveManagementWebPart extends BaseClientSideWebPart<ILeave
     return Version.parse("1.0");
   }
   public onInit(): Promise<void> {
-    //     SPComponentLoader.loadCss(
+    console.log(`${this.context.pageContext.site.absoluteUrl}/SiteAssets/CSS/LeaveManagement.css?v=1.0`);
+    // SPComponentLoader.loadCss(
     //   `${this.context.pageContext.site.absoluteUrl}/SiteAssets/CSS/LeaveManagement.css?v=1.0`
     // );
 
