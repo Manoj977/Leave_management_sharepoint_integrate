@@ -1,0 +1,65 @@
+.navbarHeader {
+  position: relative;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  // margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 0.75rem;
+  padding: 0.25rem;
+}
+.navbarButton {
+  background-color: transparent;
+  color: #716d6d;
+  outline: none;
+  border: none;
+  position: relative;
+  border-radius: 9999px;
+  padding: 0.75rem;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+.navbarButtonIcon {
+  position: absolute;
+  right: 0.5rem;
+  top: 0.5rem;
+  display: inline-flex;
+  height: 0.5rem;
+  width: 0.5rem;
+  border-radius: 9999px;
+}
+.navbarSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.navbarSectionOne {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+}
+.profile_photo {
+  border-radius: 9999px;
+  width: 2rem;
+  height: 2rem;
+}
+.email {
+  font-weight: 500;
+  margin-left: 0.25rem;
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+@media not all and (min-width: 640px) {
+  .info {
+    display: none;
+  }
+}
+@media (min-width: 900px) {
+  .navbarButton {
+    display: none;
+  }
+}

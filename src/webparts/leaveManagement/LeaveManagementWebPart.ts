@@ -1,41 +1,32 @@
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
+
 import { Version } from '@microsoft/sp-core-library';
 import {
   IPropertyPaneConfiguration,
   PropertyPaneTextField
 } from '@microsoft/sp-property-pane';
+
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
-import { IReadonlyTheme } from '@microsoft/sp-component-base';
-
 import * as strings from 'LeaveManagementWebPartStrings';
-import LeaveManagement from './components/LeaveManagement';
 
-
+// import Testing from "./components/App/Testing";
+// import Profile from "./components/Profile/Profile";
+import App from "./components/App/App";
+// import About from "./components/About";
+// import { SPComponentLoader } from "@microsoft/sp-loader";
+import { setup as pnpSetup } from "@pnp/common";
 export interface ILeaveManagementWebPartProps {
   description: string;
 }
-
 export default class LeaveManagementWebPart extends BaseClientSideWebPart<ILeaveManagementWebPartProps> {
-
-
 
   public render(): void {
     const element: React.ReactElement = React.createElement(
-      LeaveManagement,
-
-
+      App
     );
-
+  
     ReactDom.render(element, this.domElement);
-  }
-
-  protected onThemeChanged(currentTheme: IReadonlyTheme | undefined): void {
-    if (!currentTheme) {
-      return;
-    }
-
-
   }
 
   protected onDispose(): void {
@@ -44,6 +35,18 @@ export default class LeaveManagementWebPart extends BaseClientSideWebPart<ILeave
 
   protected get dataVersion(): Version {
     return Version.parse('1.0');
+  }
+  public onInit(): Promise<void> {
+    //     SPComponentLoader.loadCss(
+    //   `${this.context.pageContext.site.absoluteUrl}/SiteAssets/CSS/LeaveManagement.css?v=1.0`
+    // );
+
+    return super.onInit().then(() => {
+      pnpSetup({
+        ie11: true,
+        spfxContext: this.context
+      });
+    });
   }
 
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
