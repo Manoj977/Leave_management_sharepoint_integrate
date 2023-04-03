@@ -3,11 +3,13 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import React, { useEffect, useState } from "react";
 import convert from "xml-js";
-import { sp } from "@pnp/sp/presets/all";
+import { IList, Web, sp } from "@pnp/sp/presets/all";
 import styles from "./LeaveDetails.module.scss";
 
+import { MyContext } from "../../context/contextProvider";
 import { Link } from "react-router-dom";
 import Pagination from "../Pagination/Pagination";
+import { MdOutlineCancel } from "react-icons/md";
 type LeaveDetail = {
   ID: string;
   Name: string;
@@ -19,12 +21,17 @@ type LeaveDetail = {
   Reason: string;
   NoofDaysLeave: string;
   Status: string;
+  leaveId: number;
 };
 export const LeaveDetails = () => {
-  const [LeaveDetails, setLeaveDetails] = useState<LeaveDetail[]>([]);
+  const { cancelReason, setCancelReason } = React.useContext(MyContext);
+  const [leaveDetails, setLeaveDetails] = useState<LeaveDetail[]>([]);
   const [userEmail, setUserEmail] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [dataPerPage] = useState(2);
+  const [leaveStatus, setLeaveStatus] = useState("");
+  const [reason, setReason] = useState("");
+  const [reasonError, setReasonError] = useState("");
   console.log(userEmail);
   useEffect(() => {
     // eslint-disable-next-line no-void
@@ -60,14 +67,18 @@ export const LeaveDetails = () => {
           Reason: entry.content["m:properties"]["d:Reason"]._text,
           Status: entry.content["m:properties"]["d:Status"]._text,
           NoofDaysLeave: entry.content["m:properties"]["d:count"]._text,
+          leaveId: entry.content["m:properties"]["d:ID"]._text,
         }));
+
         setLeaveDetails(leaveDetail);
+        setLeaveStatus(leaveDetail[0].Status);
       })
       .catch((err) => console.log(err));
   }, []);
-  const filteredLeaveDetails = LeaveDetails.filter(
+  const filteredLeaveDetails = leaveDetails.filter(
     (detail) => detail.Email === userEmail
   );
+  console.log(leaveStatus);
 
   // pag
 
@@ -77,6 +88,65 @@ export const LeaveDetails = () => {
     filteredLeaveDetails !== undefined
       ? filteredLeaveDetails.slice(indexFirstData, indexOfLastPage)
       : "";
+
+  const updateLeaveStatus = async (id: number, status: string) => {
+    try {
+      const web = Web("https://zlendoit.sharepoint.com/sites/ZlendoTools");
+      const list: IList = web.lists.getByTitle("Leave Management");
+
+      const itemToUpdate = list.items.getById(id);
+      await itemToUpdate.update({ Status: status });
+      console.log("Leave status updated successfully!");
+    } catch (error) {
+      console.log("Error updating leave status:", error);
+    }
+  };
+  const handleCancel = async (id: number, status: string) => {
+    console.log(id, status);
+
+    await updateLeaveStatus(id, status);
+    // Update the leaveDetails state to reflect the new status
+    const updatedLeaveDetails = leaveDetails.map((leave: any) =>
+      leave.leaveId === id ? { ...leave, Status: status } : leave
+    );
+    setLeaveDetails(updatedLeaveDetails);
+    setLeaveStatus(status);
+    setCancelReason(true);
+  };
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    // Validate the reason
+    if (!reason) {
+      setReasonError("Please enter a reason for the leave");
+      setTimeout(() => {
+        setReasonError("");
+      }, 3500);
+    } else if (reason.length > 50) {
+      setReasonError(
+        `Reason must have less than 50 characters. Current length: ${reason.length}`
+      );
+    } else {
+      setReasonError("");
+    }
+    if (reason) {
+      const data = {
+        CanselReason: reason,
+      };
+      console.log(data);
+      // Get a reference to the "Leave Management" list using the website URL
+      // const web = Web('https://zlendoit.sharepoint.com/sites/ZlendoTools');
+      // const list: IList = web.lists.getByTitle('Leave Management');
+      // Add the new item to the list
+      // list.items
+      // .add(itemData)
+      // .then(() => {
+      // console.log('New item added to the list');
+      // })
+      // .catch((error) => {
+      // console.log('Error adding new item to the list: ', error);
+      // });
+    }
+  }
+
   return (
     <div>
       {filteredLeaveDetails && (
@@ -94,6 +164,7 @@ export const LeaveDetails = () => {
                   <th className={styles.tableHead}>Reason</th>
                   <th className={styles.tableHead}>Days</th>
                   <th className={styles.tableHead}>Status</th>
+                  <th className={styles.tableHead}>Cancel Leave</th>
                 </tr>
               </thead>
               <tbody className={styles.tableBody}>
@@ -178,6 +249,18 @@ export const LeaveDetails = () => {
                         </span>{" "}
                       </span>
                     </td>
+                    <td
+                      className={styles.tableBodyRow}
+                      data-label="Cancel Request"
+                    >
+                      {" "}
+                      <button
+                        onClick={() => handleCancel(leave.leaveId, "Cancelled")}
+                        className={styles.leaveCancelButton}
+                      >
+                        Cancel
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -205,6 +288,53 @@ export const LeaveDetails = () => {
           <button className={styles.applyLeaveButton}>Apply Leave</button>{" "}
         </Link>{" "}
       </div>
+      {cancelReason && (
+        <div className={styles.cancelReason}>
+          <div className={styles.cancelReasonDiv1}>
+            <div className={styles.cancelReasonDiv2}>
+              <header className={styles.header}>
+                <div className={styles.headerDiv}>
+                  Enter the reason for cancellation
+                </div>
+              </header>
+
+              <button
+                type="button"
+                onClick={() => setCancelReason(false)}
+                style={{
+                  color: "rgb(153,171,180)",
+                  borderRadius: "50%",
+                  border: "none",
+                }}
+                className={styles.CloseButton}
+              >
+                <MdOutlineCancel />
+              </button>
+            </div>
+            <div className={styles.inputContainer}>
+              <form
+                className={styles.cancelReasonTextarea}
+                onSubmit={handleSubmit}
+              >
+                <div className="">
+                  <textarea
+                    placeholder="Enter the reason..."
+                    onChange={(event) => setReason(event.target.value)}
+                    className={styles.CancelReasonTextarea}
+                    value={reason}
+                  />
+                </div>
+                {reasonError && <p className={styles.error}> {reasonError}</p>}
+                <div className={styles.button}>
+                  <button className={styles.buttonSubmit} type="submit">
+                    Submit
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
