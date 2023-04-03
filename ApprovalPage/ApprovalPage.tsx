@@ -146,7 +146,7 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
   console.log(leaveDetails);
 
   return (
-    <div>
+    <div>  
       {action && (
         <div className={styles.totalLeave}>
           <div className={styles.totalLeaveDiv1}>
