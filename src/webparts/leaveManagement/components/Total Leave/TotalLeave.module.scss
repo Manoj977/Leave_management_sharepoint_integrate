@@ -1,0 +1,211 @@
+.totalLeave {
+    position: fixed;
+    left: 0vw;
+    top: 0;
+    z-index: 20;
+    align-content: center;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+
+}
+
+.totalLeaveDiv1 {
+    padding-bottom: 1rem;
+    background-color: #ffffff;
+    border-radius: 0.25rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+@media (min-width:310px) {
+    .totalLeaveDiv1 {
+        margin-top: 5rem;
+        margin-left: 3rem;
+        width: 70%;
+    }
+}
+
+@media (min-width:350px) {
+    .totalLeaveDiv1 {
+        margin-top: 7rem;
+        margin-left: 5rem;
+        width: 70%;
+    }
+}
+
+
+@media (min-width: 640px) {
+    .totalLeaveDiv1 {
+        margin-top: 7rem;
+        margin-left: 6rem;
+        width: 70%;
+    }
+}
+
+@media (min-width: 768px) {
+    .totalLeaveDiv1 {
+        margin-left: 10rem;
+        margin-right: 12rem;
+        margin-top: 6rem;
+        width: 60%;
+    }
+}
+
+@media (min-width: 1024px) {
+    .totalLeaveDiv1 {
+        margin-left: 14rem;
+        margin-top: 8rem;
+        width: 60%;
+        height: 64%;
+    }
+}
+
+@media (min-width: 1280px) {
+    .totalLeaveDiv1 {
+        margin-left: 20rem;
+        margin-right: 20rem;
+        margin-top: 7rem;
+        width: 50%;
+        height: 66%;
+    }
+}
+
+.totalLeaveDiv2 {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #D1D5DB;
+
+
+}
+
+.totalLeaveHeader {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+
+}
+
+.totalLeaveHeaderDiv {
+    color: #1F2937;
+    font-weight: 600;
+    text-transform: uppercase;
+    position: relative;
+    top: 0.5vw;
+}
+
+.totalLeaveCloseButton {
+    font-size: 1.5rem;
+    line-height: 2rem;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    background: none;
+}
+
+.totalLeaveTableContainer {
+    max-width: 100%;
+    overflow: hidden;
+    padding: 0.75rem;
+
+
+}
+
+.Table {
+    min-width: 100%;
+    line-height: 1.5;
+}
+
+.totalLeaveTableContainer table,
+.totalLeaveTableContainer th,
+.totalLeaveTableContainer td {
+    padding: 0.5rem;
+    text-align: left;
+    border: 1px solid #D1D5DB;
+    border-collapse: collapse;
+
+}
+
+.TableHead {
+    font-size: 0.75rem;
+
+    font-weight: 600;
+    text-transform: uppercase;
+    --tw-text-opacity: 1;
+    color: rgb(75 85 99 / var(--tw-text-opacity));
+    --tw-bg-opacity: 1;
+    background-color: rgb(243 244 246 / var(--tw-bg-opacity));
+
+}
+
+.TableHeaderHeading {
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 600;
+    --tw-text-opacity: 1;
+    color: rgb(75 85 99 / var(--tw-text-opacity));
+    --tw-bg-opacity: 1;
+    background-color: rgb(243 244 246 / var(--tw-bg-opacity));
+
+
+}
+
+.TableHeaderHeadingDiv {
+    text-align: center;
+}
+
+.TableBodyHead {
+    margin-left: 1rem;
+    --tw-bg-opacity: 1;
+    background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    text-align: center;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    --tw-text-opacity: 1;
+    color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+@media (min-width: 640px) {
+    .TableBodyHead {
+        width: 3rem;
+    }
+
+    .TableBodyHead {
+        text-align: left;
+    }
+}
+
+.TableBodyDescription {
+    width: 5rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 300;
+    --tw-text-opacity: 1;
+    color: rgb(17 24 39 / var(--tw-text-opacity));
+}
+
+.approvalTableDescription {
+    margin-left: 1rem;
+    font-weight: 500;
+    line-height: 1rem;
+    padding: 2rem;
+    --tw-bg-opacity: 1;
+    background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+    font-size: 0.75rem;
+    --tw-text-opacity: 1;
+    color: rgb(75 85 99 / var(--tw-text-opacity));
+    letter-spacing: 0.05em;
+
+}

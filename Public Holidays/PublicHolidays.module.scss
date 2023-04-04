@@ -1,0 +1,138 @@
+.publicHolidaysTitle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    font-size: 1.5rem;
+    line-height: 2rem;
+    margin-bottom: 1rem;
+}
+
+.publicHolidaysSection {
+    margin-top: 0rem;
+    margin-bottom: 3rem;
+    margin-left: 0.75rem;
+    margin-right: 0.75rem;
+    overflow: hidden;
+}
+
+.publicHolidaysSection_one {
+    margin-left: 0.75rem;
+    margin-right: 0.75rem;
+    margin-top: 0.5rem;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    --tw-bg-opacity: 1;
+    background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+    --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.publicHolidaysSection_one_Table_th,
+.publicHolidaysSection_one_Table_th_max {
+    --tw-border-spacing-x: 0.25rem;
+    --tw-border-spacing-y: 0.25rem;
+    border-spacing: var(--tw-border-spacing-x) var(--tw-border-spacing-y);
+    --tw-border-opacity: 1;
+    border-color: rgb(156 163 175 / var(--tw-border-opacity));
+    --tw-bg-opacity: 1;
+    background-color: rgb(229 231 235 / var(--tw-bg-opacity));
+    border-radius: 3px;
+    padding: 0.75rem;
+    text-align: center;
+}
+
+.publicHolidaysSection_one_Table {
+    width: 100%;
+}
+
+.publicHolidaysSection_one_Table_tbody {
+    align-items: stretch;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 300;
+    --tw-text-opacity: 1;
+    color: rgb(75 85 99 / var(--tw-text-opacity));
+}
+
+.publicHolidaysSection_one_Table_tbody_td {
+    white-space: nowrap;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    text-align: left;
+}
+
+@media (max-width: 767px) {
+    .publicHolidaysSection_one_Table {
+        width: 100%;
+        display: block;
+        width: 100%;
+        overflow-x: hidden;
+        padding: 0px 20px;
+        -webkit-overflow-scrolling: hidden;
+    }
+
+    .publicHolidaysSection_one_Table thead {
+        display: none;
+    }
+
+    .publicHolidaysSection_one_Table tr {
+        border-bottom: 1px solid #ddd;
+        display: block;
+        margin-bottom: 0.625rem;
+    }
+
+    .publicHolidaysSection_one_Table td {
+        display: block;
+        text-align: right;
+        font-size: 0.775rem;
+        padding: 0.5rem;
+        border-bottom: none;
+    }
+
+    .publicHolidaysSection_one_Table td::before {
+        content: attr(data-label);
+        float: left;
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        margin-bottom: 0.3125rem;
+    }
+
+    .publicHolidaysSection_one_Table_tbody {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+@media (min-width: 768px) {
+    .publicHolidaysSection {
+        margin-top: 5rem;
+        margin-bottom: 5rem;
+        margin-left: 3rem;
+        margin-right: 3rem;
+    }
+
+    .publicHolidaysSection {
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+
+    .publicHolidaysSection {
+        border-radius: 0.5rem;
+    }
+
+    // .publicHolidaysSection { // --tw-bg-opacity: 1; // background-color: rgb(255 255 255 / var(--tw-bg-opacity)); // }
+    .publicHolidaysSection_one {
+        margin-top: 5rem;
+        margin-bottom: 5rem;
+    }
+
+    .publicHolidaysSection_one {
+        margin-top: 0px;
+    }
+}
