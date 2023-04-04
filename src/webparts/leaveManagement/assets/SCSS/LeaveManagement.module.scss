@@ -1,0 +1,11 @@
+body #workbenchPageContent {
+    background-color: white; /* Set the background color to white */
+  }
+  
+  /* Remove all the styles */
+  *,
+  *::before,
+  *::after {
+    all: unset !important;
+  }
+  

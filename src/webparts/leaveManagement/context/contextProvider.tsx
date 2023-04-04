@@ -8,6 +8,7 @@ import {
 } from 'react-icons/bi';
 import { AiOutlineCalendar } from 'react-icons/ai';
 import { HiOutlineRefresh } from 'react-icons/hi';
+import { BsGraphDownArrow } from 'react-icons/bs';
 import { TbListDetails } from 'react-icons/tb';
 import { MdOutlineDashboard } from 'react-icons/md';
 import { TfiCheckBox } from 'react-icons/tfi';
@@ -39,10 +40,12 @@ type MyContextType = {
   setUsedLeave: React.Dispatch<React.SetStateAction<boolean>>;
   balanceLeave: boolean;
   setBalanceLeave: React.Dispatch<React.SetStateAction<boolean>>;
+  sidebarActive: boolean;
+  setSideBarActive: React.Dispatch<React.SetStateAction<boolean>>;
   earningData: {
     icon: React.ReactElement;
     title: string;
-    count?: string;
+    count?: string | number;
     iconColor: string;
     iconBg: string;
     pcColor: string;
@@ -57,6 +60,25 @@ type MyContextType = {
       role: string;
     }[];
   }[];
+  leaveDetails: LeaveDetail[];
+  takenLeaves: number;
+  setTakenLeaves: React.Dispatch<React.SetStateAction<number>>;
+  lossOfPay: number;
+  setLossofPay: React.Dispatch<React.SetStateAction<number>>;
+  action: boolean;
+  setAction: React.Dispatch<React.SetStateAction<boolean>>;
+  cancelReason: boolean;
+  setCancelReason: React.Dispatch<React.SetStateAction<boolean>>;
+  totalLeaves: number;
+  availableLeaves: number;
+  setAvailableLeaves: React.Dispatch<React.SetStateAction<number>>;
+};
+type LeaveDetail = {
+  ID: string;
+  Email: string;
+  FromDate: Date;
+  ToDate: Date;
+  NoofDaysLeave: number;
 };
 
 export const MyContext = createContext<MyContextType>({
@@ -112,6 +134,10 @@ export const MyContext = createContext<MyContextType>({
   setUsedLeave: () => {
     ('');
   },
+  sidebarActive: false,
+  setSideBarActive: () => {
+    ('');
+  },
   earningData: [
     {
       icon: <BiCalendarPlus />,
@@ -136,6 +162,14 @@ export const MyContext = createContext<MyContextType>({
       iconColor: 'rgb(228, 106, 118)',
       iconBg: 'rgb(255, 244, 229)',
       pcColor: 'green-600',
+    },
+    {
+      icon: <BsGraphDownArrow />,
+      count: '0',
+      title: 'Loss of Pay',
+      iconColor: 'rgb(255,68,0)',
+      iconBg: ' #ffc7b3',
+      pcColor: 'red-600',
     },
     {
       icon: <HiOutlineRefresh />,
@@ -195,6 +229,28 @@ export const MyContext = createContext<MyContextType>({
       ],
     },
   ],
+  leaveDetails: [],
+  takenLeaves: 0,
+  setTakenLeaves: () => {
+    ('');
+  },
+  lossOfPay: 0,
+  setLossofPay: () => {
+    ('');
+  },
+  action: false,
+  setAction: () => {
+    ('');
+  },
+  cancelReason: false,
+  setCancelReason: () => {
+    ('');
+  },
+  totalLeaves: 12,
+  availableLeaves: 0,
+  setAvailableLeaves: () => {
+    ('');
+  },
 });
 
 interface Props {
@@ -215,6 +271,13 @@ export const MyContextProvider = ({ children }: Props) => {
   const [leaveData, setLeaveData] = useState(false);
   const [usedLeave, setUsedLeave] = useState(false);
   const [balanceLeave, setBalanceLeave] = useState(false);
+  const [sidebarActive, setSideBarActive] = useState(false);
+  const [takenLeaves, setTakenLeaves] = useState<number>(0);
+  const [lossOfPay, setLossofPay] = useState<number>(0);
+  const [action, setAction] = useState<boolean>(false);
+  const [cancelReason, setCancelReason] = useState(false);
+  const totalLeaves = 12;
+  const [availableLeaves, setAvailableLeaves] = useState<number>(0);
   const [earningData] = useState([
     {
       icon: <BiCalendarPlus />,
@@ -239,6 +302,14 @@ export const MyContextProvider = ({ children }: Props) => {
       iconColor: 'rgb(228, 106, 118)',
       iconBg: 'rgb(255, 244, 229)',
       pcColor: 'green-600',
+    },
+    {
+      icon: <BsGraphDownArrow />,
+      count: '0',
+      title: 'Loss of Pay',
+      iconColor: 'rgb(255,68,0)',
+      iconBg: ' #ffc7b3',
+      pcColor: 'red-600',
     },
     {
       icon: <HiOutlineRefresh />,
@@ -314,8 +385,22 @@ export const MyContextProvider = ({ children }: Props) => {
       setActiveMenu(false);
     } else {
       setActiveMenu(true);
+      setSideBarActive(false);
     }
   }, [screenSize, setActiveMenu]);
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenSize(window.innerWidth);
+    };
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, [setScreenSize]);
+
+  useEffect(() => {
+    setScreenSize(window.innerWidth);
+    console.log(activeMenu);
+  }, [screenSize, setScreenSize, activeMenu]);
   const contextValue: MyContextType = {
     isSkeletonLoading,
     setIsSkeletonLoading,
@@ -345,6 +430,20 @@ export const MyContextProvider = ({ children }: Props) => {
     setUsedLeave,
     leaveData,
     setLeaveData,
+    sidebarActive,
+    setSideBarActive,
+    takenLeaves,
+    setTakenLeaves,
+    lossOfPay,
+    setLossofPay,
+    leaveDetails: [],
+    action,
+    setAction,
+    cancelReason,
+    setCancelReason,
+    totalLeaves,
+    availableLeaves,
+    setAvailableLeaves,
   };
 
   return (

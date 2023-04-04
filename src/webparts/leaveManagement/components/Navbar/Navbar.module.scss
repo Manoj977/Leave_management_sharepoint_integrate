@@ -19,6 +19,7 @@
   padding: 0.75rem;
   font-size: 1.25rem;
   line-height: 1.75rem;
+  cursor: pointer;
 }
 .navbarButtonIcon {
   position: absolute;
@@ -47,7 +48,29 @@
   width: 2rem;
   height: 2rem;
 }
+.info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.circle {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background-color: #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 0.5rem;
+}
+
+.initials {
+  font-size: 18px;
+  color: #000;
+}
+
 .email {
+  margin-left: 0.5rem;
   font-weight: 500;
   margin-left: 0.25rem;
   font-size: 1.125rem;

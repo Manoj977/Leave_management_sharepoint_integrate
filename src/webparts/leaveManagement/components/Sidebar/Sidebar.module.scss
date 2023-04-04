@@ -2,19 +2,19 @@
   scrollbar-width: thin;
 }
 .sidebar {
-  position: absolute;
+  position: relative;
   left: 0px;
   top: 0px;
   overflow: hidden;
   z-index: 1;
   text-decoration: none;
   padding-left: 10px;
-  min-height: auto;
   padding-bottom: 2.5rem;
+  height: 100vh;
   width: 14rem /* 288px */;
-  // box-shadow: rgb(113 122 131 / 11%) 0px 7px 30px 0px;
-  // --tw-bg-opacity: 1;
-  // background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+  box-shadow: rgb(113 122 131 / 11%) 0px 7px 30px 0px;
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
 .Cancel {
   display: block;
@@ -94,8 +94,7 @@
   padding-top: 0.75rem;
   padding-bottom: 0.625rem;
   border-radius: 6px;
-  --tw-text-opacity: 1;
-  color: rgb(255 255 255 / var(--tw-text-opacity));
+  color: white;
   margin: 0.5rem;
   margin-left: 1rem;
   margin-right: 1rem;

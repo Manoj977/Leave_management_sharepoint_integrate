@@ -1,0 +1,141 @@
+.pagination {
+  padding: 30px 0;
+  font-family: 'Open Sans', sans-serif;
+
+}
+
+.paginationAlign {
+
+  display: flex;
+  justify-content: space-evenly;
+  text-align: center;
+  padding: 10px 18px;
+  color: #222;
+}
+
+.paginationPageNum {
+  display: flex;
+  padding-top: 0.75rem;
+  color: #4B5563;
+  align-items: center;
+  cursor: pointer;
+}
+
+.paginationPageNum:hover {
+  color: #4338CA;
+}
+
+.paginationPageNumNotAllowed {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.paginationPrevious {
+  margin-left: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+
+}
+
+.pagenationSelectDiv {
+  display: flex;
+  align-items: center;
+}
+
+@media (min-width: 640px) {
+  .pagenationSelectDiv {
+      display: none;
+  }
+}
+
+.pagenationSelect {
+  display: block;
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+  padding-left: 0.75rem;
+  padding-right: 2.5rem;
+  background-color: #ffffff;
+  color: #4b535e;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  width: 100%;
+  border-radius: 0.375rem;
+  border-color: #D1D5DB;
+  margin-top: 2vh;
+}
+
+.pagenationSelect:focus {
+  border-color: transparent;
+  box-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  --ring-color: #3B82F6;
+  outline: 0;
+
+
+}
+
+.pagenationSelect:hover {
+  background-color: #F9FAFB;
+}
+
+
+
+.paginationHide {
+  display: none;
+
+  border: none;
+  position: relative;
+  top: 2vh;
+
+}
+
+@media (min-width: 640px) {
+  .paginationHide {
+      display: flex;
+  }
+}
+
+.paginationNextDiv {
+  display: flex;
+  padding-top: 0.75rem;
+  color: #4B5563;
+  align-items: center;
+  cursor: pointer;
+
+}
+
+.paginationNextDiv:hover {
+  color: #4338CA;
+}
+
+.paginationNext {
+  margin-right: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.paginationButtonClass {
+
+
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  padding: 0;
+  text-align: center;
+
+  border: none;
+  background: none;
+  cursor: pointer;
+
+}
+
+
+
+.paginationButtonActive {
+
+  background-color: #f97316;
+  border-radius: 100%;
+  color: #fff;
+}

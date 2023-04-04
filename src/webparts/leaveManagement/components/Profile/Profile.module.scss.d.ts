@@ -4,11 +4,30 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export interface CssExports {
-  'profileSection': string;
+interface CssExports {
+  'activeLink': string;
+  'activeMenu': string;
+  'activeMenuNot': string;
+  'bgDecor': string;
+  'card': string;
+  'card_gap1': string;
+  'card_gap2': string;
+  'card_layout': string;
+  'employeeNameCard': string;
+  'employeeNameCardActiveMenu': string;
+  'employeeNameCardActiveMenuNot': string;
+  'employeecard': string;
   'icon': string;
-  'md ': string;
-  'text': string;
+  'icon1': string;
+  'icon_count': string;
+  'icon_count_number': string;
+  'icon_title': string;
+  'icon_title1': string;
+  'nameBoard_layout': string;
+  'nameBoard_layout_title': string;
+  'nameBoard_layout_title_Name': string;
+  'profileSection': string;
+  'profilesection_layout': string;
 }
-
-export default CssExports;
+const cssExports: CssExports;
+export default cssExports;

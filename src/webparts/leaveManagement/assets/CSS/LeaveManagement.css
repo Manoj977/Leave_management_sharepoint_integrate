@@ -1,134 +1,147 @@
-#pageNavBar,
-#pageContent {
-    font-family: 'Open Sans', sans-serif;
-}
-
-/* body,
-* {
-font-family: 'Open Sans', sans-serif;} */
-
-.ms-SPLegacyFabricBlock {
-    width: 100vw !important;
-    height: 100vh !important;
-    display: flex;
-}
-
-#suiteNavWrapper {
-    display: none !important;
-}
-
-#spSiteHeader {
-    display: none !important;
-}
-
-.sp-placeholder-bottom {
-    display: none !important;
-}
-
-#spLeftNav {
-    display: none !important;
-}
-
-#sp-appBar {
-    display: none !important;
-}
-
-#spCommandBar {
-    display: none !important;
-}
-
-[data-automation-id="ContentScrollRegion"]>div>div:first-child {
-    padding: 0 !important;
-}
-
-[data-automation-id="CanvasZone"] {
-    padding: 0 !important;
-}
-
-[data-automation-id="CanvasZone"]>div {
-    max-width: max-content !important;
-    display: contents !important;
-}
-
-[data-automation-id="CanvasSection"] {
-    padding: 0 !important;
-}
-
-[data-automation-id="CanvasControl"] {
-    padding: 0 !important;
-    margin: 0 !important;
-}
-
-.ms-SPLegacyFabricBlock>div>iframe {
-    display: none !important;
-}
-
-#CommentsWrapper {
-    display: none;
-}
-
-[data-sp-placeholder="Top"] {
-    display: none;
-}
-
-/* #spPageChromeAppDiv>div>div :first-child {
-    display: none;
-} */
-
-#workBenchCommandBar {
-    display: none;
-}
-
-#workBenchPageContent {
-    margin: 0 !important;
-    right: 0 !important;
-    left: 0 !important;
-    max-width: 100vw !important;
-}
-
-#workBenchPageContent>div>div>div {
-    padding: 0 !important;
-    overflow-y: hidden !important;
-}
-
-.CanvasToolboxHint-plusButtonWrapper {
-    display: none !important
-}
-
-[data-drag-tag="CanvasLayout"] {
-    margin: 0 !important;
-}
-
-[data-automation-id="canvas-control-toolbar"] {
-    display: none !important;
-}
-
-.CanvasComponent .LCS .now {
-    margin: 0 !important;
-    box-sizing: border-box;
-    zoom: normal !important;
-}
-
-.row {
-    margin: 0 auto !important;
-}
-
-#RecommendedItems {
-    display: none !important;
-}
-
-
-
-
-
-
-
-/* ////////////////////////// */
 .spAppAndPropertyPanelContainer .sp-appBar {
-    display: none !important;
+  display: none !important;
 }
 
 .root-43 {
-    padding: 0 !important;
-    display: none !important;
+  padding: 0 !important;
+  display: none !important;
+}
+
+.CanvasComponent.LCS .CanvasZone {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.CanvasComponent.LCS .CanvasSection-col {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+[dir=ltr] .CanvasComponent.LCS .Canvas--edit.Canvas--withLayout {
+  margin: 0 !important;
+}
+
+/* #SuiteNavWrapper, */
+.sp-appBar,
+#workbenchCommandBar {
+  display: none !important;
+  position: fixed;
+}
+
+#workbenchPageContent {
+  border: none !important;
+  position: initial !important;
+  margin: 0 !important;
+}
+
+.ms-Layer.ms-Layer--fixed.root-81 {
+  display: none !important;
+}
+
+.m_b_8474018e {
+  padding: 0px !important;
+  width: 100vw
+}
+
+.ControlZone--position {
+  background: none;
+  padding: 0px !important;
+}
+
+.CanvasComponent.LCS .CanvasZoneContainer {
+  margin: 0px !important;
+}
+
+.m_b_8474018e {
+  padding: 0px !important;
+}
+
+.ControlZone-drag .ControlZone--drag-show {
+  padding: 0px !important;
+}
+
+.ms-Modal,
+.is-open,
+.ms-Dialog root-81 {
+  display: none !important;
+}
+
+.CanvasComponent.LCS .ControlZone .ControlZone--drag-show {
+  display: none !important;
+}
+
+.CanvasComponent.LCS .CanvasToolboxHint {
+  display: none !important;
+}
+
+.i_a_8474018e {
+  max-width: 100vw !important;
+}
+
+.CanvasComponent.LCS .CanvasZone {
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+}
+
+.CanvasComponent.LCS .CanvasZone:not(.CanvasZone--fullWidth) .ControlZone {
+  padding: 0px !important;
+}
+
+.g_a_7caff1a1 {
+  display: none !important;
+}
+
+#sbcId {
+  display: none;
+}
+
+.CanvasComponent.LCS .ControlZone .ControlZone-drag,
+.CanvasComponent.LCS .ControlZone .ControlZone-move {
+  position: initial !important;
+}
+
+.CanvasComponent.LCS .ControlZone.ControlZone--clean.ControlZone--overlay:after {
+  cursor: default;
+  pointer-events: auto;
+}
+
+.root-70::after {
+  border: 0px !important
+    /* border: 1px solid rgb(161, 159, 157); */
+}
+
+.CanvasComponent.LCS .CanvasSection-col {
+  min-height: 0px !important;
+}
+
+.CanvasComponent.LCS .row:after {
+  clear: none !important
+}
+
+.CanvasComponent.LCS .CanvasZoneContainer.CanvasZoneContainer--selected:before,
+.CanvasComponent.LCS .CanvasZoneContainer:not(.CanvasZoneContainer--read):hover:before {
+  border: none !important;
+}
+
+.CanvasComponent.LCS .ControlZone.ControlZone--edit.ControlZone--selected .CanvasControlToolbar,
+.CanvasComponent.LCS .ControlZone.ControlZone--edit.ControlZone--selected:after,
+.CanvasComponent.LCS .ControlZone.ControlZone--edit:focus .CanvasControlToolbar,
+.CanvasComponent.LCS .ControlZone.ControlZone--edit:focus:after,
+.CanvasComponent.LCS .ControlZone.ControlZone--edit:hover .CanvasControlToolbar,
+.CanvasComponent.LCS .ControlZone.ControlZone--edit:hover:after {
+  opacity: 0 !important;
+}
+
+.CanvasComponent.LCS .ControlZone:after {
+  bottom: 0;
+  content: "initial" !important;
+  left: 0;
+  pointer-events: none;
+  position: relative !important;
+  right: 0;
+  top: 0;
+}
+
+.n_b_8474018e {
+  overflow: hidden !important;
 }

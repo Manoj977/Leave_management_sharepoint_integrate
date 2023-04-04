@@ -1,54 +1,23 @@
+/* eslint-disable no-void */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import styles from './Navbar.module.scss';
 import { MyContext } from '../../context/contextProvider';
-import { debounce } from '@syncfusion/ej2-base';
 import { AiOutlineMenu } from 'react-icons/ai';
+import { sp } from '@pnp/sp/presets/all';
 
-interface NavButtonProps {
-  title: string;
-  customFunc: () => void;
-  icon: JSX.Element;
-  color: string;
-  dotColor: string;
-}
-
-const NavButton: React.FC<NavButtonProps> = ({
-  title,
-  customFunc,
-  icon,
-  color,
-  dotColor,
-}: NavButtonProps) => (
-  <>
-    <button
-      type="button"
-      onClick={() => customFunc()}
-      style={{ color }}
-      className={styles.navbarButton}
-      data-tip={title}
-      data-for="navButtonTooltip"
-    >
-      <span
-        style={{ background: dotColor }}
-        className="absolute inline-flex rounded-full h-2 w-2 right-2 top-2"
-      />
-      {icon}
-    </button>
-  </>
-);
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 
 const Navbar: React.FC = () => {
-  const { screenSize, setScreenSize, activeMenu, setActiveMenu } =
+  const { screenSize, setScreenSize, activeMenu, sidebarActive,setSideBarActive } =
     useContext(MyContext);
+  const [userName, setUserName] = useState('');
+  const [userEmail, setUserEmail] = useState('');
 
-  //Screen Size Handler
   useEffect(() => {
-    const handleResize = () =>
-      debounce(() => {
-        setScreenSize(window.innerWidth);
-      }, 500);
+    const handleResize = () => {
+      setScreenSize(window.innerWidth);
+    };
     window.addEventListener('resize', handleResize);
     handleResize();
     return () => window.removeEventListener('resize', handleResize);
@@ -56,44 +25,54 @@ const Navbar: React.FC = () => {
 
   useEffect(() => {
     setScreenSize(window.innerWidth);
-    console.log(activeMenu);
+    console.log(activeMenu, screenSize);
   }, [screenSize, setScreenSize, activeMenu]);
-  //Screen Size Changes
 
-  useEffect(() => {
-    if (screenSize <= 900) {
-      setActiveMenu(false);
-    } else {
-      setActiveMenu(true);
-    }
-  }, []);
-  //Handle Togggle button
-  const handleActiveMenu = () => {
-    setActiveMenu(!activeMenu);
-    console.table('done');
-  };
+  void sp.web.currentUser.get().then((user) => {
+    setUserEmail(user.Email);
+    setUserName(user.Title);
+  });
+
+  console.log(userName, userEmail);
+  const initials = userName
+    .split(' ')
+    .map((word) => word.charAt(0))
+    .join('');
+  console.log(initials);
 
   return (
     <div className={styles.navbarHeader}>
       <div>
-        <NavButton
-          title="Menu"
-          customFunc={handleActiveMenu}
-          icon={<AiOutlineMenu />}
-          color=""
-          dotColor=""
-        />
+        <button
+          type="button"
+          onClick={() => {
+            setSideBarActive(!sidebarActive)
+          }}
+          style={{ color: '', background: ''}}
+          className={styles.navbarButton}
+          data-tip="Menu"
+          data-for="navButtonTooltip"
+        >
+          <span
+            style={{ background: '' }}
+            className={styles.navbarButtonIcon}
+          />
+          <AiOutlineMenu />
+        </button>
       </div>
       <div className={styles.navbarSection}>
         <div className={styles.navbarSectionOne}>
-          <img
+          {/* <img
             className={styles.profile_photo}
             src="https://ui-avatars.com/api/?name=Manojpa"
             alt="profile_photo"
-          />
-          <p className={styles.info}>
-            <span className={styles.email}>********@zlendo.com</span>
-          </p>
+          /> */}
+          {/* <p className={styles.info}>
+            <span className={styles.circle}>
+              <span className={styles.initials}>{initials}</span>
+            </span>
+            <span className={styles.email}>{userEmail}</span>
+          </p> */}
         </div>
       </div>
     </div>
