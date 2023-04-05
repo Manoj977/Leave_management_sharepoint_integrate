@@ -8,6 +8,7 @@ import { MyContext } from '../../context/contextProvider';
 import LeaveCalculation from '../LeaveCalculation/LeaveCalculation';
 import { sp } from '@pnp/sp/presets/all';
 export default function Profile() {
+  
   const {
     activeMenu,
     earningData,
@@ -18,7 +19,9 @@ export default function Profile() {
     setLossofPay,
     takenLeaves,
     totalLeaves,
+    availableLeaves,
   } = React.useContext(MyContext);
+  LeaveCalculation();
   const [userName, setUserName] = useState('');
   useEffect(() => {
     setLossofPay(lossOfPay); // update the state whenever lossOfPay changes
@@ -47,7 +50,6 @@ export default function Profile() {
   console.log(takenLeaves);
   return (
     <div>
-      {LeaveCalculation()}
       <div className={style.profileSection}>
         <div
           className={`${style.profilesection_layout} ${
@@ -109,7 +111,7 @@ export default function Profile() {
                     {item.title === 'Available Leaves'
                       ? takenLeaves === 12 || takenLeaves >= 12
                         ? (item.count = 0)
-                        : (item.count = totalLeaves - takenLeaves)
+                        : (item.count = availableLeaves)
                       : ''}
 
                     {item.title === 'Total Leaves' ? totalLeaves : ''}

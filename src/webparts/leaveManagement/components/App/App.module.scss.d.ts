@@ -6,6 +6,7 @@
 
 interface CssExports {
   'mainSection': string;
+  'n_b_8474018e': string;
   'navbar': string;
   'navbar_section': string;
   'navbar_section_1': string;

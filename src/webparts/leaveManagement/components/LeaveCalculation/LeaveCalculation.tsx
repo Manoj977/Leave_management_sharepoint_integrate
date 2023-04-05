@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-expressions */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable no-unmodified-loop-condition */
 /* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -23,9 +26,15 @@ const LeaveCalculation = () => {
   const [LeaveDetails, setLeaveDetails] = useState<LeaveDetail[]>([]);
   const [leaveFromDate] = useState<Date>(new Date());
   const [leaveToDate] = useState<Date>(new Date());
-  const { setLossofPay, setTakenLeaves, totalLeaves, takenLeaves } =
-    React.useContext(MyContext);
+  const {
+    setLossofPay,
+    setTakenLeaves,
+    totalLeaves,
+    takenLeaves,
+    setAvailableLeaves,
+  } = React.useContext(MyContext);
   console.log(takenLeaves, totalLeaves);
+  setAvailableLeaves(totalLeaves - takenLeaves);
   let userEmail = '';
   useEffect(() => {
     // eslint-disable-next-line no-void

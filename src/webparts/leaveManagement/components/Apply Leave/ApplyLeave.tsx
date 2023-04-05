@@ -20,7 +20,8 @@ type employeeData = {
 };
 export const ApplyLeave = () => {
   const [employeeData, setEmployeeData] = useState<employeeData[]>([]);
-  const { totalLeaves } = React.useContext(MyContext);
+  const { availableLeaves } = React.useContext(MyContext);
+
   const navigate = useNavigate();
   useEffect(() => {
     fetch(
@@ -243,7 +244,7 @@ export const ApplyLeave = () => {
               </svg>
 
               <p className={styles.ApplyLeave_form_leaveInput_desc}>
-                Your Total Leave balance is {totalLeaves}
+                Your Total Leave balance is {availableLeaves}
               </p>
             </div>
           )}
