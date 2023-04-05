@@ -282,7 +282,7 @@ export const LeaveApproval: React.FC = () => {
                               >
                                 <div className={styles.leaveApprovalButtonDiv}>
                                   <div>
-                                    {leave.Status !== 'Cancelled' ? (
+                                    {leave.Status === 'Pending' ? (
                                       <button
                                         onClick={() =>
                                           handleApproval(leave.leaveID)
@@ -294,14 +294,9 @@ export const LeaveApproval: React.FC = () => {
                                         Action
                                       </button>
                                     ) : (
-                                      <button
-                                      disabled
-                                      className={
-                                        styles.leaveApprovalViewButton
-                                      }
-                                    >
-                                      Action
-                                    </button>
+                                      leave.Status && (
+                                        <p>Leave {leave.Status}</p>
+                                      )
                                     )}
                                   </div>
                                   {/* <div>
