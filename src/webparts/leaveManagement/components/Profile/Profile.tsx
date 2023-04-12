@@ -8,7 +8,6 @@ import { MyContext } from '../../context/contextProvider';
 import LeaveCalculation from '../LeaveCalculation/LeaveCalculation';
 import { sp } from '@pnp/sp/presets/all';
 export default function Profile() {
-  
   const {
     activeMenu,
     earningData,
@@ -25,10 +24,10 @@ export default function Profile() {
   const [userName, setUserName] = useState('');
   useEffect(() => {
     setLossofPay(lossOfPay); // update the state whenever lossOfPay changes
-  }, [lossOfPay]);
-  void sp.web.currentUser.get().then((user) => {
-    setUserName(user.Title);
-  });
+    void sp.web.currentUser.get().then((user) => {
+      setUserName(user.Title);
+    });
+  }, [lossOfPay, userName]);
   const HandleLeave = (
     event: React.MouseEvent<HTMLButtonElement>,
     title: string
@@ -109,9 +108,7 @@ export default function Profile() {
                       ? (item.count = takenLeaves)
                       : ''}
                     {item.title === 'Available Leaves'
-                      ? takenLeaves === 12 || takenLeaves >= 12
-                        ? (item.count = 0)
-                        : (item.count = availableLeaves)
+                      ? (item.count = availableLeaves)
                       : ''}
 
                     {item.title === 'Total Leaves' ? totalLeaves : ''}

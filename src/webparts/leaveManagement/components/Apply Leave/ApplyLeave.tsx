@@ -12,17 +12,21 @@ import { Web } from "@pnp/sp/webs";
 import { IList } from "@pnp/sp/lists";
 import styles from "./ApplyLeave.module.scss";
 import { MyContext } from "../../context/contextProvider";
+import LeaveCalculation from "../LeaveCalculation/LeaveCalculation";
 type employeeData = {
   id: string;
   name: string;
   email: string;
   leaveID: number;
 };
-type empData = { FormDate: Date; ToDate: Date };
+type leaveType = {
+  leaveType: string;
+};
 export const ApplyLeave = () => {
+  LeaveCalculation();
   const [employeeData, setEmployeeData] = useState<employeeData[]>([]);
+  const [apileaveType, setApiLeaveType] = useState<leaveType[]>([]);
   const { availableLeaves } = React.useContext(MyContext);
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,6 +44,7 @@ export const ApplyLeave = () => {
             id: entry.content["m:properties"]["d:Employee_x0020_ID"]._text,
             name: entry.content["m:properties"]["d:Display_x0020_Name"]._text,
             email: entry.content["m:properties"]["d:Email"]._text,
+            leaveID: entry.content["m:properties"]["d:Id"]._text,
           })
         );
 
@@ -47,7 +52,27 @@ export const ApplyLeave = () => {
       })
       .catch((err) => console.log(err));
   }, []);
+  useEffect(() => {
+    fetch(
+      "https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/lists/GetByTitle('Leave%20Type%20Master')/items"
+    )
+      .then((res) => res.text())
+      .then((data) => {
+        const jsonData = convert.xml2json(data, { compact: true, spaces: 4 });
 
+        const parsedData = JSON.parse(jsonData);
+        console.log(parsedData);
+        const leaveType: leaveType[] = parsedData.feed.entry.map(
+          (entry: any) => ({
+            leaveType:
+              entry.content["m:properties"]["d:Leave_x0020_Type"]._text,
+          })
+        );
+
+        setApiLeaveType(leaveType);
+      })
+      .catch((err) => console.log(err));
+  }, []);
   // const navigate = useNavigate();
   const [leave, setLeave] = useState("");
   const [leaveError, setLeaveError] = useState("");
@@ -74,9 +99,7 @@ export const ApplyLeave = () => {
   let userName = "";
   let ID = "";
   let leaveCount = 0;
-
   console.log("leaveID");
-
   void sp.web.currentUser.get().then((user) => {
     setUserEmail(user.Email);
   });
@@ -88,6 +111,7 @@ export const ApplyLeave = () => {
   });
   console.log(userName, leaveCount);
   console.log("ID", ID);
+  console.log(fromDate, toDate);
 
   console.log(userName, leaveCount);
   console.log("ID", ID);
@@ -316,13 +340,14 @@ export const ApplyLeave = () => {
         });
       navigate("/Leave Details");
       window.location.reload();
-      setLeave("");
-      setLeaveType("");
-      setReason("");
-      setLeaveType("Full Day");
-      setFromDate(new Date().toISOString().substr(0, 10));
-      setToDate("");
     }
+
+    setLeave("");
+    setLeaveType("");
+    setReason("");
+    setLeaveType("Full Day");
+    setFromDate(new Date().toISOString().substr(0, 10));
+    setToDate("");
   }
 
   return (
@@ -347,29 +372,34 @@ export const ApplyLeave = () => {
               }`}
             >
               <option defaultValue="selected">Select Leave </option>
-              <option value="Annual Leave"> Leave</option>
-              <option value="Casual Leave">Casual Leave</option>
-              <option value="Sick Leave">Sick Leave</option>
-              <option value="Loss of Pay">Loss of Pay</option>
-              <option value="Other">Other</option>
+              {apileaveType.map((e) => {
+                return (
+                  <option
+                    key={e.leaveType} // add a unique key for each element
+                    value={e.leaveType}
+                  >
+                    {e.leaveType}
+                  </option>
+                );
+              })}
             </select>
           </div>
-          {leave && leave !== "Select Leave" && (
-            <div className={styles.ApplyLeave_form_leaveInput}>
-              <svg
-                className={styles.ApplyLeave_form_leaveInput_svg}
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-              >
-                <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z" />
-              </svg>
-
-              <p className={styles.ApplyLeave_form_leaveInput_desc}>
-                Your Total Leave balance is {availableLeaves}
-              </p>
-            </div>
-          )}
           <div className={""}>
+            {leave && leave !== "Select Leave" && (
+              <div className={styles.ApplyLeave_form_leaveInput}>
+                <svg
+                  className={styles.ApplyLeave_form_leaveInput_svg}
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z" />
+                </svg>
+
+                <p className={styles.ApplyLeave_form_leaveInput_desc}>
+                  Your Total Leave balance is {availableLeaves}
+                </p>
+              </div>
+            )}
             {leaveError && <p className={styles.error}> {leaveError}</p>}
           </div>
 
@@ -419,9 +449,7 @@ export const ApplyLeave = () => {
               <input
                 type="text"
                 value="FullDay"
-                className={`${styles.ApplyLeave_form_input} ${
-                  leaveTypeError !== "" ? `${styles.errorBorder}` : ""
-                }`}
+                className={styles.ApplyLeave_form_input}
                 onChange={() => setLeaveType("FullDay")}
               />
             ) : (
@@ -468,7 +496,9 @@ export const ApplyLeave = () => {
         <div className={styles.button}>
           <div className="px-2" style={{ padding: "0rem 0.5rem" }}>
             <button
-              onClick={() => handleSubmit()}
+              onClick={() => {
+                handleSubmit();
+              }}
               className={`${styles.buttonSubmit} ${
                 leave.length === 0 ||
                 reason.length === 0 ||

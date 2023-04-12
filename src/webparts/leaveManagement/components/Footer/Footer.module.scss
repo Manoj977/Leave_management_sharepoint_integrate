@@ -1,0 +1,16 @@
+.footer {
+    background-color: rgba(250, 251, 251, 1);
+  color: rgb(136, 136, 135);
+  padding: 20px;
+  font-size: 14px;
+  text-align: center;
+
+  a {
+    color: #656565;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

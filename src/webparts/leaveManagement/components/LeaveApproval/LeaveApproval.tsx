@@ -1,10 +1,15 @@
-/* eslint-disable no-unused-expressions */ /* eslint-disable @typescript-eslint/no-explicit-any */ /* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-self-compare */
 import React, { useEffect, useState } from 'react';
 import { MyContext } from '../../context/contextProvider';
 import convert from 'xml-js';
 import Pagination from '../Pagination/Pagination';
 import styles from './LeaveApproval.module.scss';
 import ApprovalPage from '../ApprovalPage/ApprovalPage';
+import { FaSortUp, FaSortDown } from 'react-icons/fa';
+// import { AiOutlineSearch } from 'react-icons/ai';
+import { RiLoader4Line } from 'react-icons/ri';
 
 type LeaveDetail = {
   leaveID: number;
@@ -14,23 +19,40 @@ type LeaveDetail = {
   Leave: string;
   FromDate: Date;
   ToDate: Date;
-  LeaveType: Date;
+  LeaveType: string;
   Reason: string;
-  NoofDaysLeave: string;
+  Days: string;
   Status: string;
+  [key: string]: any;
 };
-
+type TableHeading = {
+  name: string;
+  value: string;
+};
+const TableHeading: TableHeading[] = [
+  { name: 'S.No', value: 'S.No' },
+  { name: 'ID', value: 'ID' },
+  { name: 'Name', value: 'Name' },
+  // { name: 'Email', value: 'Email' },
+  { name: 'Leave', value: 'Leave' },
+  { name: 'Leave Type', value: 'Leave Type' },
+  { name: 'Date', value: 'Date' },
+  // { name: 'Reason', value: 'Reason' },
+  { name: 'Days', value: 'Days' },
+  { name: 'Status', value: 'Status' },
+  { name: 'Action', value: 'Action' },
+];
 export const LeaveApproval: React.FC = () => {
   const { action, setAction } = React.useContext(MyContext);
 
   const [LeaveDetails, setLeaveDetails] = useState<LeaveDetail[]>([]);
   // const [filteredData] = useState(LeaveDetails);
   const [approve, setApprove] = useState<string>('Pending');
-  const [sortBy, setSortBy] = useState(null);
-  const [sortOrder, setSortOrder] = useState('asc');
+  const [sortBy, setSortBy] = useState<string>('');
+  const [sortOrder, setSortOrder] = useState<string>('asc');
   const [currentPage, setCurrentPage] = useState(1);
-  const [dataPerPage] = useState(2);
-  const [searchTerm] = useState('');
+  // const [selectedOption, setSelectedOption] = React.useState('');
+  const [dataPerPage] = useState(4);
   const [employeeId, setEmployeeId] = useState(0);
 
   useEffect(() => {
@@ -59,7 +81,7 @@ export const LeaveApproval: React.FC = () => {
           ).toLocaleDateString(),
           Reason: entry.content['m:properties']['d:Reason']._text,
           Status: entry.content['m:properties']['d:Status']._text,
-          NoofDaysLeave: entry.content['m:properties']['d:count']._text,
+          Days: entry.content['m:properties']['d:count']._text,
           leaveID: entry.content['m:properties']['d:ID']._text,
         }));
         setLeaveDetails(leaveDetail);
@@ -67,270 +89,307 @@ export const LeaveApproval: React.FC = () => {
       .catch((err) => console.log(err));
   }, []);
   let filteredEmployees;
-  let CurrentData;
-  let handleSort: (event: any, property: any) => void;
+  let CurrentData: LeaveDetail[];
+  const handleSort = (sortBy: string) => {
+    setSortOrder(
+      sortBy === sortBy ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc'
+    );
+    setSortBy(sortBy);
+  };
+  const [searchTerm, setSearchTerm] = useState('');
+  const handleSearch = (event: any) => {
+    setSearchTerm(event.target.value);
+  };
+  console.log(LeaveDetails);
+  // const handleDropdownChange = (
+  //   event: React.FormEvent<HTMLSelectElement>
+  // ): void => {
+  //   setSelectedOption(event.currentTarget.value);
+  // };
+
   if (LeaveDetails !== null) {
     filteredEmployees = LeaveDetails.filter(
       (employee) =>
-        employee.Name.toLowerCase().includes(searchTerm) ||
-        employee.ID.toString().toLowerCase().includes(searchTerm)
+        searchTerm === '' ||
+        employee.Name.toLowerCase()
+          .replace(/\s/g, '')
+          .includes(searchTerm.toLowerCase().replace(/\s/g, '')) ||
+        employee.ID.toString()
+          .toLowerCase()
+          .replace(/\s/g, '')
+          .includes(searchTerm.toLowerCase().replace(/\s/g, '')) ||
+        // employee.Email.toLowerCase()
+        //   .replace(/\s/g, '')
+        //   .includes(searchTerm.toLowerCase().replace(/\s/g, '')) ||
+        employee.Status.toLowerCase()
+          .replace(/\s/g, '')
+          .includes(searchTerm.toLowerCase().replace(/\s/g, '')) ||
+        employee.Leave.toLowerCase()
+          .replace(/\s/g, '')
+          .includes(searchTerm.toLowerCase().replace(/\s/g, '')) ||
+        employee.LeaveType.toLowerCase()
+          .replace(/\s/g, '')
+          .includes(searchTerm.toLowerCase().replace(/\s/g, ''))
     );
-    handleSort = (event, property) => {
-      event.preventDefault();
-      if (property === sortBy) {
-        setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-      } else {
-        setSortBy(property);
-        setSortOrder('asc');
-      }
-    };
-    filteredEmployees.sort((a, b) => {
-      if (!sortBy) {
-        return 0; // default sort
-      }
+
+    const sortedItems = filteredEmployees.sort((a, b) => {
+      const aValue = a[sortBy];
+      const bValue = b[sortBy];
+
       if (sortOrder === 'asc') {
-        return a < b ? -1 : 1;
+        if (aValue < bValue) return -1;
+        if (aValue > bValue) return 1;
+        return 0;
       } else {
-        return a < b ? 1 : -1;
+        if (aValue > bValue) return -1;
+        if (aValue < bValue) return 1;
+        return 0;
       }
     });
     const indexOfLastPage = currentPage * dataPerPage;
     const indexFirstData = indexOfLastPage - dataPerPage;
-    CurrentData = filteredEmployees.slice(indexFirstData, indexOfLastPage);
+    CurrentData = sortedItems.slice(indexFirstData, indexOfLastPage);
   }
 
   const handleApproval = (leaveID: number) => {
     setEmployeeId(leaveID);
     setAction(true);
   };
-  console.log('test', employeeId);
+  console.log('CurrentData', CurrentData.length);
   return (
     <div>
       <div className={styles.leaveapproval}>
         {CurrentData && (
-          <div className={styles.leaveDetailsDiv1}>
-            <div className={styles.leaveDetailsDiv2}>
-              <div className={styles.leaveDetailsDiv3}>
-                <div className={styles.leaveDetailsDiv4}>
-                  <div className={styles.leaveDetailsDiv5}>
-                    <div className={styles.leaveDetailsDiv6}>
-                      <table className={styles.leaveDetailsTable}>
-                        <thead>
-                          <tr>
-                            <th className={styles.leaveDetailsTableHead}>
-                              S.No
-                            </th>
-                            <th
-                              onClick={(event) => {
-                                handleSort(event, 'ID');
-                              }}
-                              className={styles.leaveDetailsTableHead}
-                            >
-                              ID
-                            </th>
-                            <th
-                              onClick={(event) => {
-                                handleSort(event, 'Name');
-                              }}
-                              className={styles.leaveDetailsTableHead}
-                            >
-                              Name
-                            </th>
-                            <th
-                              onClick={(event) => {
-                                handleSort(event, 'Email');
-                              }}
-                              className={styles.leaveDetailsTableHead}
-                            >
-                              Email
-                            </th>
-                            <th
-                              onClick={(event) => {
-                                handleSort(event, 'Leave');
-                              }}
-                              className={styles.leaveDetailsTableHead}
-                            >
-                              Leave
-                            </th>
-                            <th
-                              onClick={(event) => {
-                                handleSort(event, 'LeaveType');
-                              }}
-                              className={styles.leaveDetailsTableHead}
-                            >
-                              LeaveType
-                            </th>
-                            <th
-                              onClick={(event) => {
-                                handleSort(event, 'FromDate');
-                              }}
-                              className={styles.leaveDetailsTableHead}
-                            >
-                              Date
-                            </th>
+          <div>
+            <div className={styles.leaveapprovalSearchBox}>
+              {/* <p className={styles.searchLabel}>Search:</p> */}
+              <input
+                type="search"
+                id="search-dropdown"
+                className={styles.leaveapprovalInput}
+                placeholder={'Search....'}
+                value={searchTerm}
+                onChange={handleSearch}
+                autoComplete="off"
+                required
+              />
+              {/* <select value={selectedOption} onChange={handleDropdownChange}>
+                <option value="">All</option>
+                <option value="Approved">Approved</option>
+                <option value="Pending">Pending</option>
+                <option value="Rejected">Rejected</option>
+              </select> */}
+            </div>
+            <div className={styles.leaveDetailsDiv1}>
+              <div className={styles.leaveDetailsDiv2}>
+                <div className={styles.leaveDetailsDiv3}>
+                  <div className={styles.leaveDetailsDiv4}>
+                    <div className={styles.leaveDetailsDiv5}>
+                      <div className={styles.leaveDetailsDiv6}>
+                        <table className={styles.leaveDetailsTable}>
+                          <thead>
+                            <tr>
+                              {window.innerWidth > 664 &&
+                                TableHeading.map((option) => {
+                                  const shouldDisplayIcon =
+                                    option.value !== 'S.No' &&
+                                    option.value !== 'Date' &&
+                                    option.value !== 'Leave Type' &&
+                                    option.value !== 'Reason' &&
+                                    option.value !== 'Action';
 
-                            <th className={styles.leaveDetailsTableHead}>
-                              Reason
-                            </th>
-                            <th className={styles.leaveDetailsTableHead}>
-                              Days
-                            </th>
-                            <th className={styles.leaveDetailsTableHead}>
-                              Status
-                            </th>
-                            <th className={styles.leaveDetailsTableHead}>
-                              Action
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className={styles.leaveDetailsTableBody}>
-                          {CurrentData.map((leave, index) => (
-                            <tr key={index}>
-                              <td
-                                className={styles.leaveDetailsDescrition}
-                                data-label="S.No"
-                              >
-                                {index + 1}
-                              </td>
-                              <td
-                                className={styles.leaveDetailsDescrition}
-                                data-label="ID"
-                              >
-                                {leave.ID}
-                              </td>
-                              <td
-                                className={styles.leaveDetailsDescrition}
-                                data-label="Name"
-                              >
-                                {leave.Name}
-                              </td>
-                              <td
-                                className={styles.leaveDetailsDescrition}
-                                data-label="Email"
-                              >
-                                {leave.Email}
-                              </td>
-                              <td
-                                className={styles.leaveDetailsDescrition}
-                                data-label="Leave"
-                              >
-                                {leave.Leave}
-                              </td>
-                              <td
-                                className={styles.leaveDetailsDescrition}
-                                data-label="LeaveType"
-                              >
-                                {leave.LeaveType}
-                              </td>
-                              <td
-                                className={styles.leaveDetailsDescrition}
-                                data-label="FromDate"
-                              >
-                                <div
-                                  className={`${styles.leaveApprovalButtonDiv} ${styles.leaveApprovalDate}`}
-                                >
-                                  <span>{leave.FromDate}</span>-
-                                  <span>{leave.ToDate}</span>
-                                </div>
-                              </td>
-                              <td
-                                className={styles.leaveDetailsDescrition}
-                                data-label="Reason"
-                              >
-                                {leave.Reason}
-                              </td>
-                              <td
-                                className={styles.leaveDetailsDescrition}
-                                data-label="No of Days Leave"
-                              >
-                                {leave.NoofDaysLeave}
-                              </td>
-                              <td
-                                className={styles.leaveDetailsDescrition}
-                                data-label="Status"
-                              >
-                                <span
-                                  className={`${
-                                    leave.Status === 'Pending'
-                                      ? `${styles.leaveStatusPending}`
-                                      : ''
-                                  } ${
-                                    leave.Status === 'Approved'
-                                      ? `${styles.leaveStatusApprove}`
-                                      : ''
-                                  } ${
-                                    leave.Status === 'Cancelled'
-                                      ? `${styles.leaveStatusCancel}`
-                                      : ''
-                                  } ${
-                                    leave.Status === 'Rejected'
-                                      ? `${styles.leaveStatusReject}`
-                                      : ''
-                                  }`}
-                                >
-                                  <span
-                                    aria-hidden
-                                    className={styles.leaveStatusSpan}
-                                  >
-                                    {leave.Status}
-                                  </span>
-                                </span>
-                              </td>
-                              <td
-                                className={styles.leaveDetailsDescrition}
-                                data-label="Status"
-                              >
-                                <div className={styles.leaveApprovalButtonDiv}>
-                                  <div>
-                                    {leave.Status === 'Pending' ? (
-                                      <button
-                                        onClick={() =>
-                                          handleApproval(leave.leaveID)
-                                        }
+                                  return (
+                                    <th
+                                      key={option.value}
+                                      className={styles.leaveDetailsTableHead}
+                                      onClick={() => {
+                                        handleSort(option.value);
+                                        setSortBy(option.value);
+                                      }}
+                                    >
+                                      <p
                                         className={
-                                          styles.leaveApprovalViewButton
+                                          styles.leaveDetailsTableHeadSection
                                         }
                                       >
-                                        Action
-                                      </button>
-                                    ) : (
-                                      leave.Status && (
-                                        <p>Leave {leave.Status}</p>
-                                      )
-                                    )}
-                                  </div>
-                                  {/* <div>
-                                    <button
-                                      onClick={() =>
-                                        handleApproval(leave.leaveID)
-                                      }
-                                      className={styles.leaveRejectButton}
-                                    >
-                                      Reject
-                                    </button>
-                                  </div> */}
-                                </div>
-                              </td>
+                                        {option.name}
+                                        {shouldDisplayIcon &&
+                                          sortBy === option.value &&
+                                          sortOrder === 'asc' && (
+                                            <span>
+                                              <FaSortUp />
+                                            </span>
+                                          )}
+                                        {shouldDisplayIcon &&
+                                          sortBy === option.value &&
+                                          sortOrder === 'desc' && (
+                                            <span>
+                                              <FaSortDown />
+                                            </span>
+                                          )}
+                                      </p>
+                                    </th>
+                                  );
+                                })}
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                          </thead>
+                          <tbody className={styles.leaveDetailsTableBody}>
+                            {CurrentData.map((leave, index) => (
+                              <tr key={index}>
+                                {window.innerWidth > 590 && (
+                                  <td
+                                    className={styles.leaveDetailsDescription}
+                                    data-label="S.No"
+                                  >
+                                    {CurrentData.indexOf(leave) + 1}
+                                  </td>
+                                )}
+                                <td
+                                  className={`${styles.leaveDetailsDescription}`}
+                                  data-label="ID"
+                                >
+                                  {leave.ID}
+                                </td>
+                                <td
+                                  className={styles.leaveDetailsDescription}
+                                  data-label="Name"
+                                >
+                                  {leave.Name}
+                                </td>
+                                <td
+                                  className={styles.leaveDetailsDescription}
+                                  data-label="Leave"
+                                >
+                                  {leave.Leave}
+                                </td>
+                                <td
+                                  className={styles.leaveDetailsDescription}
+                                  data-label="Leave Type"
+                                >
+                                  {leave.LeaveType}
+                                </td>
+                                <td className={styles.leaveDetailsDescription}>
+                                  <div
+                                    className={`${styles.leaveApprovalButtonDiv} ${styles.leaveApprovalDate}`}
+                                  >
+                                    <p data-label="From Date">
+                                      {leave.FromDate}
+                                    </p>
+                                    <span>-</span>
+                                    <p data-label="To Date">{leave.ToDate}</p>
+                                  </div>
+                                </td>
+                                <td
+                                  className={styles.leaveDetailsDescription}
+                                  data-label="Days"
+                                >
+                                  {leave.Days}
+                                </td>
+                                <td
+                                  className={styles.leaveDetailsDescription}
+                                  data-label="Status"
+                                >
+                                  <span
+                                    className={`${
+                                      leave.Status === 'Pending'
+                                        ? `${styles.leaveStatusPending}`
+                                        : ''
+                                    } ${
+                                      leave.Status === 'Approved'
+                                        ? `${styles.leaveStatusApprove}`
+                                        : ''
+                                    } ${
+                                      leave.Status === 'Cancelled'
+                                        ? `${styles.leaveStatusCancel}`
+                                        : ''
+                                    } ${
+                                      leave.Status === 'Rejected'
+                                        ? `${styles.leaveStatusReject}`
+                                        : ''
+                                    }`}
+                                  >
+                                    <span
+                                      aria-hidden
+                                      className={styles.leaveStatusSpan}
+                                    >
+                                      {leave.Status}
+                                    </span>
+                                  </span>
+                                </td>
+                                <td
+                                  className={styles.leaveDetailsDescription}
+                                  data-label="Status"
+                                >
+                                  <div
+                                    className={styles.leaveApprovalButtonDiv}
+                                  >
+                                    <div>
+                                      {leave.Status === 'Pending' ? (
+                                        <button
+                                          onClick={() =>
+                                            handleApproval(leave.leaveID)
+                                          }
+                                          className={
+                                            styles.leaveApprovalViewButton
+                                          }
+                                        >
+                                          Action
+                                        </button>
+                                      ) : (
+                                        leave.Status && (
+                                          <p>Leave {leave.Status}</p>
+                                        )
+                                      )}
+                                    </div>
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                            {(CurrentData === undefined &&
+                              LeaveDetails !== undefined) ||
+                              (LeaveDetails.length !== 0 &&
+                                CurrentData.length === 0 && (
+                                  <tr>
+                                    <td
+                                      className={styles.LeaveDetailsNoRecord}
+                                      colSpan={9}
+                                    >
+                                      <p
+                                        style={{
+                                          textAlign: 'center',
+                                          fontWeight: 400,
+                                        }}
+                                      >
+                                        No records found
+                                      </p>
+                                    </td>
+                                  </tr>
+                                ))}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
+                    {filteredEmployees === undefined ||
+                      (filteredEmployees.length > 0 && (
+                        <div>
+                          <Pagination
+                            totalData={filteredEmployees.length}
+                            dataPerPage={dataPerPage}
+                            setCurrentPage={setCurrentPage}
+                            currentPage={currentPage}
+                          />
+                        </div>
+                      ))}
                   </div>
                 </div>
               </div>
+              {LeaveDetails === undefined ||
+                (LeaveDetails.length === 0 && (
+                  <div className={styles.LoaderDivision}>
+                    <RiLoader4Line className={styles.loader} />
+                  </div>
+                ))}
             </div>
-            {filteredEmployees === undefined ||
-              (filteredEmployees.length > 0 && (
-                <div>
-                  <Pagination
-                    totalData={filteredEmployees.length}
-                    dataPerPage={dataPerPage}
-                    setCurrentPage={setCurrentPage}
-                    currentPage={currentPage}
-                  />
-                </div>
-              ))}
           </div>
         )}
       </div>
