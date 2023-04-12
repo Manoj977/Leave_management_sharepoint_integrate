@@ -262,7 +262,7 @@ export const LeaveDetails = () => {
                       className={styles.tableBodyRow}
                       data-label="Cancel Request"
                     >
-                      {leave.Status !== "Cancelled" ? (
+                      {leave.Status === "Pending" ? (
                         <button
                           style={{
                             margin: "0px 2rem",
@@ -283,7 +283,7 @@ export const LeaveDetails = () => {
                             paddingBottom: "0.5rem",
                           }}
                         >
-                          Leave Cancelled
+                          Leave {leave.Status}
                         </p>
                       )}
                     </td>
