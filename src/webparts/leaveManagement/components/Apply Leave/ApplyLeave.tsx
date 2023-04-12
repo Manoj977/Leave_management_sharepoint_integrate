@@ -18,11 +18,13 @@ type employeeData = {
   email: string;
   leaveID: number;
 };
+type empData = { FormDate: Date; ToDate: Date };
 export const ApplyLeave = () => {
   const [employeeData, setEmployeeData] = useState<employeeData[]>([]);
   const { availableLeaves } = React.useContext(MyContext);
 
   const navigate = useNavigate();
+
   useEffect(() => {
     fetch(
       "https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/lists/GetByTitle('Employee%20Master')/items"
@@ -38,7 +40,6 @@ export const ApplyLeave = () => {
             id: entry.content["m:properties"]["d:Employee_x0020_ID"]._text,
             name: entry.content["m:properties"]["d:Display_x0020_Name"]._text,
             email: entry.content["m:properties"]["d:Email"]._text,
-            leaveID: entry.content["m:properties"]["d:Id"]._text,
           })
         );
 
@@ -61,12 +62,21 @@ export const ApplyLeave = () => {
   const [, setFromDateError] = useState("");
   const [toDate, setToDate] = useState("");
   const [toDateError, setToDateError] = useState("");
+  const [dateSameError, setDateSameError] = useState("");
+  // const [todateSameError, setTodateSameError] = useState("");
+  const [data, setdata] = useState(false);
+
   const [userEmail, setUserEmail] = useState("");
+  // const [leaveDatas] = useState("");
+  const [employeeData1, setEmployeeData1] = useState<empData[]>([]);
+  // const [fromData2, setFromData2] = useState<empData[]>([]);
 
   let userName = "";
   let ID = "";
   let leaveCount = 0;
+
   console.log("leaveID");
+
   void sp.web.currentUser.get().then((user) => {
     setUserEmail(user.Email);
   });
@@ -79,7 +89,122 @@ export const ApplyLeave = () => {
   console.log(userName, leaveCount);
   console.log("ID", ID);
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  console.log(userName, leaveCount);
+  console.log("ID", ID);
+  useEffect(() => {
+    const url = `https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/web/lists/getbytitle('Leave%20Management')/items?$filter=Title%20eq%20%27${ID}%27`;
+    console.log(url);
+    fetch(url)
+      .then((res) => res.text())
+      .then((data) => {
+        const jsonData = convert.xml2json(data, { compact: true, spaces: 4 });
+        const parsedData = JSON.parse(jsonData);
+        console.log(parsedData);
+
+        const entries = Array.isArray(parsedData.feed.entry)
+          ? parsedData.feed.entry
+          : [parsedData.feed.entry];
+        const empData: empData[] = entries.map((entry: any) => ({
+          FormDate: entry.content["m:properties"]["d:FormDate"]._text,
+          ToDate: entry.content["m:properties"]["d:ToDate"]._text,
+          Count: entry.content["m:properties"]["d:count"]._text,
+          LeaveId: entry.content["m:properties"]["d:Id"]._text,
+        }));
+        setEmployeeData1(empData);
+      })
+      .catch((err) => console.log(err));
+  }, [ID]);
+
+  console.log(employeeData1);
+
+  // let fromDate1 = employeeData1.map((e) => {
+  //   const timezoneDate = new Date(e.FormDate); // Example timezone date
+  //   const normalDate = timezoneDate.toLocaleDateString(); // Convert to normal date
+  //   const data2 = new Date(normalDate).toLocaleDateString("fr-CA");
+  //   return data2;
+  // });
+  // console.log(fromDate1);
+
+  // const filteredFromDate: any = fromDate1.filter(
+  //   (detail) => detail === fromDate
+  // );
+  // console.log(filteredFromDate);
+
+  // // toDate
+  // let toDate1 = employeeData1.map((e) => {
+  //   const timezoneDate = new Date(e.ToDate); // Example timezone date
+  //   const normalDate = timezoneDate.toLocaleDateString(); // Convert to normal date
+  //   const data2 = new Date(normalDate).toLocaleDateString("fr-CA");
+  //   return data2;
+  // });
+
+  // console.log(toDate1);
+  // const filteredToDate = toDate1.filter((detail) => detail === toDate);
+  // console.log(filteredToDate);
+
+  // const mergeData = [...fromDate1, ...toDate1];
+  // console.log(mergeData);
+  // const filteredDate = mergeData.map((detail) => detail === fromDate || toDate);
+  // console.log(filteredDate);
+  function isLeaveAlreadyApplied(
+    employeeData1: any,
+    fromDate: any,
+    toDate: any
+  ) {
+    const overlappingRecords = employeeData1.filter((record: any) => {
+      const recordStart = new Date(record.FormDate);
+      const recordEnd = new Date(record.ToDate);
+      const requestedStart = new Date(fromDate);
+      const requestedEnd = new Date(toDate);
+      return (
+        (requestedStart >= recordStart && requestedStart <= recordEnd) ||
+        (requestedEnd >= recordStart && requestedEnd <= recordEnd) ||
+        (requestedStart <= recordStart && requestedEnd >= recordEnd)
+      );
+    });
+    if (overlappingRecords.length > 0) {
+      return true;
+    }
+    console.log(overlappingRecords);
+    const previousRecords = employeeData1.filter((record: any) => {
+      const recordStart = new Date(record.FormDate);
+      const recordEnd = new Date(record.ToDate);
+      const requestedStart = new Date(fromDate);
+      const requestedEnd = new Date(toDate);
+      return recordEnd < requestedStart || recordStart > requestedEnd;
+    });
+    previousRecords.length > 0;
+  }
+  async function handleSubmit() {
+    if (toDate) {
+      if (isLeaveAlreadyApplied(employeeData1, fromDate, toDate)) {
+        setDateSameError("Leave cannot be applied. Overlapping records found.");
+        setTimeout(() => {
+          setDateSameError("");
+        }, 3500);
+      } else {
+        setdata(true);
+        setDateSameError("");
+      }
+    }
+    // Applied Same Date error
+    // if (filteredFromDate.length !== 0) {
+    //   setDateSameError("Your entered from date is alredy applied");
+    //   setTimeout(() => {
+    //     setDateSameError("");
+    //   }, 3500);
+    // } else {
+    //   setTodateSameError("");
+    // }
+    // // Applied Same Date error
+    // if (filteredToDate.length !== 0) {
+    //   setTodateSameError("Your entered to date is alredy applied");
+    //   setTimeout(() => {
+    //     setTodateSameError("");
+    //   }, 3500);
+    // } else {
+    //   setTodateSameError("");
+    // }
     // Validate the leave type
     if (!leave || leave === "Select Leave") {
       setLeaveError("Please select a leave");
@@ -151,13 +276,8 @@ export const ApplyLeave = () => {
     } else {
       setLeaveTypeError("");
     }
-    if (
-      leave &&
-      fromDate &&
-      toDate &&
-      new Date(toDate) > new Date(fromDate) &&
-      leaveType
-    ) {
+
+    if (leave && fromDate && toDate && leaveType && data && reason) {
       // Send the REST API request to add the item to the list
       // Define the data for the new item
       const itemData = {
@@ -196,19 +316,18 @@ export const ApplyLeave = () => {
         });
       navigate("/Leave Details");
       window.location.reload();
+      setLeave("");
+      setLeaveType("");
+      setReason("");
+      setLeaveType("Full Day");
+      setFromDate(new Date().toISOString().substr(0, 10));
+      setToDate("");
     }
-
-    setLeave("");
-    setLeaveType("");
-    setReason("");
-    setLeaveType("Full Day");
-    setFromDate(new Date().toISOString().substr(0, 10));
-    setToDate("");
   }
 
   return (
     <div className={styles.ApplyLeave}>
-      <form onSubmit={handleSubmit} className={styles.ApplyLeave_form}>
+      <form className={styles.ApplyLeave_form}>
         <div className={styles.ApplyLeave_form_heading}>
           <p className={styles.ApplyLeave_form_heading_name}>Apply Leave</p>
         </div>
@@ -223,7 +342,9 @@ export const ApplyLeave = () => {
               onChange={(event) => {
                 setLeave(event.target.value);
               }}
-              className={styles.ApplyLeave_form_input}
+              className={`${styles.ApplyLeave_form_input} ${
+                leaveError !== "" ? `${styles.errorBorder}` : ""
+              }`}
             >
               <option defaultValue="selected">Select Leave </option>
               <option value="Annual Leave"> Leave</option>
@@ -260,15 +381,14 @@ export const ApplyLeave = () => {
               type="date"
               id="from-date"
               value={fromDate}
-              className={styles.ApplyLeave_form_input}
+              className={`${styles.ApplyLeave_form_input} ${
+                dateSameError !== "" ? `${styles.errorBorder}` : ""
+              }`}
               onChange={(event) => setFromDate(event.target.value)}
             />
           </div>
-          {/* <div className={formDivError}>
-              {fromDateError && (
-                <p className={formError}>{fromDateError}</p>
-              )}
-            </div> */}
+
+          <div className={""}></div>
           <div className={styles.formAlign}>
             <label htmlFor="to-date" className={styles.ApplyLeave_form_label}>
               To Date
@@ -277,13 +397,20 @@ export const ApplyLeave = () => {
               type="date"
               id="to-date"
               value={toDate}
-              className={styles.ApplyLeave_form_input}
+              className={`${styles.ApplyLeave_form_input} ${
+                dateSameError !== "" ? `${styles.errorBorder}` : ""
+              } ${toDateError !== "" ? `${styles.errorBorder}` : ""}`}
               onChange={(event) => setToDate(event.target.value)}
             />
           </div>
           <div className={""}>
             {toDateError && <p className={styles.error}> {toDateError}</p>}
           </div>
+
+          <div className={dateSameError}>
+            {dateSameError && <p className={styles.error}>{dateSameError}</p>}
+          </div>
+          <div className={""}></div>
           <div className={styles.formAlign}>
             <label htmlFor="from-date" className={styles.ApplyLeave_form_label}>
               Leave
@@ -292,7 +419,9 @@ export const ApplyLeave = () => {
               <input
                 type="text"
                 value="FullDay"
-                className={styles.ApplyLeave_form_input}
+                className={`${styles.ApplyLeave_form_input} ${
+                  leaveTypeError !== "" ? `${styles.errorBorder}` : ""
+                }`}
                 onChange={() => setLeaveType("FullDay")}
               />
             ) : (
@@ -321,7 +450,9 @@ export const ApplyLeave = () => {
               type="text"
               id="reason"
               placeholder="Enter the reason..."
-              className={styles.ApplyLeave_form_input}
+              className={`${styles.ApplyLeave_form_input} ${
+                reasonError !== "" ? `${styles.errorBorder}` : ""
+              }`}
               value={reason}
               onChange={(event) => setReason(event.target.value)}
             />
@@ -333,9 +464,11 @@ export const ApplyLeave = () => {
             )}
           </div>
         </div>
+
         <div className={styles.button}>
           <div className="px-2" style={{ padding: "0rem 0.5rem" }}>
             <button
+              onClick={() => handleSubmit()}
               className={`${styles.buttonSubmit} ${
                 leave.length === 0 ||
                 reason.length === 0 ||

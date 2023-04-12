@@ -18,6 +18,7 @@ interface CssExports {
   'button': string;
   'buttonSubmit': string;
   'error': string;
+  'errorBorder': string;
   'errorSection': string;
   'formAlign': string;
   'input': string;
