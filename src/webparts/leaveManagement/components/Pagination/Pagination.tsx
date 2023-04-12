@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 // eslint-disable-line @typescript-eslint/no-explicit-any
-import * as React from "react";
-import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
-import styles from "./Pagination.module.scss";
+import * as React from 'react';
+import { BsChevronLeft, BsChevronRight } from 'react-icons/bs';
+import styles from './Pagination.module.scss';
 
 const Pagination = ({
   totalData,
@@ -22,12 +22,14 @@ const Pagination = ({
   const handlePrevious = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
+      window.scrollTo(0, 0);
     }
   };
 
   const handleNext = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
+      window.scrollTo(0, 0);
     }
   };
 
@@ -36,7 +38,7 @@ const Pagination = ({
       <div className={styles.paginationAlign}>
         <div
           className={`${styles.paginationPageNum} ${
-            currentPage === 1 ? `${styles.paginationPageNumNotAllowed}` : ""
+            currentPage === 1 ? `${styles.paginationPageNumNotAllowed}` : ''
           }`}
           onClick={handlePrevious}
         >
@@ -60,7 +62,7 @@ const Pagination = ({
           {pages.map((page) => {
             const isActive = currentPage === page;
             const buttonClass = `${styles.paginationButtonClass} ${
-              isActive ? `${styles.paginationButtonActive}` : ""
+              isActive ? `${styles.paginationButtonActive}` : ''
             }`;
 
             return (
@@ -78,7 +80,7 @@ const Pagination = ({
           className={`${styles.paginationNextDiv} ${
             currentPage === totalPages
               ? `${styles.paginationPageNumNotAllowed}`
-              : ""
+              : ''
           }`}
           onClick={handleNext}
         >

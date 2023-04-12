@@ -7,6 +7,8 @@
 interface CssExports {
   'CancelReasonTextarea': string;
   'CloseButton': string;
+  'LeaveDetailsNoRecord': string;
+  'LoaderDivision': string;
   'applyLeaveButton': string;
   'applyLeaveButtonDiv': string;
   'button': string;
@@ -23,12 +25,15 @@ interface CssExports {
   'leaveDate': string;
   'leaveDateDiv': string;
   'leaveDetail': string;
+  'leaveDetailsTableHeadSection': string;
   'leaveStatusApprove': string;
   'leaveStatusCancel': string;
   'leaveStatusPeanding': string;
   'leaveStatusReject': string;
   'leaveStatusSpan': string;
   'leaveTable': string;
+  'loader': string;
+  'spin': string;
   'tableBody': string;
   'tableBodyRow': string;
   'tableDescription': string;

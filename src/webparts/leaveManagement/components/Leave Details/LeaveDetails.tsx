@@ -11,6 +11,7 @@ import { MyContext } from '../../context/contextProvider';
 import { Link } from 'react-router-dom';
 import Pagination from '../Pagination/Pagination';
 import { MdOutlineCancel } from 'react-icons/md';
+import { RiLoader4Line } from 'react-icons/ri';
 type LeaveDetail = {
   ID: string;
   Name: string;
@@ -24,12 +25,28 @@ type LeaveDetail = {
   Status: string;
   leaveId: number;
 };
+type SortOption = {
+  name: string;
+  value: string;
+};
+const sortOptions: SortOption[] = [
+  { name: 'S.No', value: 'S.No' },
+  { name: 'ID', value: 'ID' },
+  { name: 'Leave', value: 'Leave' },
+  { name: 'Leave Type', value: 'Leave Type' },
+  { name: 'From Date', value: 'From Date' },
+  { name: 'To Date', value: 'To Date' },
+  { name: 'Reason', value: 'Reason' },
+  { name: 'Days', value: 'Days' },
+  { name: 'Status', value: 'Status' },
+  { name: 'Action', value: 'Action' },
+];
 export const LeaveDetails = () => {
   const { cancelReason, setCancelReason } = React.useContext(MyContext);
   const [leaveDetails, setLeaveDetails] = useState<LeaveDetail[]>([]);
   const [userEmail, setUserEmail] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [dataPerPage] = useState(2);
+  const [dataPerPage] = useState(15);
   const [leaveStatus, setLeaveStatus] = useState('');
   const [reason, setReason] = useState('');
   // const [reasonError, setReasonError] = useState('');
@@ -41,6 +58,7 @@ export const LeaveDetails = () => {
       setUserEmail(user.Email);
     });
   }, []);
+
   useEffect(() => {
     fetch(
       "https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/web/lists/getbytitle('Leave%20Management')/items"
@@ -155,28 +173,24 @@ export const LeaveDetails = () => {
           <div className={styles.tableDetail}>
             <table className={styles.leaveTable}>
               <thead>
-                <tr>
-                  <th className={styles.tableHead}>S.No</th>
-                  <th className={styles.tableHead}>ID</th>
-                  <th className={styles.tableHead}>Leave</th>
-                  <th className={styles.tableHead}>LeaveType</th>{' '}
-                  <th className={styles.tableHead}>From Date</th>
-                  <th className={styles.tableHead}>To Date</th>
-                  <th className={styles.tableHead}>Reason</th>
-                  <th className={styles.tableHead}>Days</th>
-                  <th className={styles.tableHead}>Status</th>
-                  <th className={styles.tableHead}>Action</th>
-                </tr>
+                {window.innerWidth > 664 &&
+                  sortOptions.map((heading) => {
+                    return (
+                      <th key={heading.value} className={styles.tableHead}>
+                        <p className={styles.leaveDetailsTableHeadSection}>
+                          {heading.name}
+                        </p>
+                      </th>
+                    );
+                  })}
               </thead>
               <tbody className={styles.tableBody}>
                 {CurrentData.map((leave: any, index: any) => (
                   <tr key={index} className={styles.tableBodyRow}>
-                    {window.innerWidth > 590 ? (
+                    {window.innerWidth > 590 && (
                       <td className={styles.tableBodyRow} data-label="S.No">
                         {index + 1}
                       </td>
-                    ) : (
-                      ''
                     )}
                     <td className={styles.tableBodyRow} data-label="ID">
                       {leave.ID}
@@ -185,15 +199,13 @@ export const LeaveDetails = () => {
                     <td className={styles.tableBodyRow} data-label="Leave">
                       {leave.Leave}
                     </td>
-                    {window.innerWidth > 590 ? (
+                    {window.innerWidth > 590 && (
                       <td
                         className={styles.tableBodyRow}
                         data-label="LeaveType"
                       >
                         {leave.LeaveType}
                       </td>
-                    ) : (
-                      ''
                     )}
                     <td className={styles.tableBodyRow} data-label="Start Date">
                       <div
@@ -213,16 +225,9 @@ export const LeaveDetails = () => {
                     <td className={styles.tableBodyRow} data-label="Reason">
                       {leave.Reason}
                     </td>
-                    {window.innerWidth > 590 ? (
-                      <td
-                        className={styles.tableBodyRow}
-                        data-label="No of Days Leave"
-                      >
-                        {leave.NoofDaysLeave}
-                      </td>
-                    ) : (
-                      ''
-                    )}
+                    <td className={styles.tableBodyRow} data-label="Days">
+                      {leave.NoofDaysLeave}
+                    </td>
                     <td className={styles.tableBodyRow} data-label="Status">
                       <span
                         className={`${
@@ -243,11 +248,9 @@ export const LeaveDetails = () => {
                             : ''
                         }`}
                       >
-                        {' '}
                         <span aria-hidden className={styles.leaveStatusSpan}>
-                          {' '}
-                          {leave.Status}{' '}
-                        </span>{' '}
+                          {leave.Status}
+                        </span>
                       </span>
                     </td>
                     <td
@@ -281,30 +284,48 @@ export const LeaveDetails = () => {
                     </td>
                   </tr>
                 ))}
+                {(CurrentData === undefined && LeaveDetails !== undefined) ||
+                  (LeaveDetails.length !== 0 && CurrentData.length === 0 && (
+                    <tr>
+                      <td className={styles.LeaveDetailsNoRecord} colSpan={9}>
+                        <p
+                          style={{
+                            textAlign: 'center',
+                            fontWeight: 400,
+                          }}
+                        >
+                          No records found
+                        </p>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
-            {filteredLeaveDetails === undefined ||
-              (filteredLeaveDetails.length > 0 && (
-                <div>
-                  {' '}
-                  <Pagination
-                    totalData={filteredLeaveDetails.length}
-                    dataPerPage={dataPerPage}
-                    setCurrentPage={setCurrentPage}
-                    currentPage={currentPage}
-                  />{' '}
-                </div>
-              ))}
           </div>
+          {filteredLeaveDetails === undefined ||
+            (filteredLeaveDetails.length > 0 && (
+              <div>
+                <Pagination
+                  totalData={filteredLeaveDetails.length}
+                  dataPerPage={dataPerPage}
+                  setCurrentPage={setCurrentPage}
+                  currentPage={currentPage}
+                />
+              </div>
+            ))}
+          {(CurrentData === undefined && leaveDetails !== undefined) ||
+            (leaveDetails.length !== 0 && CurrentData.length === 0 && (
+              <div className={styles.LoaderDivision}>
+                <RiLoader4Line className={styles.loader} />
+              </div>
+            ))}
         </div>
       )}
 
       <div className={styles.applyLeaveButtonDiv}>
-        {' '}
         <Link to={'/Apply Leave'}>
-          {' '}
-          <button className={styles.applyLeaveButton}>Apply Leave</button>{' '}
-        </Link>{' '}
+          <button className={styles.applyLeaveButton}>Apply Leave</button>
+        </Link>
       </div>
       {cancelReason && (
         <div className={styles.cancelReason}>

@@ -5,13 +5,17 @@
 /* eslint-disable */
 
 interface CssExports {
+  'LeaveDetailsNoRecord': string;
+  'LoaderDivision': string;
+  'highlight': string;
   'leaveApprovalButtonDiv': string;
   'leaveApprovalDate': string;
   'leaveApprovalViewButton': string;
+  'leaveDetail': string;
   'leaveDetailTableHeadDiv': string;
   'leaveDetailTableHeadIcon': string;
   'leaveDetailTableHeadPara': string;
-  'leaveDetailsDescrition': string;
+  'leaveDetailsDescription': string;
   'leaveDetailsDiv1': string;
   'leaveDetailsDiv2': string;
   'leaveDetailsDiv3': string;
@@ -21,6 +25,7 @@ interface CssExports {
   'leaveDetailsTable': string;
   'leaveDetailsTableBody': string;
   'leaveDetailsTableHead': string;
+  'leaveDetailsTableHeadSection': string;
   'leaveDetailsTableRow': string;
   'leaveRejectButton': string;
   'leaveStatusApprove': string;
@@ -42,6 +47,9 @@ interface CssExports {
   'leaveapprovalSearchButton': string;
   'leaveapprovalSearchIcon': string;
   'leaveapprovalSearchSpan': string;
+  'loader': string;
+  'searchLabel': string;
+  'spin': string;
 }
 const cssExports: CssExports;
 export default cssExports;
