@@ -19,6 +19,7 @@ type employeeData = {
   email: string;
   leaveID: number;
 };
+type empData = { FormDate: Date; ToDate: Date };
 type leaveType = {
   leaveType: string;
 };
@@ -340,14 +341,13 @@ export const ApplyLeave = () => {
         });
       navigate("/Leave Details");
       window.location.reload();
+      setLeave("");
+      setLeaveType("");
+      setReason("");
+      setLeaveType("Full Day");
+      setFromDate(new Date().toISOString().substr(0, 10));
+      setToDate("");
     }
-
-    setLeave("");
-    setLeaveType("");
-    setReason("");
-    setLeaveType("Full Day");
-    setFromDate(new Date().toISOString().substr(0, 10));
-    setToDate("");
   }
 
   return (
@@ -496,9 +496,7 @@ export const ApplyLeave = () => {
         <div className={styles.button}>
           <div className="px-2" style={{ padding: "0rem 0.5rem" }}>
             <button
-              onClick={() => {
-                handleSubmit();
-              }}
+              onClick={() => handleSubmit()}
               className={`${styles.buttonSubmit} ${
                 leave.length === 0 ||
                 reason.length === 0 ||
