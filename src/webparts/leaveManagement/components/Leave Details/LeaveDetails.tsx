@@ -11,7 +11,7 @@ import { MyContext } from "../../context/contextProvider";
 import { Link } from "react-router-dom";
 import Pagination from "../Pagination/Pagination";
 import { MdOutlineCancel } from "react-icons/md";
-import { RiLoader4Line } from "react-icons/ri";
+// import { RiLoader4Line } from "react-icons/ri";
 type LeaveDetail = {
   ID: string;
   Name: string;
@@ -82,6 +82,7 @@ export const LeaveDetails = () => {
           ).toLocaleDateString(),
           Reason: entry.content["m:properties"]["d:Reason"]._text,
           Status: entry.content["m:properties"]["d:Status"]._text,
+          Remark: entry.content["m:properties"]["d:Remark"]._text,
           NoofDaysLeave: entry.content["m:properties"]["d:count"]._text,
           leaveId: entry.content["m:properties"]["d:ID"]._text,
         }));
@@ -146,28 +147,21 @@ export const LeaveDetails = () => {
     >
       {filteredLeaveDetails && (
         <div className={styles.leaveDetail}>
-          {" "}
           <div className={styles.tableDetail}>
-            {" "}
             <table className={styles.leaveTable}>
-              {" "}
               <thead>
-                {" "}
                 {window.innerWidth > 664 &&
                   sortOptions.map((heading) => {
                     return (
                       <th key={heading.value} className={styles.tableHead}>
-                        {" "}
                         <p className={styles.leaveDetailsTableHeadSection}>
-                          {" "}
-                          {heading.name}{" "}
-                        </p>{" "}
+                          {heading.name}
+                        </p>
                       </th>
                     );
-                  })}{" "}
-              </thead>{" "}
+                  })}
+              </thead>
               <tbody className={styles.tableBody}>
-                {" "}
                 {CurrentData.map((leave: any, index: any) => (
                   <tr key={index} className={styles.tableBodyRow}>
                     <td className={styles.tableBodyRow} data-label="S.No">
@@ -183,16 +177,13 @@ export const LeaveDetails = () => {
                       {leave.LeaveType}
                     </td>
                     <td className={styles.tableBodyRow} data-label="Start Date">
-                      {" "}
                       <div
                         className={`${styles.leaveDateDiv} ${styles.leaveDate}`}
                       >
-                        {" "}
-                        <span>{leave.FromDate}</span>{" "}
-                      </div>{" "}
-                    </td>{" "}
+                        <span>{leave.FromDate}</span>
+                      </div>
+                    </td>
                     <td className={styles.tableBodyRow} data-label="End Date">
-                      {" "}
                       <div
                         className={`${styles.leaveDateDiv} ${styles.leaveDate}`}
                       >
@@ -200,15 +191,12 @@ export const LeaveDetails = () => {
                       </div>
                     </td>
                     <td className={styles.tableBodyRow} data-label="Reason">
-                      {" "}
-                      {leave.Reason}{" "}
-                    </td>{" "}
+                      {leave.Reason}
+                    </td>
                     <td className={styles.tableBodyRow} data-label="Days">
-                      {" "}
-                      {leave.NoofDaysLeave}{" "}
-                    </td>{" "}
+                      {leave.NoofDaysLeave}
+                    </td>
                     <td className={styles.tableBodyRow} data-label="Status">
-                      {" "}
                       <span
                         className={`${
                           leave.Status === "Pending"
@@ -228,35 +216,28 @@ export const LeaveDetails = () => {
                             : ""
                         }`}
                       >
-                        {" "}
                         <span aria-hidden className={styles.leaveStatusSpan}>
-                          {" "}
-                          {leave.Status}{" "}
-                        </span>{" "}
-                      </span>{" "}
-                    </td>{" "}
+                          {leave.Status}
+                        </span>
+                      </span>
+                    </td>
                     <td className={styles.tableBodyRow} data-label="Remark">
-                      {" "}
-                      {leave.Remark}{" "}
-                    </td>{" "}
+                      {leave.Remark}
+                    </td>
                     <td
                       className={styles.tableBodyRow}
                       data-label="Cancel Request"
                     >
                       {leave.Status === "Pending" ? (
-                        (CurrentData === undefined &&
-                          leaveDetails !== undefined) ||
-                        (leaveDetails.length !== 0 &&
-                          CurrentData.length === 0 && (
-                            <button
-                              onClick={() =>
-                                handleCancel(leave.leaveId, "Cancelled")
-                              }
-                              className={styles.leaveCancelButton}
-                            >
-                              Cancel
-                            </button>
-                          ))
+                        <button
+                          style={{ margin: "0px 2rem" }}
+                          onClick={() =>
+                            handleCancel(leave.leaveId, "Cancelled")
+                          }
+                          className={styles.leaveCancelButton}
+                        >
+                          Cancel
+                        </button>
                       ) : (
                         <p
                           style={{
@@ -266,11 +247,10 @@ export const LeaveDetails = () => {
                             paddingBottom: "0.5rem",
                           }}
                         >
-                          {" "}
-                          Leave {leave.Status}{" "}
+                          Leave {leave.Status}
                         </p>
-                      )}{" "}
-                    </td>{" "}
+                      )}
+                    </td>
                   </tr>
                 ))}
                 {CurrentData === undefined ||
@@ -287,47 +267,40 @@ export const LeaveDetails = () => {
                         </p>
                       </td>
                     </tr>
-                  ))}{" "}
-              </tbody>{" "}
-            </table>{" "}
-          </div>{" "}
+                  ))}
+              </tbody>
+            </table>
+          </div>
           {filteredLeaveDetails === undefined ||
             (filteredLeaveDetails.length > 0 && (
               <div>
-                {" "}
                 <Pagination
                   totalData={filteredLeaveDetails.length}
                   dataPerPage={dataPerPage}
                   setCurrentPage={setCurrentPage}
                   currentPage={currentPage}
-                />{" "}
+                />
               </div>
             ))}
           {/* {(CurrentData === undefined && leaveDetails !== undefined) ||
             (leaveDetails.length !== 0 && CurrentData.length === 0 && (
               <div className={styles.LoaderDivision}>
-                {" "}
-                <RiLoader4Line className={styles.loader} />{" "}
+                
+                <RiLoader4Line className={styles.loader} />
               </div>
             ))} */}
         </div>
       )}
       <div className={styles.applyLeaveButtonDiv}>
-        {" "}
         <Link to={"/Apply Leave"}>
-          {" "}
-          <button className={styles.applyLeaveButton}>Apply Leave</button>{" "}
-        </Link>{" "}
-      </div>{" "}
+          <button className={styles.applyLeaveButton}>Apply Leave</button>
+        </Link>
+      </div>
       {cancelReason && (
         <div className={styles.cancelReason}>
-          {" "}
           <div className={styles.cancelReasonDiv1}>
-            {" "}
             <div className={styles.cancelReasonDiv2}>
-              {" "}
               <header className={styles.header}>
-                {" "}
                 <div className={styles.headerDiv}>
                   Enter the reason for cancellation (Optional)
                 </div>
@@ -342,39 +315,33 @@ export const LeaveDetails = () => {
                 }}
                 className={styles.CloseButton}
               >
-                {" "}
-                <MdOutlineCancel />{" "}
-              </button>{" "}
-            </div>{" "}
+                <MdOutlineCancel />
+              </button>
+            </div>
             <div className={styles.inputContainer}>
-              {" "}
               <form
                 className={styles.cancelReasonTextarea}
                 onSubmit={handleSubmit}
               >
-                {" "}
                 <div className="">
-                  {" "}
                   <textarea
                     placeholder="Enter the reason..."
                     onChange={(event) => setReason(event.target.value)}
                     className={styles.CancelReasonTextarea}
                     value={reason}
-                  />{" "}
-                </div>{" "}
-                {/* {reasonError && <p className={styles.error}> {reasonError}</p>} */}{" "}
+                  />
+                </div>
+                {/* {reasonError && <p className={styles.error}> {reasonError}</p>} */}
                 <div className={styles.button}>
-                  {" "}
                   <button className={styles.buttonSubmit} type="submit">
-                    {" "}
-                    Submit{" "}
-                  </button>{" "}
-                </div>{" "}
-              </form>{" "}
-            </div>{" "}
-          </div>{" "}
+                    Submit
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
-      )}{" "}
+      )}
     </div>
   );
 };
