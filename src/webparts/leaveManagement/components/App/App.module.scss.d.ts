@@ -5,11 +5,14 @@
 /* eslint-disable */
 
 interface CssExports {
+  'components': string;
+  'f_a_8474018e': string;
+  'k_c_8474018e': string;
   'mainSection': string;
-  'n_b_8474018e': string;
   'navbar': string;
   'navbar_section': string;
   'navbar_section_1': string;
+  'r_c_8474018e': string;
   'section': string;
   'sideBar': string;
   'sideBar1': string;

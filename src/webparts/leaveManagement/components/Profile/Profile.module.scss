@@ -1,7 +1,4 @@
 // @import '~@fluentui/react/dist/sass/References.scss';
-.profileSection {
-  z-index: 10;
-}
 
 .profilesection_layout {
   display: flex;
@@ -60,6 +57,7 @@
   margin-top: 1rem;
 }
 .nameBoard_layout_title {
+  margin: 0;
   display: flex;
   flex-direction: column;
 }
@@ -71,7 +69,7 @@
   text-transform: capitalize;
   font-weight: 600;
   margin: 0%;
-  z-index: 100;
+  z-index: 30;
 }
 //md:mt-0 mt-1 text-xs font-medium md:text-lg md:font-semibold
 .icon {
@@ -145,12 +143,12 @@
 }
 
 @media (min-width: 768px) {
+  .nameBoard_layout_title {
+    margin-top: -1rem;
+  }
   .icon_title1 {
     padding-top: 0.25rem;
     // margin-top: 1rem;
-  }
-  .profileSection {
-    margin-top: 2.5rem;
   }
 
   .icon_title {

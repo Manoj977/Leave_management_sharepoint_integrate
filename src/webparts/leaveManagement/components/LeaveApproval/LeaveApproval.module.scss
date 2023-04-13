@@ -50,7 +50,7 @@ $label-font-size: 1.3rem;
 
 .leaveapprovalDropdown {
   display: flex;
-  z-index: 10;
+  // z-index: 10;
   background-color: #f3f4f6;
   color: #111827;
   font-size: 0.875rem;
@@ -87,7 +87,7 @@ $label-font-size: 1.3rem;
 
 .leaveapprovalDropdownButton {
   position: absolute;
-  z-index: 10;
+  // z-index: 10;
   background-color: #ffffff;
   width: 11rem;
   border-radius: 0.5rem;
@@ -166,7 +166,7 @@ $label-font-size: 1.3rem;
   border-top-right-radius: 0.5rem;
   border-bottom-right-radius: 0.5rem;
   border-width: 1px;
-  z-index: 30;
+  // z-index: 30;
   margin: -1.75rem;
   padding: 0.45rem;
   background-color: rgb(249 115 22);
@@ -197,8 +197,8 @@ $label-font-size: 1.3rem;
   position: relative;
   top: 5vh;
   margin-bottom: 5rem;
-  margin-left: 1rem;
-  margin-right: 2rem;
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
   border-radius: 0.25rem;
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
@@ -515,6 +515,7 @@ $label-font-size: 1.3rem;
   .leaveDetailsDiv6 td::before,
   .leaveDetailsDiv6 td div p:before {
     position: absolute;
+
     top: 6px;
     left: 6px;
     width: 45%;

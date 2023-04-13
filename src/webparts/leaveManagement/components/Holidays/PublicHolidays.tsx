@@ -36,7 +36,7 @@ export const PublicHolidays = () => {
   //Get Current Page
 
   return (
-    <div>
+    <>
       {holidaysData && (
         <>
           <div className={styles.publicHolidaysTitle}>PublicHolidays</div>
@@ -104,6 +104,6 @@ export const PublicHolidays = () => {
           </div>
         </>
       )}
-    </div>
+    </>
   );
 };

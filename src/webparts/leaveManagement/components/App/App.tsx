@@ -15,7 +15,6 @@ import { ApplyLeave } from '../Apply Leave/ApplyLeave';
 import { LeaveDetails } from '../Leave Details/LeaveDetails';
 import convert from 'xml-js';
 import { PublicHolidays } from '../Holidays/PublicHolidays';
-import Footer from '../Footer/Footer';
 import { sp } from '@pnp/sp/presets/all';
 // import LeaveCalculation from '../LeaveCalculation/LeaveCalculation';
 type Admin = {
@@ -81,20 +80,12 @@ const App: React.FC = () => {
   void sp.web.currentUser.get().then((user) => {
     setUserName(user.Title);
   });
-  console.log(Admin);
   Admin.forEach((admin) => {
     employeeData.find((e) => {
-      console.log(e.v, admin.ID, admin.name, userName);
       if (e.v === admin.ID && admin.name === userName)
         EmployeeRole = admin.Role;
     });
-    console.log(EmployeeRole);
-    // if (LoggedUserData.v === admin.ID) {
-    //   LoggedUserData.Role = admin.Role;
-    //   Role = LoggedUserData.Role;
-    // } else {
-    //   Role = 'User';
-    // }
+  
   });
 
   return (
@@ -117,17 +108,18 @@ const App: React.FC = () => {
               <Navbar />
               {/* <LeaveCalculation /> */}
             </div>
-            <Routes>
-              <Route path="/" element={<Profile />} />
-              <Route path="/Profile" element={<Profile />} />
-              {EmployeeRole === 'Admin' && (
-                <Route path="/Leave Approval" element={<LeaveApproval />} />
-              )}
-              <Route path="/Apply Leave" element={<ApplyLeave />} />
-              <Route path="/Leave Details" element={<LeaveDetails />} />
-              <Route path="/Public Holidays" element={<PublicHolidays />} />
-            </Routes>
-            <Footer />
+            <div className={styles.components}>
+              <Routes>
+                <Route path="/" element={<Profile />} />
+                <Route path="/Profile" element={<Profile />} />
+                {EmployeeRole === 'Admin' && (
+                  <Route path="/Leave Approval" element={<LeaveApproval />} />
+                )}
+                <Route path="/Apply Leave" element={<ApplyLeave />} />
+                <Route path="/Leave Details" element={<LeaveDetails />} />
+                <Route path="/Public Holidays" element={<PublicHolidays />} />
+              </Routes>
+            </div>
           </div>
         </div>
       </HashRouter>

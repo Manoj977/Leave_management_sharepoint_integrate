@@ -9,13 +9,11 @@ import { MdOutlineCancel } from 'react-icons/md';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Sidebar = ({ loggedUserRole }: any) => {
-
   // eslint-disable-next-line no-unused-vars
   const { activeMenu, links, currentColor, setSideBarActive, sidebarActive } =
     React.useContext(MyContext);
   const location =
     useLocation().pathname === '/' ? '/Profile' : useLocation().pathname;
-  console.log(location);
 
   const handleCloseSideBar = () => {
     setSideBarActive(!sidebarActive);
@@ -103,25 +101,12 @@ const Sidebar = ({ loggedUserRole }: any) => {
                       ))}
                   </div>
                 ))}
-
-                {/* <div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setThemeSettings(!themeSettings);
-                      setActiveMenu(false);
-                    }}
-                    // style={{ background: '#ff4500', borderRadius: '50%' }}
-                    className=" min-[900px]:hidden text-gray-400 dark:text-gray-400 m-3 mt-4 uppercase"
-                  >
-                    <span className="capitalize">Settings</span>
-                  </button>
-                </div> */}
               </div>
             </>
           </div>
         </div>
       )}
+
       {sidebarActive && (
         <div className={styles.sidebarScroll}>
           <div className={styles.sidebar}>
@@ -182,20 +167,6 @@ const Sidebar = ({ loggedUserRole }: any) => {
                     ))}
                   </div>
                 ))}
-
-                {/* <div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setThemeSettings(!themeSettings);
-                      setActiveMenu(false);
-                    }}
-                    // style={{ background: '#ff4500', borderRadius: '50%' }}
-                    className=" min-[900px]:hidden text-gray-400 dark:text-gray-400 m-3 mt-4 uppercase"
-                  >
-                    <span className="capitalize">Settings</span>
-                  </button>
-                </div> */}
               </div>
             </>
           </div>

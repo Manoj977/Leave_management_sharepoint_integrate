@@ -381,7 +381,7 @@ export const MyContextProvider = ({ children }: Props) => {
     };
   }, []);
   useEffect(() => {
-    if (screenSize <= 900) {
+    if (screenSize < 900) {
       setActiveMenu(false);
     } else {
       setActiveMenu(true);
@@ -399,7 +399,7 @@ export const MyContextProvider = ({ children }: Props) => {
 
   useEffect(() => {
     setScreenSize(window.innerWidth);
-    console.log(activeMenu);
+    console.log('activeMenu', activeMenu);
   }, [screenSize, setScreenSize, activeMenu]);
   const contextValue: MyContextType = {
     isSkeletonLoading,

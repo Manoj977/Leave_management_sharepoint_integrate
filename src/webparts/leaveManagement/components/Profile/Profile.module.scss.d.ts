@@ -26,7 +26,6 @@ interface CssExports {
   'nameBoard_layout': string;
   'nameBoard_layout_title': string;
   'nameBoard_layout_title_Name': string;
-  'profileSection': string;
   'profilesection_layout': string;
 }
 const cssExports: CssExports;

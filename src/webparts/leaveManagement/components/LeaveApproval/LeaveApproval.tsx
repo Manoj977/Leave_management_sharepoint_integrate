@@ -318,7 +318,7 @@ export const LeaveApproval: React.FC = () => {
                                 </td>
                                 <td
                                   className={styles.leaveDetailsDescription}
-                                  data-label="Status"
+                                  data-label="Action"
                                 >
                                   <div
                                     className={styles.leaveApprovalButtonDiv}
