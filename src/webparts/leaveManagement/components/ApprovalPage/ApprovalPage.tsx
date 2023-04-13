@@ -1,14 +1,14 @@
 /* eslint-disable no-void */ /* eslint-disable prefer-const */ /* eslint-disable @typescript-eslint/no-explicit-any */ /* eslint-disable @typescript-eslint/no-unused-vars */ /* eslint-disable @typescript-eslint/no-floating-promises */ /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import React, { useEffect, useState } from "react";
-import convert from "xml-js";
-import styles from "./Approvalpage.module.scss";
+import React, { useEffect, useState } from 'react';
+import convert from 'xml-js';
+import styles from './Approvalpage.module.scss';
 // import { sp } from "@pnp/sp/presets/all";
-import { Web } from "@pnp/sp/webs";
-import { IList } from "@pnp/sp/lists";
-import { useLocation, useNavigate } from "react-router-dom";
-import { MyContext } from "../../context/contextProvider";
+import { Web } from '@pnp/sp/webs';
+import { IList } from '@pnp/sp/lists';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { MyContext } from '../../context/contextProvider';
 
-import { MdOutlineCancel } from "react-icons/md";
+import { MdOutlineCancel } from 'react-icons/md';
 type LeaveDetail = {
   ID: string;
   Name: string;
@@ -44,19 +44,19 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
 }) => {
   const { action, setAction, setApproveLeave, approveLeave } =
     React.useContext(MyContext);
-  console.log("test", action);
-  console.log("ID", employeeId);
+  console.log('test', action);
+  console.log('ID', employeeId);
 
   const [leaveDetails, setLeaveDetails] = useState<LeaveDetail[]>([]);
   // const [contactNum, setContactNum] = useState(null);
   const [employeeDetail, setEmployeeDetail] = useState<EmployeeDetail[]>([]);
-  const [reason, setReason] = useState("");
-  const [reasonError, setReasonError] = useState("");
-  const [status, setStatus] = useState("");
+  const [reason, setReason] = useState('');
+  const [reasonError, setReasonError] = useState('');
+  const [status, setStatus] = useState('');
 
   const location = useLocation();
   const navigate = useNavigate();
-  const pathArray = location.pathname.split("/");
+  const pathArray = location.pathname.split('/');
   const LeaveId = pathArray[pathArray.length - 1];
   console.log(LeaveId);
 
@@ -76,23 +76,23 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
         console.log(entries);
 
         const leaveDetail: LeaveDetail[] = entries.map((entry: any) => ({
-          leaveId: entry.content["m:properties"]["d:Id"]._text,
-          ID: entry.content["m:properties"]["d:Title"]._text,
-          Name: entry.content["m:properties"]["d:Name"]._text,
-          Email: entry.content["m:properties"]["d:Email"]._text,
-          Leave: entry.content["m:properties"]["d:Leave"]._text,
-          LeaveType: entry.content["m:properties"]["d:LeaveType"]._text,
-          count: entry.content["m:properties"]["d:count"]._text,
+          leaveId: entry.content['m:properties']['d:Id']._text,
+          ID: entry.content['m:properties']['d:Title']._text,
+          Name: entry.content['m:properties']['d:Name']._text,
+          Email: entry.content['m:properties']['d:Email']._text,
+          Leave: entry.content['m:properties']['d:Leave']._text,
+          LeaveType: entry.content['m:properties']['d:LeaveType']._text,
+          count: entry.content['m:properties']['d:count']._text,
           FromDate: new Date(
-            entry.content["m:properties"]["d:FormDate"]._text
+            entry.content['m:properties']['d:FormDate']._text
           ).toLocaleDateString(),
           ToDate: new Date(
-            entry.content["m:properties"]["d:ToDate"]._text
+            entry.content['m:properties']['d:ToDate']._text
           ).toLocaleDateString(),
-          Reason: entry.content["m:properties"]["d:Reason"]._text,
-          NoofDaysLeave: entry.content["m:properties"]["d:count"]._text,
-          Status: entry.content["m:properties"]["d:Status"]._text,
-          Remark: entry.content["m:properties"]["d:Remark"]._text,
+          Reason: entry.content['m:properties']['d:Reason']._text,
+          NoofDaysLeave: entry.content['m:properties']['d:count']._text,
+          Status: entry.content['m:properties']['d:Status']._text,
+          Remark: entry.content['m:properties']['d:Remark']._text,
           // LeaveId: parseInt(entry.content["m:properties"]["d:ID"]._text),
         }));
         setApprove(leaveDetail[0].Status);
@@ -111,17 +111,17 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
           ? parsedData.feed.entry
           : [parsedData.feed.entry];
         const EmployeeDetail: EmployeeDetail[] = entries.map((entry: any) => ({
-          ID: entry.content["m:properties"]["d:Employee_x0020_ID"]._text,
+          ID: entry.content['m:properties']['d:Employee_x0020_ID']._text,
           phoneNumber:
-            entry.content["m:properties"]["d:Contact_x0020_Number"]._text,
+            entry.content['m:properties']['d:Contact_x0020_Number']._text,
         }));
         setEmployeeDetail(EmployeeDetail);
       });
   }, [LeaveId]);
-  let contactNumber = "";
+  let contactNumber = '';
   if (leaveDetails?.[0]?.ID) {
     employeeDetail.map((e) => {
-      e.ID === leaveDetails[0].ID ? (contactNumber = e.phoneNumber) : "";
+      e.ID === leaveDetails[0].ID ? (contactNumber = e.phoneNumber) : '';
     });
   }
   console.log(contactNumber);
@@ -134,25 +134,25 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
     remark: string
   ) => {
     try {
-      const web = Web("https://zlendoit.sharepoint.com/sites/ZlendoTools");
-      const list: IList = web.lists.getByTitle("Leave Management");
+      const web = Web('https://zlendoit.sharepoint.com/sites/ZlendoTools');
+      const list: IList = web.lists.getByTitle('Leave Management');
 
       const itemToUpdate = list.items.getById(id);
       await itemToUpdate.update({ Status: status });
       await itemToUpdate.update({ Remark: remark });
-      console.log("Leave status updated successfully!");
-      navigate("/Leave Approval");
+      console.log('Leave status updated successfully!');
+      navigate('/Leave Approval');
     } catch (error) {
-      console.log("Error updating leave status:", error);
+      console.log('Error updating leave status:', error);
     }
   };
   const handleApproval = (leaveId: any) => {
     setApproveLeave(true);
-    setStatus("Approved");
+    setStatus('Approved');
   };
   const handleReject = (leaveId: any) => {
     setApproveLeave(true);
-    setStatus("Rejected");
+    setStatus('Rejected');
   };
   const handleSubmitApproval = async (
     id: number,
@@ -160,12 +160,12 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
     remark: string
   ) => {
     if (!reason) {
-      setReasonError("Please enter the reason");
+      setReasonError('Please enter the reason');
       setTimeout(() => {
-        setReasonError("");
+        setReasonError('');
       }, 3500);
     } else {
-      setReasonError("");
+      setReasonError('');
     }
     console.log(id, status);
     if (reason) {
@@ -214,9 +214,9 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
                 type="button"
                 onClick={() => setAction(false)}
                 style={{
-                  color: "rgb(153,171,180)",
-                  borderRadius: "50%",
-                  border: "none",
+                  color: 'rgb(153,171,180)',
+                  borderRadius: '50%',
+                  border: 'none',
                 }}
                 className={styles.totalLeaveCloseButton}
               >
@@ -303,7 +303,7 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
                       </tr>
                     </thead>
                   </table>
-                  <div style={{ display: "flex", justifyContent: "center" }}>
+                  <div style={{ display: 'flex', justifyContent: 'center' }}>
                     <div className={styles.approveButtonDiv}>
                       <button
                         onClick={handleApproval}
@@ -327,13 +327,15 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
             </div>
           </div>
           {approveLeave &&
-            leaveDetails.map((leaveDetail) => (
-              <div className={styles.approvalLeave}>
+            leaveDetails.map((leaveDetail, index) => (
+              <div key={index} className={styles.approvalLeave}>
                 <div className={styles.approvalLeaveDiv1}>
                   <div className={styles.totalLeaveDiv2}>
                     <header className={styles.totalLeaveHeader}>
                       <div className={styles.totalLeaveHeaderDiv}>
-                        Enter the Approval Status
+                        Enter the Reason to{' '}
+                        {status === 'Approved' ? status.slice(0, -1) : ''}
+                        {status === 'Rejected' ? status.slice(0, -2) : ''}
                       </div>
                     </header>
 
@@ -341,9 +343,9 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
                       type="button"
                       onClick={() => setApproveLeave(false)}
                       style={{
-                        color: "rgb(153,171,180)",
-                        borderRadius: "50%",
-                        border: "none",
+                        color: 'rgb(153,171,180)',
+                        borderRadius: '50%',
+                        border: 'none',
                       }}
                       className={styles.totalLeaveCloseButton}
                     >
@@ -356,11 +358,11 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
                         <textarea
                           rows={3}
                           cols={50}
-                          style={{ resize: "none" }}
-                          placeholder="Enter the Status..."
+                          style={{ resize: 'none' }}
+                          placeholder="Enter the Reason..."
                           onChange={(event) => setReason(event.target.value)}
                           className={`${styles.ApprovalLeaveTextarea} ${
-                            reasonError !== "" ? `${styles.errorBorder}` : ""
+                            reasonError !== '' ? `${styles.errorBorder}` : ''
                           }`}
                           value={reason}
                         />
@@ -372,7 +374,7 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
                         <div className={styles.button}>
                           <button
                             className={styles.approveButton}
-                            style={{ width: "6rem" }}
+                            style={{ width: '6rem' }}
                             type="submit"
                             onClick={() =>
                               handleSubmitApproval(

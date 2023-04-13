@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import convert from "xml-js";
 import { IList, Web, sp } from "@pnp/sp/presets/all";
 import styles from "./LeaveDetails.module.scss";
+
 import { MyContext } from "../../context/contextProvider";
 import { Link } from "react-router-dom";
 import Pagination from "../Pagination/Pagination";
@@ -81,7 +82,6 @@ export const LeaveDetails = () => {
           ).toLocaleDateString(),
           Reason: entry.content["m:properties"]["d:Reason"]._text,
           Status: entry.content["m:properties"]["d:Status"]._text,
-          Remark: entry.content["m:properties"]["d:Remark"]._text,
           NoofDaysLeave: entry.content["m:properties"]["d:count"]._text,
           leaveId: entry.content["m:properties"]["d:ID"]._text,
         }));
@@ -102,10 +102,12 @@ export const LeaveDetails = () => {
     filteredLeaveDetails !== undefined
       ? filteredLeaveDetails.slice(indexFirstData, indexOfLastPage)
       : "";
+
   const updateLeaveStatus = async (id: number, status: string) => {
     try {
       const web = Web("https://zlendoit.sharepoint.com/sites/ZlendoTools");
       const list: IList = web.lists.getByTitle("Leave Management");
+
       const itemToUpdate = list.items.getById(id);
       await itemToUpdate.update({ Status: status });
       console.log("Leave status updated successfully!");
@@ -136,8 +138,12 @@ export const LeaveDetails = () => {
     }
   }
   return (
-    <div>
-      {" "}
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+      }}
+    >
       {filteredLeaveDetails && (
         <div className={styles.leaveDetail}>
           {" "}
@@ -164,30 +170,18 @@ export const LeaveDetails = () => {
                 {" "}
                 {CurrentData.map((leave: any, index: any) => (
                   <tr key={index} className={styles.tableBodyRow}>
-                    {" "}
-                    {window.innerWidth > 590 && (
-                      <td className={styles.tableBodyRow} data-label="S.No">
-                        {" "}
-                        {index + 1}{" "}
-                      </td>
-                    )}{" "}
+                    <td className={styles.tableBodyRow} data-label="S.No">
+                      {index + 1}
+                    </td>
                     <td className={styles.tableBodyRow} data-label="ID">
-                      {" "}
-                      {leave.ID}{" "}
-                    </td>{" "}
+                      {leave.ID}
+                    </td>
                     <td className={styles.tableBodyRow} data-label="Leave">
-                      {" "}
-                      {leave.Leave}{" "}
-                    </td>{" "}
-                    {window.innerWidth > 590 && (
-                      <td
-                        className={styles.tableBodyRow}
-                        data-label="LeaveType"
-                      >
-                        {" "}
-                        {leave.LeaveType}{" "}
-                      </td>
-                    )}{" "}
+                      {leave.Leave}
+                    </td>
+                    <td className={styles.tableBodyRow} data-label="LeaveType">
+                      {leave.LeaveType}
+                    </td>
                     <td className={styles.tableBodyRow} data-label="Start Date">
                       {" "}
                       <div
@@ -202,10 +196,9 @@ export const LeaveDetails = () => {
                       <div
                         className={`${styles.leaveDateDiv} ${styles.leaveDate}`}
                       >
-                        {" "}
-                        <span>{leave.ToDate}</span>{" "}
-                      </div>{" "}
-                    </td>{" "}
+                        <span>{leave.ToDate}</span>
+                      </div>
+                    </td>
                     <td className={styles.tableBodyRow} data-label="Reason">
                       {" "}
                       {leave.Reason}{" "}
@@ -250,18 +243,20 @@ export const LeaveDetails = () => {
                       className={styles.tableBodyRow}
                       data-label="Cancel Request"
                     >
-                      {" "}
                       {leave.Status === "Pending" ? (
-                        <button
-                          style={{ margin: "0px 2rem" }}
-                          onClick={() =>
-                            handleCancel(leave.leaveId, "Cancelled")
-                          }
-                          className={styles.leaveCancelButton}
-                        >
-                          {" "}
-                          Cancel{" "}
-                        </button>
+                        (CurrentData === undefined &&
+                          leaveDetails !== undefined) ||
+                        (leaveDetails.length !== 0 &&
+                          CurrentData.length === 0 && (
+                            <button
+                              onClick={() =>
+                                handleCancel(leave.leaveId, "Cancelled")
+                              }
+                              className={styles.leaveCancelButton}
+                            >
+                              Cancel
+                            </button>
+                          ))
                       ) : (
                         <p
                           style={{
@@ -277,18 +272,20 @@ export const LeaveDetails = () => {
                       )}{" "}
                     </td>{" "}
                   </tr>
-                ))}{" "}
-                {(CurrentData === undefined && LeaveDetails !== undefined) ||
-                  (LeaveDetails.length === 0 && CurrentData.length === 0 && (
+                ))}
+                {CurrentData === undefined ||
+                  (CurrentData.length === 0 && (
                     <tr>
-                      {" "}
-                      <td className={styles.LeaveDetailsNoRecord} colSpan={11}>
-                        {" "}
-                        <p style={{ textAlign: "center", fontWeight: 400 }}>
-                          {" "}
-                          No records found{" "}
-                        </p>{" "}
-                      </td>{" "}
+                      <td className={styles.LeaveDetailsNoRecord} colSpan={9}>
+                        <p
+                          style={{
+                            textAlign: "center",
+                            fontWeight: 400,
+                          }}
+                        >
+                          No records found
+                        </p>
+                      </td>
                     </tr>
                   ))}{" "}
               </tbody>{" "}
@@ -305,16 +302,16 @@ export const LeaveDetails = () => {
                   currentPage={currentPage}
                 />{" "}
               </div>
-            ))}{" "}
-          {(CurrentData === undefined && leaveDetails !== undefined) ||
+            ))}
+          {/* {(CurrentData === undefined && leaveDetails !== undefined) ||
             (leaveDetails.length !== 0 && CurrentData.length === 0 && (
               <div className={styles.LoaderDivision}>
                 {" "}
                 <RiLoader4Line className={styles.loader} />{" "}
               </div>
-            ))}{" "}
+            ))} */}
         </div>
-      )}{" "}
+      )}
       <div className={styles.applyLeaveButtonDiv}>
         {" "}
         <Link to={"/Apply Leave"}>
@@ -332,10 +329,9 @@ export const LeaveDetails = () => {
               <header className={styles.header}>
                 {" "}
                 <div className={styles.headerDiv}>
-                  {" "}
-                  Enter the reason for cancellation (Optional){" "}
-                </div>{" "}
-              </header>{" "}
+                  Enter the reason for cancellation (Optional)
+                </div>
+              </header>
               <button
                 type="button"
                 onClick={() => setCancelReason(false)}

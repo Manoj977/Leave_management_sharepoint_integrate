@@ -9,7 +9,7 @@ import styles from './LeaveApproval.module.scss';
 import ApprovalPage from '../ApprovalPage/ApprovalPage';
 import { FaSortUp, FaSortDown } from 'react-icons/fa';
 // import { AiOutlineSearch } from 'react-icons/ai';
-import { RiLoader4Line } from 'react-icons/ri';
+// import { RiLoader4Line } from 'react-icons/ri';
 
 type LeaveDetail = {
   leaveID: number;
@@ -31,13 +31,13 @@ type TableHeading = {
   value: string;
 };
 const TableHeading: TableHeading[] = [
-  { name: "S.No", value: "S.No" },
-  { name: "ID", value: "ID" },
-  { name: "Name", value: "Name" },
+  { name: 'S.No', value: 'S.No' },
+  { name: 'ID', value: 'ID' },
+  { name: 'Name', value: 'Name' },
   // { name: 'Email', value: 'Email' },
-  { name: "Leave", value: "Leave" },
-  { name: "Leave Type", value: "Leave Type" },
-  { name: "Date", value: "Date" },
+  { name: 'Leave', value: 'Leave' },
+  { name: 'Leave Type', value: 'Leave Type' },
+  { name: 'Date', value: 'Date' },
   // { name: 'Reason', value: 'Reason' },
   { name: 'Days', value: 'Days' },
   { name: 'Status', value: 'Status' },
@@ -120,27 +120,27 @@ export const LeaveApproval: React.FC = () => {
           .includes(searchTerm.toLowerCase().replace(/\s/g, '')) ||
         employee.ID.toString()
           .toLowerCase()
-          .replace(/\s/g, "")
-          .includes(searchTerm.toLowerCase().replace(/\s/g, "")) ||
+          .replace(/\s/g, '')
+          .includes(searchTerm.toLowerCase().replace(/\s/g, '')) ||
         // employee.Email.toLowerCase()
         //   .replace(/\s/g, '')
         //   .includes(searchTerm.toLowerCase().replace(/\s/g, '')) ||
         employee.Status.toLowerCase()
-          .replace(/\s/g, "")
-          .includes(searchTerm.toLowerCase().replace(/\s/g, "")) ||
+          .replace(/\s/g, '')
+          .includes(searchTerm.toLowerCase().replace(/\s/g, '')) ||
         employee.Leave.toLowerCase()
-          .replace(/\s/g, "")
-          .includes(searchTerm.toLowerCase().replace(/\s/g, "")) ||
+          .replace(/\s/g, '')
+          .includes(searchTerm.toLowerCase().replace(/\s/g, '')) ||
         employee.LeaveType.toLowerCase()
-          .replace(/\s/g, "")
-          .includes(searchTerm.toLowerCase().replace(/\s/g, ""))
+          .replace(/\s/g, '')
+          .includes(searchTerm.toLowerCase().replace(/\s/g, ''))
     );
 
     const sortedItems = filteredEmployees.sort((a, b) => {
       const aValue = a[sortBy];
       const bValue = b[sortBy];
 
-      if (sortOrder === "asc") {
+      if (sortOrder === 'asc') {
         if (aValue < bValue) return -1;
         if (aValue > bValue) return 1;
         return 0;
@@ -159,7 +159,7 @@ export const LeaveApproval: React.FC = () => {
     setEmployeeId(leaveID);
     setAction(true);
   };
-  console.log("CurrentData", CurrentData.length);
+  console.log('CurrentData', CurrentData.length);
   return (
     <div>
       <div className={styles.leaveapproval}>
@@ -171,7 +171,7 @@ export const LeaveApproval: React.FC = () => {
                 type="search"
                 id="search-dropdown"
                 className={styles.leaveapprovalInput}
-                placeholder={"Search...."}
+                placeholder={'Search....'}
                 value={searchTerm}
                 onChange={handleSearch}
                 autoComplete="off"
@@ -196,11 +196,11 @@ export const LeaveApproval: React.FC = () => {
                               {window.innerWidth > 664 &&
                                 TableHeading.map((option) => {
                                   const shouldDisplayIcon =
-                                    option.value !== "S.No" &&
-                                    option.value !== "Date" &&
-                                    option.value !== "Leave Type" &&
-                                    option.value !== "Reason" &&
-                                    option.value !== "Action";
+                                    option.value !== 'S.No' &&
+                                    option.value !== 'Date' &&
+                                    option.value !== 'Leave Type' &&
+                                    option.value !== 'Reason' &&
+                                    option.value !== 'Action';
 
                                   return (
                                     <th
@@ -356,26 +356,24 @@ export const LeaveApproval: React.FC = () => {
                                 </td>
                               </tr>
                             ))}
-                            {(CurrentData === undefined &&
-                              LeaveDetails !== undefined) ||
-                              (LeaveDetails.length !== 0 &&
-                                CurrentData.length === 0 && (
-                                  <tr>
-                                    <td
-                                      className={styles.LeaveDetailsNoRecord}
-                                      colSpan={10}
+                            {CurrentData === undefined ||
+                              (CurrentData.length === 0 && (
+                                <tr>
+                                  <td
+                                    className={styles.LeaveDetailsNoRecord}
+                                    colSpan={10}
+                                  >
+                                    <p
+                                      style={{
+                                        textAlign: 'center',
+                                        fontWeight: 400,
+                                      }}
                                     >
-                                      <p
-                                        style={{
-                                          textAlign: 'center',
-                                          fontWeight: 400,
-                                        }}
-                                      >
-                                        No records found
-                                      </p>
-                                    </td>
-                                  </tr>
-                                ))}
+                                      No records found
+                                    </p>
+                                  </td>
+                                </tr>
+                              ))}
                           </tbody>
                         </table>
                       </div>
@@ -394,12 +392,12 @@ export const LeaveApproval: React.FC = () => {
                   </div>
                 </div>
               </div>
-              {LeaveDetails === undefined ||
+              {/* {LeaveDetails === undefined ||
                 (LeaveDetails.length === 0 && (
                   <div className={styles.LoaderDivision}>
                     <RiLoader4Line className={styles.loader} />
                   </div>
-                ))}
+                ))} */}
             </div>
           </div>
         )}
