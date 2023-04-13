@@ -56,7 +56,9 @@ const LeaveCalculation = () => {
             ),
             ToDate: new Date(entry.content['m:properties']['d:ToDate']._text),
             Status: entry.content['m:properties']['d:Status']._text,
-            NoofDaysLeave: entry.content['m:properties']['d:count']._text,
+            NoofDaysLeave: parseFloat(
+              entry.content['m:properties']['d:count']._text
+            ),
           }));
           setLeaveDetails(leaveDetail);
         })
@@ -75,8 +77,8 @@ const LeaveCalculation = () => {
     ApprovedLeaveDetails.forEach((leaveDetail) => {
       const leaveDate = new Date(leaveDetail.FromDate);
       const quarterIndex = Math.floor(leaveDate.getMonth() / 3);
-      quarterLeaveCounts[quarterIndex] += parseInt(leaveDetail.NoofDaysLeave);
-      totalTakenLeaves += parseInt(leaveDetail.NoofDaysLeave);
+      quarterLeaveCounts[quarterIndex] += parseFloat(leaveDetail.NoofDaysLeave);
+      totalTakenLeaves += parseFloat(leaveDetail.NoofDaysLeave);
     });
 
     for (let i = 0; i < 4; i++) {
