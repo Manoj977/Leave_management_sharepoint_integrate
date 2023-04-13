@@ -140,7 +140,7 @@ export const LeaveApproval: React.FC = () => {
       const aValue = a[sortBy];
       const bValue = b[sortBy];
 
-      if (sortOrder === "asc") {
+      if (sortOrder === 'asc') {
         if (aValue < bValue) return -1;
         if (aValue > bValue) return 1;
         return 0;
@@ -159,7 +159,7 @@ export const LeaveApproval: React.FC = () => {
     setEmployeeId(leaveID);
     setAction(true);
   };
-  console.log("CurrentData", CurrentData.length);
+  console.log('CurrentData', CurrentData.length);
   return (
     <div>
       <div className={styles.leaveapproval}>
@@ -171,7 +171,7 @@ export const LeaveApproval: React.FC = () => {
                 type="search"
                 id="search-dropdown"
                 className={styles.leaveapprovalInput}
-                placeholder={"Search...."}
+                placeholder={'Search....'}
                 value={searchTerm}
                 onChange={handleSearch}
                 autoComplete="off"
@@ -196,11 +196,11 @@ export const LeaveApproval: React.FC = () => {
                               {window.innerWidth > 664 &&
                                 TableHeading.map((option) => {
                                   const shouldDisplayIcon =
-                                    option.value !== "S.No" &&
-                                    option.value !== "Date" &&
-                                    option.value !== "Leave Type" &&
-                                    option.value !== "Reason" &&
-                                    option.value !== "Action";
+                                    option.value !== 'S.No' &&
+                                    option.value !== 'Date' &&
+                                    option.value !== 'Leave Type' &&
+                                    option.value !== 'Reason' &&
+                                    option.value !== 'Action';
 
                                   return (
                                     <th
