@@ -5,12 +5,18 @@
 /* eslint-disable */
 
 interface CssExports {
+  'ApprovalLeaveTextarea': string;
+  'approvalLeave': string;
+  'approvalLeaveDiv1': string;
   'approvalTable': string;
   'approvalTableDescription': string;
   'approvalTableHead': string;
   'approvalTableHeading': string;
   'approveButton': string;
   'approveButtonDiv': string;
+  'button': string;
+  'error': string;
+  'errorBorder': string;
   'totalLeave': string;
   'totalLeaveCloseButton': string;
   'totalLeaveDiv1': string;

@@ -2,11 +2,11 @@
 /* eslint-disable no-void */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect, useState } from 'react';
-import style from './Profile.module.scss';
-import { MyContext } from '../../context/contextProvider';
-import LeaveCalculation from '../LeaveCalculation/LeaveCalculation';
-import { sp } from '@pnp/sp/presets/all';
+import React, { useEffect, useState } from "react";
+import style from "./Profile.module.scss";
+import { MyContext } from "../../context/contextProvider";
+import LeaveCalculation from "../LeaveCalculation/LeaveCalculation";
+import { sp } from "@pnp/sp/presets/all";
 export default function Profile() {
   const {
     activeMenu,
@@ -21,7 +21,7 @@ export default function Profile() {
     availableLeaves,
   } = React.useContext(MyContext);
   LeaveCalculation();
-  const [userName, setUserName] = useState('');
+  const [userName, setUserName] = useState("");
   useEffect(() => {
     setLossofPay(lossOfPay); // update the state whenever lossOfPay changes
     void sp.web.currentUser.get().then((user) => {
@@ -32,16 +32,16 @@ export default function Profile() {
     event: React.MouseEvent<HTMLButtonElement>,
     title: string
   ) => {
-    if (title === 'Total Leaves') {
+    if (title === "Total Leaves") {
       setLeaveData(true);
     }
-    if (title === 'Taken Leaves') {
+    if (title === "Taken Leaves") {
       setUsedLeave(true);
     }
-    if (title === 'Available Leaves') {
+    if (title === "Available Leaves") {
       setBalanceLeave(true);
     }
-    if (title === 'Refresh') {
+    if (title === "Refresh") {
       window.location.reload();
     }
   };

@@ -258,6 +258,9 @@ export const LeaveDetails = () => {
                         </span>
                       </span>
                     </td>
+                    <td className={styles.tableBodyRow} data-label="Remark">
+                      {leave.Remark}
+                    </td>
                     <td
                       className={styles.tableBodyRow}
                       data-label="Cancel Request"

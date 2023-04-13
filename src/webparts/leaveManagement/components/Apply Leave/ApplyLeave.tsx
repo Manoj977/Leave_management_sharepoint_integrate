@@ -316,6 +316,7 @@ export const ApplyLeave = () => {
         count: leaveCount,
         Reason: reason,
         Status: "Pending",
+        Remark: "-",
         LOP:
           leaveCount < 3
             ? 0

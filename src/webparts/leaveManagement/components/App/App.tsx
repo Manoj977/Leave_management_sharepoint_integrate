@@ -34,7 +34,7 @@ const App: React.FC = () => {
   const [Admin, setAdmin] = useState<Admin[]>([]);
   const [employeeData, setEmployeeData] = useState<employeeData[]>([]);
   // const [userEmail, setUserEmail] = useState('');
-  const [userName, setUserName] = useState('');
+  const [userName, setUserName] = useState("");
   useEffect(() => {
     fetch(
       "https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/lists/GetByTitle('Employee%20Master')/items"
@@ -46,10 +46,10 @@ const App: React.FC = () => {
         const parsedData = JSON.parse(jsonData);
         const empData: employeeData[] = parsedData.feed.entry.map(
           (entry: any) => ({
-            v: entry.content['m:properties']['d:Employee_x0020_ID']._text,
-            name: entry.content['m:properties']['d:Display_x0020_Name']._text,
-            email: entry.content['m:properties']['d:Email']._text,
-            leaveID: entry.content['m:properties']['d:Id']._text,
+            v: entry.content["m:properties"]["d:Employee_x0020_ID"]._text,
+            name: entry.content["m:properties"]["d:Display_x0020_Name"]._text,
+            email: entry.content["m:properties"]["d:Email"]._text,
+            leaveID: entry.content["m:properties"]["d:Id"]._text,
           })
         );
 
@@ -67,16 +67,16 @@ const App: React.FC = () => {
           ? parsedData.feed.entry
           : [parsedData.feed.entry];
         const loggedUserDetail: Admin[] = entries.map((entry: any) => ({
-          ID: entry.content['m:properties']['d:Employee_x0020_ID']._text,
-          name: entry.content['m:properties']['d:Employee_x0020_Name']._text,
-          Role: entry.content['m:properties']['d:Role']._text,
+          ID: entry.content["m:properties"]["d:Employee_x0020_ID"]._text,
+          name: entry.content["m:properties"]["d:Employee_x0020_Name"]._text,
+          Role: entry.content["m:properties"]["d:Role"]._text,
         }));
         setAdmin(loggedUserDetail);
       })
       .catch((err) => console.log(err));
   }, []);
 
-  let EmployeeRole = '';
+  let EmployeeRole = "";
   void sp.web.currentUser.get().then((user) => {
     setUserName(user.Title);
   });
@@ -101,7 +101,7 @@ const App: React.FC = () => {
                 ? styles.navbar_section
                 : sidebarActive
                 ? styles.navbar_section_1
-                : ''
+                : ""
             }`}
           >
             <div className={styles.navbar}>

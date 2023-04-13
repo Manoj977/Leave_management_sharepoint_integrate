@@ -1,8 +1,10 @@
 .leaveapproval {
   margin-top: 1.25rem;
 }
+
 $primary-color: #f97316;
 $label-font-size: 1.3rem;
+
 ::placeholder {
   color: $primary-color;
   opacity: 0.9;
@@ -39,9 +41,11 @@ $label-font-size: 1.3rem;
     var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
   text-shadow: rgb(204, 204, 204) 3px 4px 5px;
 }
+
 .highlight {
   background-color: yellow;
 }
+
 .leaveapprovalDiv1 {
   display: flex;
   justify-content: center;
@@ -133,7 +137,8 @@ $label-font-size: 1.3rem;
   display: flex;
   align-items: center;
   padding: 0rem 4rem;
-  position: -webkit-sticky; /* Safari */
+  position: -webkit-sticky;
+  /* Safari */
   position: sticky;
   top: 0;
   // z-index: 14;
@@ -251,6 +256,7 @@ $label-font-size: 1.3rem;
   line-height: 1;
   border-collapse: collapse;
 }
+
 .leaveDetailsTable tr {
   border-bottom: 1px solid #f9bf86;
 }
@@ -268,12 +274,14 @@ $label-font-size: 1.3rem;
   letter-spacing: 0.05em;
   cursor: pointer;
 }
+
 .leaveDetailsTableHeadSection {
   display: flex;
   white-space: nowrap;
   align-items: center;
   justify-content: center;
 }
+
 .leaveDetailTableHeadDiv {
   display: flex;
   margin-left: 1.25rem;
@@ -447,6 +455,7 @@ $label-font-size: 1.3rem;
   background-color: red;
   color: rgb(255 255 255);
 }
+
 .LoaderDivision {
   display: flex;
   height: 100vh;
@@ -456,9 +465,7 @@ $label-font-size: 1.3rem;
 
 .loader {
   --tw-rotate: 3deg;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y))
-    rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y))
-    scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
   font-size: 1.875rem;
   line-height: 2.25rem;
   --tw-text-opacity: 1;
@@ -470,6 +477,7 @@ $label-font-size: 1.3rem;
   from {
     transform: scale(1) rotate(0deg);
   }
+
   to {
     transform: scale(1) rotate(360deg);
   }
@@ -479,9 +487,11 @@ $label-font-size: 1.3rem;
   .leaveapprovalSearchBox {
     justify-content: center;
   }
+
   .leaveapprovalInput {
     width: 100%;
   }
+
   .leaveDetail {
     margin-top: 1px;
     margin-bottom: 5rem;
@@ -530,6 +540,7 @@ $label-font-size: 1.3rem;
     content: attr(data-label);
   }
 }
+
 @media (max-width: 640px) {
   .LeaveDetailsNoRecord {
     font-size: 1.475rem;
@@ -549,6 +560,7 @@ $label-font-size: 1.3rem;
     margin-right: 8rem;
   }
 }
+
 @media (min-width: 768px) {
   .LoaderDivision {
     height: 70vh;

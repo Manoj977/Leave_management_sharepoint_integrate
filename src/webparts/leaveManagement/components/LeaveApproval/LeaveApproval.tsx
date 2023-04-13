@@ -23,6 +23,7 @@ type LeaveDetail = {
   Reason: string;
   Days: string;
   Status: string;
+  Remark: string;
   [key: string]: any;
 };
 type TableHeading = {
@@ -30,16 +31,17 @@ type TableHeading = {
   value: string;
 };
 const TableHeading: TableHeading[] = [
-  { name: 'S.No', value: 'S.No' },
-  { name: 'ID', value: 'ID' },
-  { name: 'Name', value: 'Name' },
+  { name: "S.No", value: "S.No" },
+  { name: "ID", value: "ID" },
+  { name: "Name", value: "Name" },
   // { name: 'Email', value: 'Email' },
-  { name: 'Leave', value: 'Leave' },
-  { name: 'Leave Type', value: 'Leave Type' },
-  { name: 'Date', value: 'Date' },
+  { name: "Leave", value: "Leave" },
+  { name: "Leave Type", value: "Leave Type" },
+  { name: "Date", value: "Date" },
   // { name: 'Reason', value: 'Reason' },
   { name: 'Days', value: 'Days' },
   { name: 'Status', value: 'Status' },
+  { name: 'Remark', value: 'Remark' },
   { name: 'Action', value: 'Action' },
 ];
 export const LeaveApproval: React.FC = () => {
@@ -48,6 +50,7 @@ export const LeaveApproval: React.FC = () => {
   const [LeaveDetails, setLeaveDetails] = useState<LeaveDetail[]>([]);
   // const [filteredData] = useState(LeaveDetails);
   const [approve, setApprove] = useState<string>('Pending');
+  const [remark, setRemark] = useState<string>('-');
   const [sortBy, setSortBy] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<string>('asc');
   const [currentPage, setCurrentPage] = useState(1);
@@ -81,6 +84,7 @@ export const LeaveApproval: React.FC = () => {
           ).toLocaleDateString(),
           Reason: entry.content['m:properties']['d:Reason']._text,
           Status: entry.content['m:properties']['d:Status']._text,
+          Remark: entry.content['m:properties']['d:Remark']._text,
           Days: entry.content['m:properties']['d:count']._text,
           leaveID: entry.content['m:properties']['d:ID']._text,
         }));
@@ -116,27 +120,27 @@ export const LeaveApproval: React.FC = () => {
           .includes(searchTerm.toLowerCase().replace(/\s/g, '')) ||
         employee.ID.toString()
           .toLowerCase()
-          .replace(/\s/g, '')
-          .includes(searchTerm.toLowerCase().replace(/\s/g, '')) ||
+          .replace(/\s/g, "")
+          .includes(searchTerm.toLowerCase().replace(/\s/g, "")) ||
         // employee.Email.toLowerCase()
         //   .replace(/\s/g, '')
         //   .includes(searchTerm.toLowerCase().replace(/\s/g, '')) ||
         employee.Status.toLowerCase()
-          .replace(/\s/g, '')
-          .includes(searchTerm.toLowerCase().replace(/\s/g, '')) ||
+          .replace(/\s/g, "")
+          .includes(searchTerm.toLowerCase().replace(/\s/g, "")) ||
         employee.Leave.toLowerCase()
-          .replace(/\s/g, '')
-          .includes(searchTerm.toLowerCase().replace(/\s/g, '')) ||
+          .replace(/\s/g, "")
+          .includes(searchTerm.toLowerCase().replace(/\s/g, "")) ||
         employee.LeaveType.toLowerCase()
-          .replace(/\s/g, '')
-          .includes(searchTerm.toLowerCase().replace(/\s/g, ''))
+          .replace(/\s/g, "")
+          .includes(searchTerm.toLowerCase().replace(/\s/g, ""))
     );
 
     const sortedItems = filteredEmployees.sort((a, b) => {
       const aValue = a[sortBy];
       const bValue = b[sortBy];
 
-      if (sortOrder === 'asc') {
+      if (sortOrder === "asc") {
         if (aValue < bValue) return -1;
         if (aValue > bValue) return 1;
         return 0;
@@ -155,7 +159,7 @@ export const LeaveApproval: React.FC = () => {
     setEmployeeId(leaveID);
     setAction(true);
   };
-  console.log('CurrentData', CurrentData.length);
+  console.log("CurrentData", CurrentData.length);
   return (
     <div>
       <div className={styles.leaveapproval}>
@@ -167,7 +171,7 @@ export const LeaveApproval: React.FC = () => {
                 type="search"
                 id="search-dropdown"
                 className={styles.leaveapprovalInput}
-                placeholder={'Search....'}
+                placeholder={"Search...."}
                 value={searchTerm}
                 onChange={handleSearch}
                 autoComplete="off"
@@ -192,11 +196,11 @@ export const LeaveApproval: React.FC = () => {
                               {window.innerWidth > 664 &&
                                 TableHeading.map((option) => {
                                   const shouldDisplayIcon =
-                                    option.value !== 'S.No' &&
-                                    option.value !== 'Date' &&
-                                    option.value !== 'Leave Type' &&
-                                    option.value !== 'Reason' &&
-                                    option.value !== 'Action';
+                                    option.value !== "S.No" &&
+                                    option.value !== "Date" &&
+                                    option.value !== "Leave Type" &&
+                                    option.value !== "Reason" &&
+                                    option.value !== "Action";
 
                                   return (
                                     <th
@@ -316,6 +320,13 @@ export const LeaveApproval: React.FC = () => {
                                     </span>
                                   </span>
                                 </td>
+
+                                <td
+                                  className={styles.leaveDetailsDescription}
+                                  data-label="RemarK"
+                                >
+                                  {leave.Remark}
+                                </td>
                                 <td
                                   className={styles.leaveDetailsDescription}
                                   data-label="Action"
@@ -398,6 +409,8 @@ export const LeaveApproval: React.FC = () => {
           employeeId={employeeId}
           setApprove={setApprove}
           approve={approve}
+          setRemark={setRemark}
+          remark={remark}
         />
       )}
     </div>
