@@ -363,7 +363,7 @@ export const LeaveApproval: React.FC = () => {
                                   <tr>
                                     <td
                                       className={styles.LeaveDetailsNoRecord}
-                                      colSpan={9}
+                                      colSpan={10}
                                     >
                                       <p
                                         style={{
