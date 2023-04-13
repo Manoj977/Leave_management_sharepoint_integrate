@@ -6,7 +6,6 @@ import React, { useEffect, useState } from "react";
 import convert from "xml-js";
 import { IList, Web, sp } from "@pnp/sp/presets/all";
 import styles from "./LeaveDetails.module.scss";
-
 import { MyContext } from "../../context/contextProvider";
 import { Link } from "react-router-dom";
 import Pagination from "../Pagination/Pagination";
@@ -25,10 +24,7 @@ type LeaveDetail = {
   Status: string;
   leaveId: number;
 };
-type SortOption = {
-  name: string;
-  value: string;
-};
+type SortOption = { name: string; value: string };
 const sortOptions: SortOption[] = [
   { name: "S.No", value: "S.No" },
   { name: "ID", value: "ID" },
@@ -54,12 +50,10 @@ export const LeaveDetails = () => {
   console.log(userEmail);
   useEffect(() => {
     // eslint-disable-next-line no-void
-
     void sp.web.currentUser.get().then((user) => {
       setUserEmail(user.Email);
     });
   }, []);
-
   useEffect(() => {
     fetch(
       "https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/web/lists/getbytitle('Leave%20Management')/items"
@@ -69,7 +63,6 @@ export const LeaveDetails = () => {
         const jsonData = convert.xml2json(data, { compact: true, spaces: 4 });
         const parsedData = JSON.parse(jsonData);
         console.log(parsedData);
-
         const entries = Array.isArray(parsedData.feed.entry)
           ? parsedData.feed.entry
           : [parsedData.feed.entry];
@@ -92,33 +85,27 @@ export const LeaveDetails = () => {
           NoofDaysLeave: entry.content["m:properties"]["d:count"]._text,
           leaveId: entry.content["m:properties"]["d:ID"]._text,
         }));
-
         setLeaveDetails(leaveDetail);
         setLeaveStatus(leaveDetail[0].Status);
       })
       .catch((err) => console.log(err));
   }, []);
   console.log(leaveDetails);
-
   const filteredLeaveDetails = leaveDetails.filter(
     (detail) => detail.Email === userEmail
   );
   console.log(leaveStatus);
-
   // pag
-
   const indexOfLastPage = currentPage * dataPerPage;
   const indexFirstData = indexOfLastPage - dataPerPage;
   const CurrentData: any =
     filteredLeaveDetails !== undefined
       ? filteredLeaveDetails.slice(indexFirstData, indexOfLastPage)
       : "";
-
   const updateLeaveStatus = async (id: number, status: string) => {
     try {
       const web = Web("https://zlendoit.sharepoint.com/sites/ZlendoTools");
       const list: IList = web.lists.getByTitle("Leave Management");
-
       const itemToUpdate = list.items.getById(id);
       await itemToUpdate.update({ Status: status });
       console.log("Leave status updated successfully!");
@@ -128,7 +115,6 @@ export const LeaveDetails = () => {
   };
   const handleCancel = async (id: number, status: string) => {
     console.log(id, status);
-
     await updateLeaveStatus(id, status);
     // Update the leaveDetails state to reflect the new status
     const updatedLeaveDetails = leaveDetails.map((leave: any) =>
@@ -140,102 +126,96 @@ export const LeaveDetails = () => {
   };
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     // Validate the reason
-    // if (!reason) {
-    //   setReasonError('Please enter a reason for the leave');
-    //   setTimeout(() => {
-    //     setReasonError('');
-    //   }, 3500);
-    // } else if (reason.length > 50) {
-    //   setReasonError(
-    //     `Reason must have less than 50 characters. Current length: ${reason.length}`
-    //   );
-    // } else {
-    //   setReasonError('');
-    // }
+
+    // if (!reason) { // setReasonError('Please enter a reason for the leave'); // setTimeout(() => { // setReasonError(''); // }, 3500); // } else if (reason.length > 50) { // setReasonError( // `Reason must have less than 50 characters. Current length: ${reason.length}` // ); // } else { // setReasonError(''); // }
     if (reason) {
-      const data = {
-        CancelReason: reason,
-      };
+      const data = { CancelReason: reason };
       console.log(data);
       // Get a reference to the "Leave Management" list using the website URL
-      // const web = Web('https://zlendoit.sharepoint.com/sites/ZlendoTools');
-      // const list: IList = web.lists.getByTitle('Leave Management');
-      // Add the new item to the list
-      // list.items
-      // .add(itemData)
-      // .then(() => {
-      // console.log('New item added to the list');
-      // })
-      // .catch((error) => {
-      // console.log('Error adding new item to the list: ', error);
-      // });
+      // const web = Web('https://zlendoit.sharepoint.com/sites/ZlendoTools'); // const list: IList = web.lists.getByTitle('Leave Management'); // Add the new item to the list // list.items // .add(itemData) // .then(() => { // console.log('New item added to the list'); // }) // .catch((error) => { // console.log('Error adding new item to the list: ', error); // });
     }
   }
-
   return (
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-      }}
-    >
+    <div>
+      {" "}
       {filteredLeaveDetails && (
         <div className={styles.leaveDetail}>
+          {" "}
           <div className={styles.tableDetail}>
+            {" "}
             <table className={styles.leaveTable}>
+              {" "}
               <thead>
+                {" "}
                 {window.innerWidth > 664 &&
                   sortOptions.map((heading) => {
                     return (
                       <th key={heading.value} className={styles.tableHead}>
+                        {" "}
                         <p className={styles.leaveDetailsTableHeadSection}>
-                          {heading.name}
-                        </p>
+                          {" "}
+                          {heading.name}{" "}
+                        </p>{" "}
                       </th>
                     );
-                  })}
-              </thead>
+                  })}{" "}
+              </thead>{" "}
               <tbody className={styles.tableBody}>
+                {" "}
                 {CurrentData.map((leave: any, index: any) => (
                   <tr key={index} className={styles.tableBodyRow}>
-                    <td className={styles.tableBodyRow} data-label="S.No">
-                      {index + 1}
-                    </td>
-
+                    {" "}
+                    {window.innerWidth > 590 && (
+                      <td className={styles.tableBodyRow} data-label="S.No">
+                        {" "}
+                        {index + 1}{" "}
+                      </td>
+                    )}{" "}
                     <td className={styles.tableBodyRow} data-label="ID">
-                      {leave.ID}
-                    </td>
-
+                      {" "}
+                      {leave.ID}{" "}
+                    </td>{" "}
                     <td className={styles.tableBodyRow} data-label="Leave">
-                      {leave.Leave}
-                    </td>
-
-                    <td className={styles.tableBodyRow} data-label="LeaveType">
-                      {leave.LeaveType}
-                    </td>
-
+                      {" "}
+                      {leave.Leave}{" "}
+                    </td>{" "}
+                    {window.innerWidth > 590 && (
+                      <td
+                        className={styles.tableBodyRow}
+                        data-label="LeaveType"
+                      >
+                        {" "}
+                        {leave.LeaveType}{" "}
+                      </td>
+                    )}{" "}
                     <td className={styles.tableBodyRow} data-label="Start Date">
+                      {" "}
                       <div
                         className={`${styles.leaveDateDiv} ${styles.leaveDate}`}
                       >
-                        <span>{leave.FromDate}</span>
-                      </div>
-                    </td>
+                        {" "}
+                        <span>{leave.FromDate}</span>{" "}
+                      </div>{" "}
+                    </td>{" "}
                     <td className={styles.tableBodyRow} data-label="End Date">
+                      {" "}
                       <div
                         className={`${styles.leaveDateDiv} ${styles.leaveDate}`}
                       >
-                        <span>{leave.ToDate}</span>
-                      </div>
-                    </td>
-
+                        {" "}
+                        <span>{leave.ToDate}</span>{" "}
+                      </div>{" "}
+                    </td>{" "}
                     <td className={styles.tableBodyRow} data-label="Reason">
-                      {leave.Reason}
-                    </td>
+                      {" "}
+                      {leave.Reason}{" "}
+                    </td>{" "}
                     <td className={styles.tableBodyRow} data-label="Days">
-                      {leave.NoofDaysLeave}
-                    </td>
+                      {" "}
+                      {leave.NoofDaysLeave}{" "}
+                    </td>{" "}
                     <td className={styles.tableBodyRow} data-label="Status">
+                      {" "}
                       <span
                         className={`${
                           leave.Status === "Pending"
@@ -255,100 +235,107 @@ export const LeaveDetails = () => {
                             : ""
                         }`}
                       >
+                        {" "}
                         <span aria-hidden className={styles.leaveStatusSpan}>
-                          {leave.Status}
-                        </span>
-                      </span>
-                    </td>
+                          {" "}
+                          {leave.Status}{" "}
+                        </span>{" "}
+                      </span>{" "}
+                    </td>{" "}
                     <td className={styles.tableBodyRow} data-label="Remark">
-                      {leave.Remark}
-                    </td>
+                      {" "}
+                      {leave.Remark}{" "}
+                    </td>{" "}
                     <td
                       className={styles.tableBodyRow}
                       data-label="Cancel Request"
                     >
+                      {" "}
                       {leave.Status === "Pending" ? (
-                        (CurrentData === undefined &&
-                          leaveDetails !== undefined) ||
-                        (leaveDetails.length !== 0 &&
-                          CurrentData.length === 0 && (
-                            <button
-                              onClick={() =>
-                                handleCancel(leave.leaveId, "Cancelled")
-                              }
-                              className={styles.leaveCancelButton}
-                            >
-                              Cancel
-                            </button>
-                          ))
+                        <button
+                          style={{ margin: "0px 2rem" }}
+                          onClick={() =>
+                            handleCancel(leave.leaveId, "Cancelled")
+                          }
+                          className={styles.leaveCancelButton}
+                        >
+                          {" "}
+                          Cancel{" "}
+                        </button>
                       ) : (
                         <p
-                        // style={{
-                        //   paddingLeft: "1rem",
-                        //   paddingRight: "1rem",
-                        //   paddingTop: "0.5rem",
-                        //   paddingBottom: "0.5rem",
-                        // }}
-                        >
-                          Leave {leave.Status}
-                        </p>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-                {(CurrentData === undefined && LeaveDetails !== undefined) ||
-                  (LeaveDetails.length !== 0 && CurrentData.length === 0 && (
-                    <tr>
-                      <td className={styles.LeaveDetailsNoRecord} colSpan={9}>
-                        <p
                           style={{
-                            textAlign: "center",
-                            fontWeight: 400,
+                            paddingLeft: "1rem",
+                            paddingRight: "1rem",
+                            paddingTop: "0.5rem",
+                            paddingBottom: "0.5rem",
                           }}
                         >
-                          No records found
+                          {" "}
+                          Leave {leave.Status}{" "}
                         </p>
-                      </td>
+                      )}{" "}
+                    </td>{" "}
+                  </tr>
+                ))}{" "}
+                {(CurrentData === undefined && LeaveDetails !== undefined) ||
+                  (LeaveDetails.length === 0 && CurrentData.length === 0 && (
+                    <tr>
+                      {" "}
+                      <td className={styles.LeaveDetailsNoRecord} colSpan={11}>
+                        {" "}
+                        <p style={{ textAlign: "center", fontWeight: 400 }}>
+                          {" "}
+                          No records found{" "}
+                        </p>{" "}
+                      </td>{" "}
                     </tr>
-                  ))}
-              </tbody>
-            </table>
-          </div>
+                  ))}{" "}
+              </tbody>{" "}
+            </table>{" "}
+          </div>{" "}
           {filteredLeaveDetails === undefined ||
             (filteredLeaveDetails.length > 0 && (
               <div>
+                {" "}
                 <Pagination
                   totalData={filteredLeaveDetails.length}
                   dataPerPage={dataPerPage}
                   setCurrentPage={setCurrentPage}
                   currentPage={currentPage}
-                />
+                />{" "}
               </div>
-            ))}
+            ))}{" "}
           {(CurrentData === undefined && leaveDetails !== undefined) ||
             (leaveDetails.length !== 0 && CurrentData.length === 0 && (
               <div className={styles.LoaderDivision}>
-                <RiLoader4Line className={styles.loader} />
+                {" "}
+                <RiLoader4Line className={styles.loader} />{" "}
               </div>
-            ))}
+            ))}{" "}
         </div>
-      )}
-
+      )}{" "}
       <div className={styles.applyLeaveButtonDiv}>
+        {" "}
         <Link to={"/Apply Leave"}>
-          <button className={styles.applyLeaveButton}>Apply Leave</button>
-        </Link>
-      </div>
+          {" "}
+          <button className={styles.applyLeaveButton}>Apply Leave</button>{" "}
+        </Link>{" "}
+      </div>{" "}
       {cancelReason && (
         <div className={styles.cancelReason}>
+          {" "}
           <div className={styles.cancelReasonDiv1}>
+            {" "}
             <div className={styles.cancelReasonDiv2}>
+              {" "}
               <header className={styles.header}>
+                {" "}
                 <div className={styles.headerDiv}>
-                  Enter the reason for cancellation (Optional)
-                </div>
-              </header>
-
+                  {" "}
+                  Enter the reason for cancellation (Optional){" "}
+                </div>{" "}
+              </header>{" "}
               <button
                 type="button"
                 onClick={() => setCancelReason(false)}
@@ -359,33 +346,39 @@ export const LeaveDetails = () => {
                 }}
                 className={styles.CloseButton}
               >
-                <MdOutlineCancel />
-              </button>
-            </div>
+                {" "}
+                <MdOutlineCancel />{" "}
+              </button>{" "}
+            </div>{" "}
             <div className={styles.inputContainer}>
+              {" "}
               <form
                 className={styles.cancelReasonTextarea}
                 onSubmit={handleSubmit}
               >
+                {" "}
                 <div className="">
+                  {" "}
                   <textarea
                     placeholder="Enter the reason..."
                     onChange={(event) => setReason(event.target.value)}
                     className={styles.CancelReasonTextarea}
                     value={reason}
-                  />
-                </div>
-                {/* {reasonError && <p className={styles.error}> {reasonError}</p>} */}
+                  />{" "}
+                </div>{" "}
+                {/* {reasonError && <p className={styles.error}> {reasonError}</p>} */}{" "}
                 <div className={styles.button}>
+                  {" "}
                   <button className={styles.buttonSubmit} type="submit">
-                    Submit
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
+                    {" "}
+                    Submit{" "}
+                  </button>{" "}
+                </div>{" "}
+              </form>{" "}
+            </div>{" "}
+          </div>{" "}
         </div>
-      )}
+      )}{" "}
     </div>
   );
 };
