@@ -10,7 +10,7 @@ import { MyContext } from '../../context/contextProvider';
 import { Link } from 'react-router-dom';
 import Pagination from '../Pagination/Pagination';
 import { MdOutlineCancel } from 'react-icons/md';
-import { RiLoader4Line } from 'react-icons/ri';
+// import { RiLoader4Line } from 'react-icons/ri';
 type LeaveDetail = {
   ID: string;
   Name: string;
@@ -242,9 +242,8 @@ export const LeaveDetails = () => {
                         }`}
                       >
                         <span aria-hidden className={styles.leaveStatusSpan}>
-                          {' '}
-                          {leave.Status}{' '}
-                        </span>{' '}
+                          {leave.Status}
+                        </span>
                       </span>
                     </td>
                     <td className={styles.tableBodyRow} data-label="Remark">
@@ -281,10 +280,10 @@ export const LeaveDetails = () => {
                     </td>
                   </tr>
                 ))}
-                {(CurrentData === undefined && LeaveDetails !== undefined) ||
-                  (LeaveDetails.length !== 0 && CurrentData.length === 0 && (
+                {CurrentData === undefined ||
+                  (CurrentData.length === 0 && (
                     <tr>
-                      <td className={styles.LeaveDetailsNoRecord} colSpan={9}>
+                      <td className={styles.LeaveDetailsNoRecord} colSpan={11}>
                         <p
                           style={{
                             textAlign: 'center',
@@ -310,12 +309,12 @@ export const LeaveDetails = () => {
                 />
               </div>
             ))}
-          {(CurrentData === undefined && leaveDetails !== undefined) ||
+          {/* {(CurrentData === undefined && leaveDetails !== undefined) ||
             (leaveDetails.length !== 0 && CurrentData.length === 0 && (
               <div className={styles.LoaderDivision}>
                 <RiLoader4Line className={styles.loader} />
               </div>
-            ))}
+            ))} */}
         </div>
       )}
       <div className={styles.applyLeaveButtonDiv}>

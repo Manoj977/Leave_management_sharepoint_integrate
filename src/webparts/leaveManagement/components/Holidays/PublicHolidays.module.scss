@@ -38,7 +38,8 @@
   --tw-border-opacity: 1;
   border-color: rgb(156 163 175 / var(--tw-border-opacity));
   --tw-bg-opacity: 1;
-  background-color: rgb(229 231 235 / var(--tw-bg-opacity));
+  background-color: #fdcea0;
+  // background-color: rgb(229 231 235 / var(--tw-bg-opacity));
   border-radius: 3px;
   padding: 0.75rem;
   text-align: center;
@@ -61,6 +62,7 @@
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
   text-align: left;
+  font-weight: 400;
 }
 @media (max-width: 767px) {
   .publicHolidaysSection_one_Table {

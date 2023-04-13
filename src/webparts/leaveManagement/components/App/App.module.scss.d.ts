@@ -8,7 +8,6 @@ interface CssExports {
   'components': string;
   'f_a_8474018e': string;
   'k_c_8474018e': string;
-  'components': string;
   'mainSection': string;
   'navbar': string;
   'navbar_section': string;
