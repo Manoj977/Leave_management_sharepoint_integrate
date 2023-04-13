@@ -3,20 +3,20 @@
 /* eslint-disable no-empty-pattern */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import React, { useEffect, useState } from 'react';
-import { HashRouter, Route, Routes } from 'react-router-dom';
-import styles from './App.module.scss';
-import { MyContext, MyContextProvider } from '../../context/contextProvider';
-import Navbar from '../Navbar/Navbar';
-import Sidebar from '../Sidebar/Sidebar';
-import Profile from '../Profile/Profile';
-import { LeaveApproval } from '../LeaveApproval/LeaveApproval';
-import { ApplyLeave } from '../Apply Leave/ApplyLeave';
-import { LeaveDetails } from '../Leave Details/LeaveDetails';
-import convert from 'xml-js';
-import { PublicHolidays } from '../Holidays/PublicHolidays';
-import Footer from '../Footer/Footer';
-import { sp } from '@pnp/sp/presets/all';
+import React, { useEffect, useState } from "react";
+import { HashRouter, Route, Routes } from "react-router-dom";
+import styles from "./App.module.scss";
+import { MyContext, MyContextProvider } from "../../context/contextProvider";
+import Navbar from "../Navbar/Navbar";
+import Sidebar from "../Sidebar/Sidebar";
+import Profile from "../Profile/Profile";
+import { LeaveApproval } from "../LeaveApproval/LeaveApproval";
+import { ApplyLeave } from "../Apply Leave/ApplyLeave";
+import { LeaveDetails } from "../Leave Details/LeaveDetails";
+import convert from "xml-js";
+import { PublicHolidays } from "../Holidays/PublicHolidays";
+// import Footer from "../Footer/Footer";
+import { sp } from "@pnp/sp/presets/all";
 // import LeaveCalculation from '../LeaveCalculation/LeaveCalculation';
 type Admin = {
   ID: string;
@@ -35,7 +35,7 @@ const App: React.FC = () => {
   const [Admin, setAdmin] = useState<Admin[]>([]);
   const [employeeData, setEmployeeData] = useState<employeeData[]>([]);
   // const [userEmail, setUserEmail] = useState('');
-  const [userName, setUserName] = useState('');
+  const [userName, setUserName] = useState("");
   useEffect(() => {
     fetch(
       "https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/lists/GetByTitle('Employee%20Master')/items"
@@ -47,10 +47,10 @@ const App: React.FC = () => {
         const parsedData = JSON.parse(jsonData);
         const empData: employeeData[] = parsedData.feed.entry.map(
           (entry: any) => ({
-            v: entry.content['m:properties']['d:Employee_x0020_ID']._text,
-            name: entry.content['m:properties']['d:Display_x0020_Name']._text,
-            email: entry.content['m:properties']['d:Email']._text,
-            leaveID: entry.content['m:properties']['d:Id']._text,
+            v: entry.content["m:properties"]["d:Employee_x0020_ID"]._text,
+            name: entry.content["m:properties"]["d:Display_x0020_Name"]._text,
+            email: entry.content["m:properties"]["d:Email"]._text,
+            leaveID: entry.content["m:properties"]["d:Id"]._text,
           })
         );
 
@@ -68,16 +68,16 @@ const App: React.FC = () => {
           ? parsedData.feed.entry
           : [parsedData.feed.entry];
         const loggedUserDetail: Admin[] = entries.map((entry: any) => ({
-          ID: entry.content['m:properties']['d:Employee_x0020_ID']._text,
-          name: entry.content['m:properties']['d:Employee_x0020_Name']._text,
-          Role: entry.content['m:properties']['d:Role']._text,
+          ID: entry.content["m:properties"]["d:Employee_x0020_ID"]._text,
+          name: entry.content["m:properties"]["d:Employee_x0020_Name"]._text,
+          Role: entry.content["m:properties"]["d:Role"]._text,
         }));
         setAdmin(loggedUserDetail);
       })
       .catch((err) => console.log(err));
   }, []);
 
-  let EmployeeRole = '';
+  let EmployeeRole = "";
   void sp.web.currentUser.get().then((user) => {
     setUserName(user.Title);
   });
@@ -110,24 +110,25 @@ const App: React.FC = () => {
                 ? styles.navbar_section
                 : sidebarActive
                 ? styles.navbar_section_1
-                : ''
+                : ""
             }`}
           >
             <div className={styles.navbar}>
               <Navbar />
               {/* <LeaveCalculation /> */}
             </div>
-            <Routes>
-              <Route path="/" element={<Profile />} />
-              <Route path="/Profile" element={<Profile />} />
-              {EmployeeRole === 'Admin' && (
-                <Route path="/Leave Approval" element={<LeaveApproval />} />
-              )}
-              <Route path="/Apply Leave" element={<ApplyLeave />} />
-              <Route path="/Leave Details" element={<LeaveDetails />} />
-              <Route path="/Public Holidays" element={<PublicHolidays />} />
-            </Routes>
-            <Footer />
+            <div className={styles.components}>
+              <Routes>
+                <Route path="/" element={<Profile />} />
+                <Route path="/Profile" element={<Profile />} />
+                {EmployeeRole === "Admin" && (
+                  <Route path="/Leave Approval" element={<LeaveApproval />} />
+                )}
+                <Route path="/Apply Leave" element={<ApplyLeave />} />
+                <Route path="/Leave Details" element={<LeaveDetails />} />
+                <Route path="/Public Holidays" element={<PublicHolidays />} />
+              </Routes>
+            </div>
           </div>
         </div>
       </HashRouter>

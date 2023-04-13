@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-self-compare */
-import React, { useEffect, useState } from 'react';
-import { MyContext } from '../../context/contextProvider';
-import convert from 'xml-js';
-import Pagination from '../Pagination/Pagination';
-import styles from './LeaveApproval.module.scss';
-import ApprovalPage from '../ApprovalPage/ApprovalPage';
-import { FaSortUp, FaSortDown } from 'react-icons/fa';
+import React, { useEffect, useState } from "react";
+import { MyContext } from "../../context/contextProvider";
+import convert from "xml-js";
+import Pagination from "../Pagination/Pagination";
+import styles from "./LeaveApproval.module.scss";
+import ApprovalPage from "../ApprovalPage/ApprovalPage";
+import { FaSortUp, FaSortDown } from "react-icons/fa";
 // import { AiOutlineSearch } from 'react-icons/ai';
-import { RiLoader4Line } from 'react-icons/ri';
+import { RiLoader4Line } from "react-icons/ri";
 
 type LeaveDetail = {
   leaveID: number;
@@ -23,6 +23,7 @@ type LeaveDetail = {
   Reason: string;
   Days: string;
   Status: string;
+  Remark: string;
   [key: string]: any;
 };
 type TableHeading = {
@@ -30,26 +31,28 @@ type TableHeading = {
   value: string;
 };
 const TableHeading: TableHeading[] = [
-  { name: 'S.No', value: 'S.No' },
-  { name: 'ID', value: 'ID' },
-  { name: 'Name', value: 'Name' },
+  { name: "S.No", value: "S.No" },
+  { name: "ID", value: "ID" },
+  { name: "Name", value: "Name" },
   // { name: 'Email', value: 'Email' },
-  { name: 'Leave', value: 'Leave' },
-  { name: 'Leave Type', value: 'Leave Type' },
-  { name: 'Date', value: 'Date' },
+  { name: "Leave", value: "Leave" },
+  { name: "Leave Type", value: "Leave Type" },
+  { name: "Date", value: "Date" },
   // { name: 'Reason', value: 'Reason' },
-  { name: 'Days', value: 'Days' },
-  { name: 'Status', value: 'Status' },
-  { name: 'Action', value: 'Action' },
+  { name: "Days", value: "Days" },
+  { name: "Status", value: "Status" },
+  { name: "Remark", value: "Remark" },
+  { name: "Action", value: "Action" },
 ];
 export const LeaveApproval: React.FC = () => {
   const { action, setAction } = React.useContext(MyContext);
 
   const [LeaveDetails, setLeaveDetails] = useState<LeaveDetail[]>([]);
   // const [filteredData] = useState(LeaveDetails);
-  const [approve, setApprove] = useState<string>('Pending');
-  const [sortBy, setSortBy] = useState<string>('');
-  const [sortOrder, setSortOrder] = useState<string>('asc');
+  const [approve, setApprove] = useState<string>("Pending");
+  const [remark, setRemark] = useState<string>("-");
+  const [sortBy, setSortBy] = useState<string>("");
+  const [sortOrder, setSortOrder] = useState<string>("asc");
   const [currentPage, setCurrentPage] = useState(1);
   // const [selectedOption, setSelectedOption] = React.useState('');
   const [dataPerPage] = useState(4);
@@ -67,22 +70,23 @@ export const LeaveApproval: React.FC = () => {
           ? parsedData.feed.entry
           : [parsedData.feed.entry];
         const leaveDetail: LeaveDetail[] = entries.map((entry: any) => ({
-          ID: entry.content['m:properties']['d:Title']._text,
-          Name: entry.content['m:properties']['d:Name']._text,
-          Email: entry.content['m:properties']['d:Email']._text,
-          Leave: entry.content['m:properties']['d:Leave']._text,
-          LeaveType: entry.content['m:properties']['d:LeaveType']._text,
-          count: entry.content['m:properties']['d:count']._text,
+          ID: entry.content["m:properties"]["d:Title"]._text,
+          Name: entry.content["m:properties"]["d:Name"]._text,
+          Email: entry.content["m:properties"]["d:Email"]._text,
+          Leave: entry.content["m:properties"]["d:Leave"]._text,
+          LeaveType: entry.content["m:properties"]["d:LeaveType"]._text,
+          count: entry.content["m:properties"]["d:count"]._text,
           FromDate: new Date(
-            entry.content['m:properties']['d:FormDate']._text
+            entry.content["m:properties"]["d:FormDate"]._text
           ).toLocaleDateString(),
           ToDate: new Date(
-            entry.content['m:properties']['d:ToDate']._text
+            entry.content["m:properties"]["d:ToDate"]._text
           ).toLocaleDateString(),
-          Reason: entry.content['m:properties']['d:Reason']._text,
-          Status: entry.content['m:properties']['d:Status']._text,
-          Days: entry.content['m:properties']['d:count']._text,
-          leaveID: entry.content['m:properties']['d:ID']._text,
+          Reason: entry.content["m:properties"]["d:Reason"]._text,
+          Status: entry.content["m:properties"]["d:Status"]._text,
+          Remark: entry.content["m:properties"]["d:Remark"]._text,
+          Days: entry.content["m:properties"]["d:count"]._text,
+          leaveID: entry.content["m:properties"]["d:ID"]._text,
         }));
         setLeaveDetails(leaveDetail);
       })
@@ -92,11 +96,11 @@ export const LeaveApproval: React.FC = () => {
   let CurrentData: LeaveDetail[];
   const handleSort = (sortBy: string) => {
     setSortOrder(
-      sortBy === sortBy ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc'
+      sortBy === sortBy ? (sortOrder === "asc" ? "desc" : "asc") : "asc"
     );
     setSortBy(sortBy);
   };
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const handleSearch = (event: any) => {
     setSearchTerm(event.target.value);
   };
@@ -110,33 +114,33 @@ export const LeaveApproval: React.FC = () => {
   if (LeaveDetails !== null) {
     filteredEmployees = LeaveDetails.filter(
       (employee) =>
-        searchTerm === '' ||
+        searchTerm === "" ||
         employee.Name.toLowerCase()
-          .replace(/\s/g, '')
-          .includes(searchTerm.toLowerCase().replace(/\s/g, '')) ||
+          .replace(/\s/g, "")
+          .includes(searchTerm.toLowerCase().replace(/\s/g, "")) ||
         employee.ID.toString()
           .toLowerCase()
-          .replace(/\s/g, '')
-          .includes(searchTerm.toLowerCase().replace(/\s/g, '')) ||
+          .replace(/\s/g, "")
+          .includes(searchTerm.toLowerCase().replace(/\s/g, "")) ||
         // employee.Email.toLowerCase()
         //   .replace(/\s/g, '')
         //   .includes(searchTerm.toLowerCase().replace(/\s/g, '')) ||
         employee.Status.toLowerCase()
-          .replace(/\s/g, '')
-          .includes(searchTerm.toLowerCase().replace(/\s/g, '')) ||
+          .replace(/\s/g, "")
+          .includes(searchTerm.toLowerCase().replace(/\s/g, "")) ||
         employee.Leave.toLowerCase()
-          .replace(/\s/g, '')
-          .includes(searchTerm.toLowerCase().replace(/\s/g, '')) ||
+          .replace(/\s/g, "")
+          .includes(searchTerm.toLowerCase().replace(/\s/g, "")) ||
         employee.LeaveType.toLowerCase()
-          .replace(/\s/g, '')
-          .includes(searchTerm.toLowerCase().replace(/\s/g, ''))
+          .replace(/\s/g, "")
+          .includes(searchTerm.toLowerCase().replace(/\s/g, ""))
     );
 
     const sortedItems = filteredEmployees.sort((a, b) => {
       const aValue = a[sortBy];
       const bValue = b[sortBy];
 
-      if (sortOrder === 'asc') {
+      if (sortOrder === "asc") {
         if (aValue < bValue) return -1;
         if (aValue > bValue) return 1;
         return 0;
@@ -155,7 +159,7 @@ export const LeaveApproval: React.FC = () => {
     setEmployeeId(leaveID);
     setAction(true);
   };
-  console.log('CurrentData', CurrentData.length);
+  console.log("CurrentData", CurrentData.length);
   return (
     <div>
       <div className={styles.leaveapproval}>
@@ -167,7 +171,7 @@ export const LeaveApproval: React.FC = () => {
                 type="search"
                 id="search-dropdown"
                 className={styles.leaveapprovalInput}
-                placeholder={'Search....'}
+                placeholder={"Search...."}
                 value={searchTerm}
                 onChange={handleSearch}
                 autoComplete="off"
@@ -192,11 +196,11 @@ export const LeaveApproval: React.FC = () => {
                               {window.innerWidth > 664 &&
                                 TableHeading.map((option) => {
                                   const shouldDisplayIcon =
-                                    option.value !== 'S.No' &&
-                                    option.value !== 'Date' &&
-                                    option.value !== 'Leave Type' &&
-                                    option.value !== 'Reason' &&
-                                    option.value !== 'Action';
+                                    option.value !== "S.No" &&
+                                    option.value !== "Date" &&
+                                    option.value !== "Leave Type" &&
+                                    option.value !== "Reason" &&
+                                    option.value !== "Action";
 
                                   return (
                                     <th
@@ -215,14 +219,14 @@ export const LeaveApproval: React.FC = () => {
                                         {option.name}
                                         {shouldDisplayIcon &&
                                           sortBy === option.value &&
-                                          sortOrder === 'asc' && (
+                                          sortOrder === "asc" && (
                                             <span>
                                               <FaSortUp />
                                             </span>
                                           )}
                                         {shouldDisplayIcon &&
                                           sortBy === option.value &&
-                                          sortOrder === 'desc' && (
+                                          sortOrder === "desc" && (
                                             <span>
                                               <FaSortDown />
                                             </span>
@@ -291,21 +295,21 @@ export const LeaveApproval: React.FC = () => {
                                 >
                                   <span
                                     className={`${
-                                      leave.Status === 'Pending'
+                                      leave.Status === "Pending"
                                         ? `${styles.leaveStatusPending}`
-                                        : ''
+                                        : ""
                                     } ${
-                                      leave.Status === 'Approved'
+                                      leave.Status === "Approved"
                                         ? `${styles.leaveStatusApprove}`
-                                        : ''
+                                        : ""
                                     } ${
-                                      leave.Status === 'Cancelled'
+                                      leave.Status === "Cancelled"
                                         ? `${styles.leaveStatusCancel}`
-                                        : ''
+                                        : ""
                                     } ${
-                                      leave.Status === 'Rejected'
+                                      leave.Status === "Rejected"
                                         ? `${styles.leaveStatusReject}`
-                                        : ''
+                                        : ""
                                     }`}
                                   >
                                     <span
@@ -318,13 +322,19 @@ export const LeaveApproval: React.FC = () => {
                                 </td>
                                 <td
                                   className={styles.leaveDetailsDescription}
+                                  data-label="RemarK"
+                                >
+                                  {leave.Remark}
+                                </td>
+                                <td
+                                  className={styles.leaveDetailsDescription}
                                   data-label="Status"
                                 >
                                   <div
                                     className={styles.leaveApprovalButtonDiv}
                                   >
                                     <div>
-                                      {leave.Status === 'Pending' ? (
+                                      {leave.Status === "Pending" ? (
                                         <button
                                           onClick={() =>
                                             handleApproval(leave.leaveID)
@@ -356,7 +366,7 @@ export const LeaveApproval: React.FC = () => {
                                     >
                                       <p
                                         style={{
-                                          textAlign: 'center',
+                                          textAlign: "center",
                                           fontWeight: 400,
                                         }}
                                       >
@@ -398,6 +408,8 @@ export const LeaveApproval: React.FC = () => {
           employeeId={employeeId}
           setApprove={setApprove}
           approve={approve}
+          setRemark={setRemark}
+          remark={remark}
         />
       )}
     </div>

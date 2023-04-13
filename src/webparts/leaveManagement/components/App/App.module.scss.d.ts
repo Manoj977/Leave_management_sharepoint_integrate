@@ -5,6 +5,7 @@
 /* eslint-disable */
 
 interface CssExports {
+  'components': string;
   'mainSection': string;
   'n_b_8474018e': string;
   'navbar': string;

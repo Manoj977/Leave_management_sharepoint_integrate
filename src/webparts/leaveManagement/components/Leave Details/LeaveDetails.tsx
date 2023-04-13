@@ -39,6 +39,7 @@ const sortOptions: SortOption[] = [
   { name: "Reason", value: "Reason" },
   { name: "Days", value: "Days" },
   { name: "Status", value: "Status" },
+  { name: "Remark", value: "Remark" },
   { name: "Action", value: "Action" },
 ];
 export const LeaveDetails = () => {
@@ -87,6 +88,7 @@ export const LeaveDetails = () => {
           ).toLocaleDateString(),
           Reason: entry.content["m:properties"]["d:Reason"]._text,
           Status: entry.content["m:properties"]["d:Status"]._text,
+          Remark: entry.content["m:properties"]["d:Remark"]._text,
           NoofDaysLeave: entry.content["m:properties"]["d:count"]._text,
           leaveId: entry.content["m:properties"]["d:ID"]._text,
         }));
@@ -257,6 +259,9 @@ export const LeaveDetails = () => {
                           {leave.Status}{" "}
                         </span>{" "}
                       </span>
+                    </td>
+                    <td className={styles.tableBodyRow} data-label="Remark">
+                      {leave.Remark}
                     </td>
                     <td
                       className={styles.tableBodyRow}

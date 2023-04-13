@@ -2,21 +2,37 @@
   overflow-y: hidden !important;
   display: none !important;
 }
+
 button {
   cursor: pointer !important;
 }
+
 body {
   font-family: 'Open Sans', sans-serif !important;
 }
+
 .mainSection {
   display: flex;
   position: relative;
   width: 100vw;
   height: 100vh;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  overflow-y: scroll;
+
+}
+
+.mainSection::-webkit-scrollbar {
+  display: none;
+}
+
+.components {
+  margin-top: 2rem;
+  padding-bottom: 4rem;
 }
 
 .sideBar {
-  z-index: 10;
+  z-index: 50;
   position: fixed;
 }
 
@@ -31,11 +47,13 @@ body {
 }
 
 .navbar {
-  position: static;
+  position: fixed;
   width: 100%;
-  z-index: 10;
+  z-index: 40;
   background-color: rgba(250, 251, 251, 1);
 }
+
+
 
 .navbar_section_1 {
   flex: 1 1 0;
@@ -45,6 +63,7 @@ body {
   .navbar {
     position: static;
   }
+
   .navbar_section {
     margin-left: 14rem;
   }
@@ -52,6 +71,6 @@ body {
 
 @media (max-width: 800px) {
   .sideBar {
-    z-index: 11;
+    z-index: 50;
   }
 }
