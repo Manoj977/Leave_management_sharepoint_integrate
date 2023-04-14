@@ -256,7 +256,7 @@ export const LeaveDetails = () => {
                 {CurrentData === undefined ||
                   (CurrentData.length === 0 && (
                     <tr>
-                      <td className={styles.LeaveDetailsNoRecord} colSpan={9}>
+                      <td className={styles.LeaveDetailsNoRecord} colSpan={11}>
                         <p
                           style={{
                             textAlign: "center",
