@@ -55,7 +55,7 @@ export const LeaveApproval: React.FC = () => {
   const [sortOrder, setSortOrder] = useState<string>('asc');
   const [currentPage, setCurrentPage] = useState(1);
   // const [selectedOption, setSelectedOption] = React.useState('');
-  const [dataPerPage] = useState(4);
+  const [dataPerPage] = useState(15);
   const [employeeId, setEmployeeId] = useState(0);
 
   useEffect(() => {
@@ -110,7 +110,8 @@ export const LeaveApproval: React.FC = () => {
   // ): void => {
   //   setSelectedOption(event.currentTarget.value);
   // };
-
+  let indexFirstData = 0;
+  let indexOfLastPage = 0;
   if (LeaveDetails !== null) {
     filteredEmployees = LeaveDetails.filter(
       (employee) =>
@@ -150,8 +151,11 @@ export const LeaveApproval: React.FC = () => {
         return 0;
       }
     });
-    const indexOfLastPage = currentPage * dataPerPage;
-    const indexFirstData = indexOfLastPage - dataPerPage;
+    indexFirstData = (currentPage - 1) * dataPerPage;
+    indexOfLastPage = Math.min(
+      indexFirstData + dataPerPage,
+      LeaveDetails.length
+    );
     CurrentData = sortedItems.slice(indexFirstData, indexOfLastPage);
   }
 
@@ -245,7 +249,7 @@ export const LeaveApproval: React.FC = () => {
                                     className={styles.leaveDetailsDescription}
                                     data-label="S.No"
                                   >
-                                    {CurrentData.indexOf(leave) + 1}
+                                    {indexFirstData + index + 1}
                                   </td>
                                 )}
                                 <td

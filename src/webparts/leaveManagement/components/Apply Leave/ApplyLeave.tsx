@@ -25,10 +25,34 @@ type leaveType = {
 };
 export const ApplyLeave = () => {
   LeaveCalculation();
-  const [employeeData, setEmployeeData] = useState<employeeData[]>([]);
-  const [apileaveType, setApiLeaveType] = useState<leaveType[]>([]);
   const { availableLeaves } = React.useContext(MyContext);
   const navigate = useNavigate();
+  console.log(navigate);
+
+  const [employeeData, setEmployeeData] = useState<employeeData[]>([]);
+  const [apileaveType, setApiLeaveType] = useState<leaveType[]>([]);
+  // const navigate = useNavigate();
+  const [leave, setLeave] = useState("");
+  const [leaveError, setLeaveError] = useState("");
+  const [leaveType, setLeaveType] = useState("Full Day");
+  const [leaveTypeError, setLeaveTypeError] = useState("");
+  const [reason, setReason] = useState("");
+  const [reasonError, setReasonError] = useState("");
+  const [reasonLengthError, setReasonLengthError] = useState("");
+  const [fromDate, setFromDate] = useState(
+    new Date().toISOString().substr(0, 10)
+  );
+  const [, setFromDateError] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [toDateError, setToDateError] = useState("");
+  const [dateSameError, setDateSameError] = useState("");
+  // const [todateSameError, setTodateSameError] = useState("");
+  const [data, setdata] = useState(false);
+
+  const [userEmail, setUserEmail] = useState("");
+  // const [leaveDatas] = useState("");
+  const [employeeData1, setEmployeeData1] = useState<empData[]>([]);
+  // const [fromData2, setFromData2] = useState<empData[]>([]);
 
   useEffect(() => {
     fetch(
@@ -75,29 +99,6 @@ export const ApplyLeave = () => {
       })
       .catch((err) => console.log(err));
   }, []);
-  // const navigate = useNavigate();
-  const [leave, setLeave] = useState("");
-  const [leaveError, setLeaveError] = useState("");
-  const [leaveType, setLeaveType] = useState("Full Day");
-  const [leaveTypeError, setLeaveTypeError] = useState("");
-  const [reason, setReason] = useState("");
-  const [reasonError, setReasonError] = useState("");
-  const [reasonLengthError, setReasonLengthError] = useState("");
-  const [fromDate, setFromDate] = useState(
-    new Date().toISOString().substr(0, 10)
-  );
-  const [, setFromDateError] = useState("");
-  const [toDate, setToDate] = useState("");
-  const [toDateError, setToDateError] = useState("");
-  const [dateSameError, setDateSameError] = useState("");
-  // const [todateSameError, setTodateSameError] = useState("");
-  const [data, setdata] = useState(false);
-  // const [status1, setStatus1] = useState<empData[]>([]);
-
-  const [userEmail, setUserEmail] = useState("");
-  // const [leaveDatas] = useState("");
-  const [employeeData1, setEmployeeData1] = useState<empData[]>([]);
-  // const [fromData2, setFromData2] = useState<empData[]>([]);
 
   let userName = "";
   let ID = "";
@@ -144,68 +145,72 @@ export const ApplyLeave = () => {
   }, [ID]);
 
   console.log(employeeData1);
-
   function isLeaveAlreadyApplied(
-    employeeData1: any,
+    employeeData: any,
     fromDate: any,
     toDate: any
   ) {
-    const overlappingRecords = employeeData1.filter((record: any) => {
+    const overlappingRecords = employeeData.filter((record: any) => {
       const recordStart = new Date(record.FormDate);
       const recordEnd = new Date(record.ToDate);
       const requestedStart = new Date(fromDate);
       const requestedEnd = new Date(toDate);
+      const status = record.Status;
+      console.log(status);
+      if (status === "Cancelled") {
+        console.log(record);
+      }
       return (
         (requestedStart >= recordStart && requestedStart <= recordEnd) ||
         (requestedEnd >= recordStart && requestedEnd <= recordEnd) ||
         (requestedStart <= recordStart && requestedEnd >= recordEnd)
       );
     });
+
     if (overlappingRecords.length > 0) {
-      return true;
+      console.log(overlappingRecords);
+      const overlappingApprovedOrPendingRecords = overlappingRecords.filter(
+        (record: any) => {
+          return record.Status !== "Cancelled" && record.Status !== "Rejected";
+        }
+      );
+
+      console.log(overlappingApprovedOrPendingRecords);
+      if (overlappingApprovedOrPendingRecords.length > 0) {
+        return {
+          status: overlappingApprovedOrPendingRecords[0].Status,
+          message:
+            overlappingApprovedOrPendingRecords[0].Status === "Approved"
+              ? `Your leave has already been taken and approved by Admin.`
+              : `You have already applied for a leave on ${new Date(
+                  overlappingApprovedOrPendingRecords[0].FormDate
+                ).toLocaleDateString()} - ${new Date(
+                  overlappingApprovedOrPendingRecords[0].ToDate
+                ).toLocaleDateString()}. Please wait for admin approval.`,
+        };
+      }
     }
-    console.log(overlappingRecords);
-    const previousRecords = employeeData1.filter((record: any) => {
-      const recordStart = new Date(record.FormDate);
-      const recordEnd = new Date(record.ToDate);
-      const requestedStart = new Date(fromDate);
-      const requestedEnd = new Date(toDate);
-      return recordEnd < requestedStart || recordStart > requestedEnd;
-    });
-    console.log(previousRecords);
-    previousRecords.length > 0;
+
+    return false;
   }
 
   async function handleSubmit() {
     if (toDate) {
-      if (isLeaveAlreadyApplied(employeeData1, fromDate, toDate)) {
-        setDateSameError("Leave cannot be applied. Overlapping records found.");
+      const overlappingRecord = isLeaveAlreadyApplied(
+        employeeData1,
+        fromDate,
+        toDate
+      );
+      if (overlappingRecord) {
+        setDateSameError(overlappingRecord.message);
         setTimeout(() => {
           setDateSameError("");
-        }, 3500);
+        }, 5500);
       } else {
         setdata(true);
         setDateSameError("");
       }
     }
-    // Applied Same Date error
-    // if (filteredFromDate.length !== 0) {
-    //   setDateSameError("Your entered from date is alredy applied");
-    //   setTimeout(() => {
-    //     setDateSameError("");
-    //   }, 3500);
-    // } else {
-    //   setTodateSameError("");
-    // }
-    // // Applied Same Date error
-    // if (filteredToDate.length !== 0) {
-    //   setTodateSameError("Your entered to date is alredy applied");
-    //   setTimeout(() => {
-    //     setTodateSameError("");
-    //   }, 3500);
-    // } else {
-    //   setTodateSameError("");
-    // }
     // Validate the leave type
     if (!leave || leave === "Select Leave") {
       setLeaveError("Please select a leave");
