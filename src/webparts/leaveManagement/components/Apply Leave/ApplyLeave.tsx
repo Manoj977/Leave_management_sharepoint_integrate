@@ -19,7 +19,7 @@ type employeeData = {
   email: string;
   leaveID: number;
 };
-type empData = { FormDate: Date; ToDate: Date };
+type empData = { FormDate: Date; ToDate: Date; Status: string | any };
 type leaveType = {
   leaveType: string;
 };
@@ -53,6 +53,7 @@ export const ApplyLeave = () => {
       })
       .catch((err) => console.log(err));
   }, []);
+
   useEffect(() => {
     fetch(
       "https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/lists/GetByTitle('Leave%20Type%20Master')/items"
@@ -91,6 +92,7 @@ export const ApplyLeave = () => {
   const [dateSameError, setDateSameError] = useState("");
   // const [todateSameError, setTodateSameError] = useState("");
   const [data, setdata] = useState(false);
+  // const [status1, setStatus1] = useState<empData[]>([]);
 
   const [userEmail, setUserEmail] = useState("");
   // const [leaveDatas] = useState("");
@@ -134,6 +136,7 @@ export const ApplyLeave = () => {
           ToDate: entry.content["m:properties"]["d:ToDate"]._text,
           Count: entry.content["m:properties"]["d:count"]._text,
           LeaveId: entry.content["m:properties"]["d:Id"]._text,
+          Status: entry.content["m:properties"]["d:Status"]._text,
         }));
         setEmployeeData1(empData);
       })
@@ -142,35 +145,6 @@ export const ApplyLeave = () => {
 
   console.log(employeeData1);
 
-  // let fromDate1 = employeeData1.map((e) => {
-  //   const timezoneDate = new Date(e.FormDate); // Example timezone date
-  //   const normalDate = timezoneDate.toLocaleDateString(); // Convert to normal date
-  //   const data2 = new Date(normalDate).toLocaleDateString("fr-CA");
-  //   return data2;
-  // });
-  // console.log(fromDate1);
-
-  // const filteredFromDate: any = fromDate1.filter(
-  //   (detail) => detail === fromDate
-  // );
-  // console.log(filteredFromDate);
-
-  // // toDate
-  // let toDate1 = employeeData1.map((e) => {
-  //   const timezoneDate = new Date(e.ToDate); // Example timezone date
-  //   const normalDate = timezoneDate.toLocaleDateString(); // Convert to normal date
-  //   const data2 = new Date(normalDate).toLocaleDateString("fr-CA");
-  //   return data2;
-  // });
-
-  // console.log(toDate1);
-  // const filteredToDate = toDate1.filter((detail) => detail === toDate);
-  // console.log(filteredToDate);
-
-  // const mergeData = [...fromDate1, ...toDate1];
-  // console.log(mergeData);
-  // const filteredDate = mergeData.map((detail) => detail === fromDate || toDate);
-  // console.log(filteredDate);
   function isLeaveAlreadyApplied(
     employeeData1: any,
     fromDate: any,
@@ -198,8 +172,10 @@ export const ApplyLeave = () => {
       const requestedEnd = new Date(toDate);
       return recordEnd < requestedStart || recordStart > requestedEnd;
     });
+    console.log(previousRecords);
     previousRecords.length > 0;
   }
+
   async function handleSubmit() {
     if (toDate) {
       if (isLeaveAlreadyApplied(employeeData1, fromDate, toDate)) {
