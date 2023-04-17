@@ -40,13 +40,13 @@ const Sidebar = ({ loggedUserRole }: any) => {
                   <img
                     src={require('../../assets/logo/logo-1-180x180.png')}
                     className={styles.sidebarImage}
-                    alt="zlendo"
+                    alt='zlendo'
                   />
                   <span className={styles.sidebarSpan}>Zlendo</span>
                 </div>
                 <div>
                   <button
-                    type="button"
+                    type='button'
                     onClick={() => handleCloseSideBar()}
                     className={styles.Cancel}
                   >
@@ -95,7 +95,7 @@ const Sidebar = ({ loggedUserRole }: any) => {
                           >
                             {link.icon}
 
-                            <span className="capitalize">{link.name}</span>
+                            <span className='capitalize'>{link.name}</span>
                           </NavLink>
                         </div>
                       ))}
@@ -120,13 +120,13 @@ const Sidebar = ({ loggedUserRole }: any) => {
                   <img
                     src={require('../../assets/logo/logo-1-180x180.png')}
                     className={styles.sidebarImage}
-                    alt="zlendo"
+                    alt='zlendo'
                   />
                   <span className={styles.sidebarSpan}>Zlendo</span>
                 </div>
                 <div>
                   <button
-                    type="button"
+                    type='button'
                     onClick={() => handleCloseSideBar()}
                     className={styles.Cancel}
                   >
@@ -161,7 +161,7 @@ const Sidebar = ({ loggedUserRole }: any) => {
                         >
                           {link.icon}
 
-                          <span className="capitalize">{link.name}</span>
+                          <span className='capitalize'>{link.name}</span>
                         </NavLink>
                       </div>
                     ))}

@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react';
 
-import { MdOutlineCancel } from "react-icons/md";
+import { MdOutlineCancel } from 'react-icons/md';
 
-import styles from "./TotalLeave.module.scss";
+import styles from './TotalLeave.module.scss';
 
 interface TotalPageProps {
   setLeaveData: any;
@@ -19,12 +19,12 @@ const TotalLeave: React.FC<TotalPageProps> = ({ setLeaveData }) => {
             </header>
 
             <button
-              type="button"
+              type='button'
               onClick={() => setLeaveData(false)}
               style={{
-                color: "rgb(153,171,180)",
-                borderRadius: "50%",
-                border: "none",
+                color: 'rgb(153,171,180)',
+                borderRadius: '50%',
+                border: 'none',
               }}
               className={styles.totalLeaveCloseButton}
             >
@@ -48,7 +48,7 @@ const TotalLeave: React.FC<TotalPageProps> = ({ setLeaveData }) => {
               </thead>
               <tbody>
                 <tr>
-                  <th scope="col" className={styles.TableBodyHead}>
+                  <th scope='col' className={styles.TableBodyHead}>
                     Annual Leave
                   </th>
 
@@ -57,7 +57,7 @@ const TotalLeave: React.FC<TotalPageProps> = ({ setLeaveData }) => {
                   </td>
                 </tr>
                 <tr>
-                  <th scope="col" className={styles.TableBodyHead}>
+                  <th scope='col' className={styles.TableBodyHead}>
                     Casual Leave
                   </th>
                   <td className={styles.TableBodyDescription}>
@@ -65,7 +65,7 @@ const TotalLeave: React.FC<TotalPageProps> = ({ setLeaveData }) => {
                   </td>
                 </tr>
                 <tr>
-                  <th scope="col" className={styles.TableBodyHead}>
+                  <th scope='col' className={styles.TableBodyHead}>
                     compensatory Leave
                   </th>
                   <td className={styles.TableBodyDescription}>
@@ -73,7 +73,7 @@ const TotalLeave: React.FC<TotalPageProps> = ({ setLeaveData }) => {
                   </td>
                 </tr>
                 <tr>
-                  <th scope="col" className={styles.TableBodyHead}>
+                  <th scope='col' className={styles.TableBodyHead}>
                     Sick Leave
                   </th>
                   <td className={styles.TableBodyDescription}>
@@ -81,7 +81,7 @@ const TotalLeave: React.FC<TotalPageProps> = ({ setLeaveData }) => {
                   </td>
                 </tr>
                 <tr>
-                  <th scope="col" className={styles.TableBodyHead}>
+                  <th scope='col' className={styles.TableBodyHead}>
                     Nopay Leave
                   </th>
                   <td className={styles.TableBodyDescription}>
@@ -89,7 +89,7 @@ const TotalLeave: React.FC<TotalPageProps> = ({ setLeaveData }) => {
                   </td>
                 </tr>
                 <tr>
-                  <th scope="col" className={styles.TableBodyHead}>
+                  <th scope='col' className={styles.TableBodyHead}>
                     Others
                   </th>
                   <td className={styles.TableBodyDescription}>
@@ -97,7 +97,7 @@ const TotalLeave: React.FC<TotalPageProps> = ({ setLeaveData }) => {
                   </td>
                 </tr>
                 <tr>
-                  <th scope="col" className={styles.TableBodyHead}>
+                  <th scope='col' className={styles.TableBodyHead}>
                     Total
                   </th>
                   <td className={styles.TableBodyDescription}>

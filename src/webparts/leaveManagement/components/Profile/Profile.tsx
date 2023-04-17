@@ -101,7 +101,7 @@ export default function Profile() {
           {earningData.map((item, index) => (
             <div key={index} className={style.card_layout}>
               <button
-                type="button"
+                type='button'
                 name={item.title}
                 style={{
                   color: item.iconColor,

@@ -22,12 +22,12 @@ const Navbar: React.FC = () => {
     <div className={styles.navbarHeader}>
       <div>
         <button
-          type="button"
+          type='button'
           onClick={() => {
             setSideBarActive(!sidebarActive);
           }}
           className={styles.navbarButton}
-          data-tip="Menu"
+          data-tip='Menu'
         >
           <span className={styles.navbarButtonIcon} />
           <AiOutlineMenu />

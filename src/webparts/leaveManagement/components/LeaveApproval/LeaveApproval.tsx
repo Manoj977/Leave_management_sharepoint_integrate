@@ -188,13 +188,13 @@ export const LeaveApproval: React.FC = () => {
             <div className={styles.leaveapprovalSearchBox}>
               {/* <p className={styles.searchLabel}>Search:</p> */}
               <input
-                type="search"
-                id="search-dropdown"
+                type='search'
+                id='search-dropdown'
                 className={styles.leaveapprovalInput}
                 placeholder={'Search....'}
                 value={searchTerm}
                 onChange={handleSearch}
-                autoComplete="off"
+                autoComplete='off'
                 required
               />
               {/* <select value={selectedOption} onChange={handleDropdownChange}>
@@ -263,32 +263,32 @@ export const LeaveApproval: React.FC = () => {
                                 {window.innerWidth > 590 && (
                                   <td
                                     className={styles.leaveDetailsDescription}
-                                    data-label="S.No"
+                                    data-label='S.No'
                                   >
                                     {indexFirstData + index + 1}
                                   </td>
                                 )}
                                 <td
                                   className={`${styles.leaveDetailsDescription}`}
-                                  data-label="ID"
+                                  data-label='ID'
                                 >
                                   {leave.ID}
                                 </td>
                                 <td
                                   className={styles.leaveDetailsDescription}
-                                  data-label="Name"
+                                  data-label='Name'
                                 >
                                   {leave.Name}
                                 </td>
                                 <td
                                   className={styles.leaveDetailsDescription}
-                                  data-label="Leave"
+                                  data-label='Leave'
                                 >
                                   {leave.Leave}
                                 </td>
                                 <td
                                   className={styles.leaveDetailsDescription}
-                                  data-label="Leave Type"
+                                  data-label='Leave Type'
                                 >
                                   {leave.LeaveType}
                                 </td>
@@ -296,22 +296,22 @@ export const LeaveApproval: React.FC = () => {
                                   <div
                                     className={`${styles.leaveApprovalButtonDiv} ${styles.leaveApprovalDate}`}
                                   >
-                                    <p data-label="From Date">
+                                    <p data-label='From Date'>
                                       {leave.FromDate}
                                     </p>
                                     <span>-</span>
-                                    <p data-label="To Date">{leave.ToDate}</p>
+                                    <p data-label='To Date'>{leave.ToDate}</p>
                                   </div>
                                 </td>
                                 <td
                                   className={styles.leaveDetailsDescription}
-                                  data-label="Days"
+                                  data-label='Days'
                                 >
                                   {leave.Days}
                                 </td>
                                 <td
                                   className={styles.leaveDetailsDescription}
-                                  data-label="Status"
+                                  data-label='Status'
                                 >
                                   <span
                                     className={`${
@@ -343,13 +343,13 @@ export const LeaveApproval: React.FC = () => {
 
                                 <td
                                   className={styles.leaveDetailsDescription}
-                                  data-label="RemarK"
+                                  data-label='RemarK'
                                 >
                                   {leave.Remark}
                                 </td>
                                 <td
                                   className={styles.leaveDetailsDescription}
-                                  data-label="Action"
+                                  data-label='Action'
                                 >
                                   <div
                                     className={styles.leaveApprovalButtonDiv}

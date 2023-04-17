@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from 'react';
 
 import {
   BiCalendarPlus,
   BiCalendarMinus,
   BiCalendarStar,
-} from "react-icons/bi";
-import { AiOutlineCalendar } from "react-icons/ai";
-import { HiOutlineRefresh } from "react-icons/hi";
-import { BsGraphDownArrow } from "react-icons/bs";
-import { TbListDetails } from "react-icons/tb";
-import { MdOutlineDashboard } from "react-icons/md";
-import { TfiCheckBox } from "react-icons/tfi";
-import { RiFileTextLine } from "react-icons/ri";
+} from 'react-icons/bi';
+import { AiOutlineCalendar } from 'react-icons/ai';
+import { HiOutlineRefresh } from 'react-icons/hi';
+import { BsGraphDownArrow } from 'react-icons/bs';
+import { TbListDetails } from 'react-icons/tb';
+import { MdOutlineDashboard } from 'react-icons/md';
+import { TfiCheckBox } from 'react-icons/tfi';
+import { RiFileTextLine } from 'react-icons/ri';
 type MyContextType = {
   isSkeletonLoading: boolean;
   setIsSkeletonLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -88,147 +88,147 @@ type LeaveDetail = {
 export const MyContext = createContext<MyContextType>({
   isSkeletonLoading: true,
   setIsSkeletonLoading: () => {
-    ("");
+    ('');
   },
   screenSize: window.innerWidth,
   setScreenSize: () => {
-    ("");
+    ('');
   },
-  currentColor: "#ff4500",
+  currentColor: '#ff4500',
   setCurrentColor: () => {
-    ("");
+    ('');
   },
-  currentMode: "light",
+  currentMode: 'light',
   setCurrentMode: () => {
-    ("");
+    ('');
   },
   themeSettings: false,
   setThemeSettings: () => {
-    ("");
+    ('');
   },
   activeMenu: true,
   setActiveMenu: () => {
-    ("");
+    ('');
   },
   isNotificationClicked: false,
   setIsNotificationClicked: () => {
-    ("");
+    ('');
   },
   isInfoClicked: false,
   setIsInfoClicked: () => {
-    ("");
+    ('');
   },
   isSignedIn: null,
   setIsSignedIn: () => {
-    ("");
+    ('');
   },
   showProfile: false,
   setShowProfile: () => {
-    ("");
+    ('');
   },
   leaveData: false,
   setLeaveData: () => {
-    ("");
+    ('');
   },
   balanceLeave: false,
   setBalanceLeave: () => {
-    ("");
+    ('');
   },
   usedLeave: false,
   setUsedLeave: () => {
-    ("");
+    ('');
   },
   sidebarActive: false,
   setSideBarActive: () => {
-    ("");
+    ('');
   },
   earningData: [
     {
       icon: <BiCalendarPlus />,
-      title: "Total Leaves",
-      count: "12",
-      iconColor: "#03C9D7",
-      iconBg: "#E5FAFB",
-      pcColor: "red-600",
+      title: 'Total Leaves',
+      count: '12',
+      iconColor: '#03C9D7',
+      iconBg: '#E5FAFB',
+      pcColor: 'red-600',
     },
     {
       icon: <BiCalendarStar />,
-      title: "Available Leaves",
-      count: "04",
-      iconColor: "rgb(255, 244, 229)",
-      iconBg: "rgb(254, 201, 15)",
-      pcColor: "green-600",
+      title: 'Available Leaves',
+      count: '04',
+      iconColor: 'rgb(255, 244, 229)',
+      iconBg: 'rgb(254, 201, 15)',
+      pcColor: 'green-600',
     },
     {
       icon: <BiCalendarMinus />,
-      title: "Taken Leaves",
-      count: "08",
-      iconColor: "rgb(228, 106, 118)",
-      iconBg: "rgb(255, 244, 229)",
-      pcColor: "green-600",
+      title: 'Taken Leaves',
+      count: '08',
+      iconColor: 'rgb(228, 106, 118)',
+      iconBg: 'rgb(255, 244, 229)',
+      pcColor: 'green-600',
     },
     {
       icon: <BsGraphDownArrow />,
-      count: "0",
-      title: "Loss of Pay",
-      iconColor: "rgb(255,68,0)",
-      iconBg: " #ffc7b3",
-      pcColor: "red-600",
+      count: '0',
+      title: 'Loss of Pay',
+      iconColor: 'rgb(255,68,0)',
+      iconBg: ' #ffc7b3',
+      pcColor: 'red-600',
     },
     {
       icon: <HiOutlineRefresh />,
-      amount: "39,354",
-      percentage: "-12%",
-      title: "Refresh",
-      iconColor: "rgb(0, 194, 146)",
-      iconBg: "rgb(235, 250, 242)",
-      pcColor: "red-600",
+      amount: '39,354',
+      percentage: '-12%',
+      title: 'Refresh',
+      iconColor: 'rgb(0, 194, 146)',
+      iconBg: 'rgb(235, 250, 242)',
+      pcColor: 'red-600',
     },
   ],
   links: [
     {
-      title: "Dashboard",
+      title: 'Dashboard',
       links: [
         {
-          name: "Profile",
+          name: 'Profile',
           icon: <MdOutlineDashboard />,
-          role: "User",
+          role: 'User',
         },
       ],
     },
     {
-      title: "Admin",
+      title: 'Admin',
       links: [
         {
-          name: "Leave Approval",
+          name: 'Leave Approval',
           icon: <TfiCheckBox />,
-          role: "Admin",
+          role: 'Admin',
         },
       ],
     },
     {
-      title: "Pages",
+      title: 'Pages',
       links: [
         {
-          name: "Apply Leave",
+          name: 'Apply Leave',
           icon: <RiFileTextLine />,
-          role: "User",
+          role: 'User',
         },
         {
-          name: "Leave Details",
+          name: 'Leave Details',
           icon: <TbListDetails />,
-          role: "User",
+          role: 'User',
         },
       ],
     },
 
     {
-      title: "Apps",
+      title: 'Apps',
       links: [
         {
-          name: "public Holidays",
+          name: 'public Holidays',
           icon: <AiOutlineCalendar />,
-          role: "User",
+          role: 'User',
         },
       ],
     },
@@ -236,32 +236,32 @@ export const MyContext = createContext<MyContextType>({
   leaveDetails: [],
   takenLeaves: 0,
   setTakenLeaves: () => {
-    ("");
+    ('');
   },
   lossOfPay: 0,
   setLossofPay: () => {
-    ("");
+    ('');
   },
   action: false,
   setAction: () => {
-    ("");
+    ('');
   },
   cancelReason: false,
   setCancelReason: () => {
-    ("");
+    ('');
   },
   approveLeave: false,
   setApproveLeave: () => {
-    ("");
+    ('');
   },
   rejectLeave: false,
   setRejectLeave: () => {
-    ("");
+    ('');
   },
   totalLeaves: 12,
   availableLeaves: 0,
   setAvailableLeaves: () => {
-    ("");
+    ('');
   },
 });
 
@@ -272,8 +272,8 @@ interface Props {
 export const MyContextProvider = ({ children }: Props) => {
   const [isSkeletonLoading, setIsSkeletonLoading] = useState<boolean>(true);
   const [screenSize, setScreenSize] = useState<number>(window.innerWidth);
-  const [currentColor, setCurrentColor] = useState<string>("#ff4500");
-  const [currentMode, setCurrentMode] = useState<string>("light");
+  const [currentColor, setCurrentColor] = useState<string>('#ff4500');
+  const [currentMode, setCurrentMode] = useState<string>('light');
   const [themeSettings, setThemeSettings] = useState<boolean>(false);
   const [activeMenu, setActiveMenu] = useState(true);
   const [isNotificationClicked, setIsNotificationClicked] = useState(false);
@@ -295,90 +295,90 @@ export const MyContextProvider = ({ children }: Props) => {
   const [earningData] = useState([
     {
       icon: <BiCalendarPlus />,
-      title: "Total Leaves",
-      count: "12",
-      iconColor: "#03C9D7",
-      iconBg: "#E5FAFB",
-      pcColor: "red-600",
+      title: 'Total Leaves',
+      count: '12',
+      iconColor: '#03C9D7',
+      iconBg: '#E5FAFB',
+      pcColor: 'red-600',
     },
     {
       icon: <BiCalendarStar />,
-      title: "Available Leaves",
-      count: "04",
-      iconColor: "rgb(255, 244, 229)",
-      iconBg: "rgb(254, 201, 15)",
-      pcColor: "green-600",
+      title: 'Available Leaves',
+      count: '04',
+      iconColor: 'rgb(255, 244, 229)',
+      iconBg: 'rgb(254, 201, 15)',
+      pcColor: 'green-600',
     },
     {
       icon: <BiCalendarMinus />,
-      title: "Taken Leaves",
-      count: "08",
-      iconColor: "rgb(228, 106, 118)",
-      iconBg: "rgb(255, 244, 229)",
-      pcColor: "green-600",
+      title: 'Taken Leaves',
+      count: '08',
+      iconColor: 'rgb(228, 106, 118)',
+      iconBg: 'rgb(255, 244, 229)',
+      pcColor: 'green-600',
     },
     {
       icon: <BsGraphDownArrow />,
-      count: "0",
-      title: "Loss of Pay",
-      iconColor: "rgb(255,68,0)",
-      iconBg: " #ffc7b3",
-      pcColor: "red-600",
+      count: '0',
+      title: 'Loss of Pay',
+      iconColor: 'rgb(255,68,0)',
+      iconBg: ' #ffc7b3',
+      pcColor: 'red-600',
     },
     {
       icon: <HiOutlineRefresh />,
-      amount: "39,354",
-      percentage: "-12%",
-      title: "Refresh",
-      iconColor: "rgb(0, 194, 146)",
-      iconBg: "rgb(235, 250, 242)",
-      pcColor: "red-600",
+      amount: '39,354',
+      percentage: '-12%',
+      title: 'Refresh',
+      iconColor: 'rgb(0, 194, 146)',
+      iconBg: 'rgb(235, 250, 242)',
+      pcColor: 'red-600',
     },
   ]);
   const [links] = useState([
     {
-      title: "Dashboard",
+      title: 'Dashboard',
       links: [
         {
-          name: "Profile",
+          name: 'Profile',
           icon: <MdOutlineDashboard />,
-          role: "User",
+          role: 'User',
         },
       ],
     },
     {
-      title: "Admin",
+      title: 'Admin',
       links: [
         {
-          name: "Leave Approval",
+          name: 'Leave Approval',
           icon: <TfiCheckBox />,
-          role: "Admin",
+          role: 'Admin',
         },
       ],
     },
     {
-      title: "Pages",
+      title: 'Pages',
       links: [
         {
-          name: "Apply Leave",
+          name: 'Apply Leave',
           icon: <RiFileTextLine />,
-          role: "User",
+          role: 'User',
         },
         {
-          name: "Leave Details",
+          name: 'Leave Details',
           icon: <TbListDetails />,
-          role: "User",
+          role: 'User',
         },
       ],
     },
 
     {
-      title: "Apps",
+      title: 'Apps',
       links: [
         {
-          name: "public Holidays",
+          name: 'public Holidays',
           icon: <AiOutlineCalendar />,
-          role: "User",
+          role: 'User',
         },
       ],
     },
@@ -388,10 +388,10 @@ export const MyContextProvider = ({ children }: Props) => {
       setScreenSize(window.innerWidth);
     };
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
 
     return () => {
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
   useEffect(() => {
@@ -406,9 +406,9 @@ export const MyContextProvider = ({ children }: Props) => {
     const handleResize = () => {
       setScreenSize(window.innerWidth);
     };
-    window.addEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
     handleResize();
-    return () => window.removeEventListener("resize", handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, [setScreenSize]);
 
   useEffect(() => {

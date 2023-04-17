@@ -68,25 +68,25 @@ export const PublicHolidays = () => {
                       <tr key={index}>
                         <td
                           className={`${styles.publicHolidaysSection_one_Table_tbody_td}`}
-                          data-label="S.No"
+                          data-label='S.No'
                         >
                           {index + 1}
                         </td>
                         <td
                           className={`${styles.publicHolidaysSection_one_Table_tbody_td}`}
-                          data-label="Title"
+                          data-label='Title'
                         >
                           {holiday.HolidayName}
                         </td>
                         <td
                           className={`${styles.publicHolidaysSection_one_Table_tbody_td}`}
-                          data-label="Date"
+                          data-label='Date'
                         >
                           {holiday.Date}
                         </td>
                         <td
                           className={`${styles.publicHolidaysSection_one_Table_tbody_td}`}
-                          data-label="Day"
+                          data-label='Day'
                         >
                           {holiday.Day}
                         </td>
