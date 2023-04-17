@@ -2,15 +2,15 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import React, { useEffect, useState } from 'react';
-import convert from 'xml-js';
-import { IList, Web, sp } from '@pnp/sp/presets/all';
-import styles from './LeaveDetails.module.scss';
+import React, { useEffect, useState } from "react";
+import convert from "xml-js";
+import { IList, Web, sp } from "@pnp/sp/presets/all";
+import styles from "./LeaveDetails.module.scss";
 
-import { MyContext } from '../../context/contextProvider';
-import { Link } from 'react-router-dom';
-import Pagination from '../Pagination/Pagination';
-import { MdOutlineCancel } from 'react-icons/md';
+import { MyContext } from "../../context/contextProvider";
+import { Link } from "react-router-dom";
+import Pagination from "../Pagination/Pagination";
+import { MdOutlineCancel } from "react-icons/md";
 // import { RiLoader4Line } from 'react-icons/ri';
 type LeaveDetail = {
   ID: string;
@@ -27,26 +27,26 @@ type LeaveDetail = {
 };
 type SortOption = { name: string; value: string };
 const sortOptions: SortOption[] = [
-  { name: 'S.No', value: 'S.No' },
-  { name: 'ID', value: 'ID' },
-  { name: 'Leave', value: 'Leave' },
-  { name: 'Leave Type', value: 'Leave Type' },
-  { name: 'From Date', value: 'From Date' },
-  { name: 'To Date', value: 'To Date' },
-  { name: 'Reason', value: 'Reason' },
-  { name: 'Days', value: 'Days' },
-  { name: 'Status', value: 'Status' },
-  { name: 'Remark', value: 'Remark' },
-  { name: 'Action', value: 'Action' },
+  { name: "S.No", value: "S.No" },
+  { name: "ID", value: "ID" },
+  { name: "Leave", value: "Leave" },
+  { name: "Leave Type", value: "Leave Type" },
+  { name: "From Date", value: "From Date" },
+  { name: "To Date", value: "To Date" },
+  { name: "Reason", value: "Reason" },
+  { name: "Days", value: "Days" },
+  { name: "Status", value: "Status" },
+  { name: "Remark", value: "Remark" },
+  { name: "Action", value: "Action" },
 ];
 export const LeaveDetails = () => {
   const { cancelReason, setCancelReason } = React.useContext(MyContext);
   const [leaveDetails, setLeaveDetails] = useState<LeaveDetail[]>([]);
-  const [userEmail, setUserEmail] = useState('');
+  const [userEmail, setUserEmail] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [dataPerPage] = useState(15);
-  const [leaveStatus, setLeaveStatus] = useState('');
-  const [reason, setReason] = useState('');
+  const [leaveStatus, setLeaveStatus] = useState("");
+  const [reason, setReason] = useState("");
 
   // const [reasonError, setReasonError] = useState('');
   console.log(userEmail);
@@ -71,28 +71,28 @@ export const LeaveDetails = () => {
           .map((entry: any) => {
             try {
               return {
-                ID: entry.content['m:properties']['d:Title']._text,
-                Name: entry.content['m:properties']['d:Name']._text,
-                Email: entry.content['m:properties']['d:Email']._text,
-                Leave: entry.content['m:properties']['d:Leave']._text,
-                LeaveType: entry.content['m:properties']['d:LeaveType']._text,
-                count: entry.content['m:properties']['d:count']._text,
+                ID: entry.content["m:properties"]["d:Title"]._text,
+                Name: entry.content["m:properties"]["d:Name"]._text,
+                Email: entry.content["m:properties"]["d:Email"]._text,
+                Leave: entry.content["m:properties"]["d:Leave"]._text,
+                LeaveType: entry.content["m:properties"]["d:LeaveType"]._text,
+                count: entry.content["m:properties"]["d:count"]._text,
                 FromDate: new Date(
-                  entry.content['m:properties']['d:FormDate']._text
+                  entry.content["m:properties"]["d:FormDate"]._text
                 ).toLocaleDateString(),
                 ToDate: new Date(
-                  entry.content['m:properties']['d:ToDate']._text
+                  entry.content["m:properties"]["d:ToDate"]._text
                 ).toLocaleDateString(),
-                Reason: entry.content['m:properties']['d:Reason']._text,
-                Status: entry.content['m:properties']['d:Status']._text,
-                Remark: entry.content['m:properties']['d:Remark']._text,
-                Days: entry.content['m:properties']['d:count']._text,
-                leaveID: entry.content['m:properties']['d:ID']._text,
+                Reason: entry.content["m:properties"]["d:Reason"]._text,
+                Status: entry.content["m:properties"]["d:Status"]._text,
+                Remark: entry.content["m:properties"]["d:Remark"]._text,
+                Days: entry.content["m:properties"]["d:count"]._text,
+                leaveID: entry.content["m:properties"]["d:ID"]._text,
               };
             } catch (error) {
               if (
                 error instanceof TypeError &&
-                error.message.includes('Cannot read properties of undefined')
+                error.message.includes("Cannot read properties of undefined")
               ) {
                 return null;
               } else {
@@ -108,7 +108,7 @@ export const LeaveDetails = () => {
         if (
           !(
             err instanceof TypeError &&
-            err.message.includes('Cannot read properties of undefined')
+            err.message.includes("Cannot read properties of undefined")
           )
         ) {
           console.log(err);
@@ -127,18 +127,18 @@ export const LeaveDetails = () => {
   const CurrentData: any =
     filteredLeaveDetails !== undefined
       ? filteredLeaveDetails.slice(indexFirstData, indexOfLastPage)
-      : '';
+      : "";
 
   const updateLeaveStatus = async (id: number, status: string) => {
     try {
-      const web = Web('https://zlendoit.sharepoint.com/sites/ZlendoTools');
-      const list: IList = web.lists.getByTitle('Leave Management');
+      const web = Web("https://zlendoit.sharepoint.com/sites/ZlendoTools");
+      const list: IList = web.lists.getByTitle("Leave Management");
 
       const itemToUpdate = list.items.getById(id);
       await itemToUpdate.update({ Status: status });
-      console.log('Leave status updated successfully!');
+      console.log("Leave status updated successfully!");
     } catch (error) {
-      console.log('Error updating leave status:', error);
+      console.log("Error updating leave status:", error);
     }
   };
   const handleCancel = async (id: number, status: string) => {
@@ -166,8 +166,8 @@ export const LeaveDetails = () => {
   return (
     <div
       style={{
-        width: '100%',
-        height: '100%',
+        width: "100%",
+        height: "100%",
       }}
     >
       {filteredLeaveDetails && (
@@ -187,7 +187,7 @@ export const LeaveDetails = () => {
                   })}
               </thead>
               <tbody className={styles.tableBody}>
-                {filteredLeaveDetails.length === 0 &&
+                {filteredLeaveDetails.length > 0 &&
                   CurrentData.map((leave: any, index: any) => (
                     <tr key={index} className={styles.tableBodyRow}>
                       <td className={styles.tableBodyRow} data-label="S.No">
@@ -231,21 +231,21 @@ export const LeaveDetails = () => {
                       <td className={styles.tableBodyRow} data-label="Status">
                         <span
                           className={`${
-                            leave.Status === 'Pending'
+                            leave.Status === "Pending"
                               ? `${styles.leaveStatusPeanding}`
-                              : ''
+                              : ""
                           } ${
-                            leave.Status === 'Approved'
+                            leave.Status === "Approved"
                               ? `${styles.leaveStatusApprove}`
-                              : ''
+                              : ""
                           } ${
-                            leave.Status === 'Cancelled'
+                            leave.Status === "Cancelled"
                               ? `${styles.leaveStatusCancel}`
-                              : ''
+                              : ""
                           } ${
-                            leave.Status === 'Rejected'
+                            leave.Status === "Rejected"
                               ? `${styles.leaveStatusReject}`
-                              : ''
+                              : ""
                           }`}
                         >
                           <span aria-hidden className={styles.leaveStatusSpan}>
@@ -260,11 +260,11 @@ export const LeaveDetails = () => {
                         className={styles.tableBodyRow}
                         data-label="Cancel Request"
                       >
-                        {leave.Status === 'Pending' ? (
+                        {leave.Status === "Pending" ? (
                           <button
-                            style={{ margin: '0px 2rem' }}
+                            style={{ margin: "0px 2rem" }}
                             onClick={() =>
-                              handleCancel(leave.leaveId, 'Cancelled')
+                              handleCancel(leave.leaveId, "Cancelled")
                             }
                             className={styles.leaveCancelButton}
                           >
@@ -273,10 +273,10 @@ export const LeaveDetails = () => {
                         ) : (
                           <p
                             style={{
-                              paddingLeft: '1rem',
-                              paddingRight: '1rem',
-                              paddingTop: '0.5rem',
-                              paddingBottom: '0.5rem',
+                              paddingLeft: "1rem",
+                              paddingRight: "1rem",
+                              paddingTop: "0.5rem",
+                              paddingBottom: "0.5rem",
                             }}
                           >
                             Leave {leave.Status}
@@ -291,7 +291,7 @@ export const LeaveDetails = () => {
                       <td className={styles.LeaveDetailsNoRecord} colSpan={11}>
                         <p
                           style={{
-                            textAlign: 'center',
+                            textAlign: "center",
                             fontWeight: 400,
                           }}
                         >
@@ -329,7 +329,7 @@ export const LeaveDetails = () => {
         </div>
       )}
       <div className={styles.applyLeaveButtonDiv}>
-        <Link to={'/Apply Leave'}>
+        <Link to={"/Apply Leave"}>
           <button className={styles.applyLeaveButton}>Apply Leave</button>
         </Link>
       </div>
@@ -346,9 +346,9 @@ export const LeaveDetails = () => {
                 type="button"
                 onClick={() => setCancelReason(false)}
                 style={{
-                  color: 'rgb(153,171,180)',
-                  borderRadius: '50%',
-                  border: 'none',
+                  color: "rgb(153,171,180)",
+                  borderRadius: "50%",
+                  border: "none",
                 }}
                 className={styles.CloseButton}
               >

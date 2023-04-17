@@ -528,7 +528,7 @@ export const ApplyLeave = () => {
         <div className={styles.button}>
           <div className="px-2" style={{ padding: "0rem 0.5rem" }}>
             <button
-              onClick={() => handleSubmit()}
+              onClick={(e) => handleSubmit(e)}
               className={`${styles.buttonSubmit} ${
                 leave.length === 0 ||
                 reason.length === 0 ||
