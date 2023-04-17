@@ -26,7 +26,10 @@ interface CssExports {
   'nameBoard_layout': string;
   'nameBoard_layout_title': string;
   'nameBoard_layout_title_Name': string;
+  'nameShadowLoading': string;
   'profilesection_layout': string;
+  'pulse': string;
+  'shadowLoading': string;
 }
 const cssExports: CssExports;
 export default cssExports;

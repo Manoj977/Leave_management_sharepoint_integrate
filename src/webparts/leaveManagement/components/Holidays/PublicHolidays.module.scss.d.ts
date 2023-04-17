@@ -5,6 +5,8 @@
 /* eslint-disable */
 
 interface CssExports {
+  'LoaderDivision': string;
+  'loader': string;
   'publicHolidaysSection': string;
   'publicHolidaysSection_one': string;
   'publicHolidaysSection_one_Table': string;
@@ -13,6 +15,7 @@ interface CssExports {
   'publicHolidaysSection_one_Table_th': string;
   'publicHolidaysSection_one_Table_th_max': string;
   'publicHolidaysTitle': string;
+  'spin': string;
 }
 const cssExports: CssExports;
 export default cssExports;

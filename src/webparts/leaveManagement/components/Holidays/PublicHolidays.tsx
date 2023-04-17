@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import convert from 'xml-js';
 import styles from './PublicHolidays.module.scss';
+import { RiLoader4Line } from 'react-icons/ri';
 
 type Holiday = {
   'S.No': number;
@@ -62,42 +63,44 @@ export const PublicHolidays = () => {
                   </tr>
                 </thead>
                 <tbody className={styles.publicHolidaysSection_one_Table_tbody}>
-                  {holidaysData.map((holiday, index) => (
-                    <tr key={index}>
-                      <td
-                        className={
-                          styles.publicHolidaysSection_one_Table_tbody_td
-                        }
-                        data-label="S.No"
-                      >
-                        {index + 1}
-                      </td>
-                      <td
-                        className={
-                          styles.publicHolidaysSection_one_Table_tbody_td
-                        }
-                        data-label="Title"
-                      >
-                        {holiday.HolidayName}
-                      </td>
-                      <td
-                        className={
-                          styles.publicHolidaysSection_one_Table_tbody_td
-                        }
-                        data-label="Date"
-                      >
-                        {holiday.Date}
-                      </td>
-                      <td
-                        className={
-                          styles.publicHolidaysSection_one_Table_tbody_td
-                        }
-                        data-label="Day"
-                      >
-                        {holiday.Day}
+                  {holidaysData.length > 0 ? (
+                    holidaysData.map((holiday, index) => (
+                      <tr key={index}>
+                        <td
+                          className={`${styles.publicHolidaysSection_one_Table_tbody_td}`}
+                          data-label="S.No"
+                        >
+                          {index + 1}
+                        </td>
+                        <td
+                          className={`${styles.publicHolidaysSection_one_Table_tbody_td}`}
+                          data-label="Title"
+                        >
+                          {holiday.HolidayName}
+                        </td>
+                        <td
+                          className={`${styles.publicHolidaysSection_one_Table_tbody_td}`}
+                          data-label="Date"
+                        >
+                          {holiday.Date}
+                        </td>
+                        <td
+                          className={`${styles.publicHolidaysSection_one_Table_tbody_td}`}
+                          data-label="Day"
+                        >
+                          {holiday.Day}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={4}>
+                        <div className={styles.LoaderDivision}>
+                          <RiLoader4Line className={styles.loader} />
+                        </div>
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
