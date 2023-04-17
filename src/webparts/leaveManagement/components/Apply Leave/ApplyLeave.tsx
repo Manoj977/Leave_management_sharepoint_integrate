@@ -46,13 +46,10 @@ export const ApplyLeave = () => {
   const [toDate, setToDate] = useState("");
   const [toDateError, setToDateError] = useState("");
   const [dateSameError, setDateSameError] = useState("");
-  // const [todateSameError, setTodateSameError] = useState("");
-  const [data, setdata] = useState(false);
 
   const [userEmail, setUserEmail] = useState("");
-  // const [leaveDatas] = useState("");
+
   const [employeeData1, setEmployeeData1] = useState<empData[]>([]);
-  // const [fromData2, setFromData2] = useState<empData[]>([]);
 
   useEffect(() => {
     fetch(
@@ -194,7 +191,7 @@ export const ApplyLeave = () => {
     return false;
   }
 
-  async function handleSubmit() {
+  const handleSubmit = () => {
     if (toDate) {
       const overlappingRecord = isLeaveAlreadyApplied(
         employeeData1,
@@ -203,11 +200,11 @@ export const ApplyLeave = () => {
       );
       if (overlappingRecord) {
         setDateSameError(overlappingRecord.message);
+
         setTimeout(() => {
           setDateSameError("");
         }, 5500);
       } else {
-        setdata(true);
         setDateSameError("");
       }
     }
@@ -283,7 +280,7 @@ export const ApplyLeave = () => {
       setLeaveTypeError("");
     }
 
-    if (leave && fromDate && toDate && leaveType && data && reason) {
+    if (leave && fromDate && toDate && leaveType && reason) {
       // Send the REST API request to add the item to the list
       // Define the data for the new item
       const itemData = {
@@ -330,11 +327,11 @@ export const ApplyLeave = () => {
       setFromDate(new Date().toISOString().substr(0, 10));
       setToDate("");
     }
-  }
+  };
 
   return (
     <div className={styles.ApplyLeave}>
-      <form className={styles.ApplyLeave_form}>
+      <form className={styles.ApplyLeave_form} onSubmit={handleSubmit}>
         <div className={styles.ApplyLeave_form_heading}>
           <p className={styles.ApplyLeave_form_heading_name}>Apply Leave</p>
         </div>
@@ -477,18 +474,7 @@ export const ApplyLeave = () => {
 
         <div className={styles.button}>
           <div className="px-2" style={{ padding: "0rem 0.5rem" }}>
-            <button
-              onClick={() => handleSubmit()}
-              className={`${styles.buttonSubmit} ${
-                leave.length === 0 ||
-                reason.length === 0 ||
-                fromDate.length === 0 ||
-                toDate.length === 0
-                  ? `${""}`
-                  : ` ${""}`
-              }`}
-              type="submit"
-            >
+            <button className={styles.buttonSubmit} type="submit">
               Submit
             </button>
           </div>
