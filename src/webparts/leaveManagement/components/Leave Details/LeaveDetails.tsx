@@ -303,12 +303,6 @@ export const LeaveDetails = () => {
               </tbody>
             </table>
           </div>
-          {/* {filteredLeaveDetails === undefined ||
-            (filteredLeaveDetails.length === 0 && (
-              <div className={styles.LoaderDivision}>
-                <RiLoader4Line className={styles.loader} />
-              </div>
-            ))} */}
           {filteredLeaveDetails === undefined ||
             (filteredLeaveDetails.length > 0 && (
               <div>
