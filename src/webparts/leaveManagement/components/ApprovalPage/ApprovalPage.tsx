@@ -2,10 +2,9 @@
 import React, { useEffect, useState } from 'react';
 import convert from 'xml-js';
 import styles from './Approvalpage.module.scss';
-// import { sp } from "@pnp/sp/presets/all";
 import { Web } from '@pnp/sp/webs';
 import { IList } from '@pnp/sp/lists';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { MyContext } from '../../context/contextProvider';
 
 import { MdOutlineCancel } from 'react-icons/md';
@@ -55,13 +54,12 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
   const [status, setStatus] = useState('');
 
   const location = useLocation();
-  const navigate = useNavigate();
   const pathArray = location.pathname.split('/');
   const LeaveId = pathArray[pathArray.length - 1];
   console.log(LeaveId);
 
   useEffect(() => {
-    const url = `https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/web/lists/getbytitle('Leave%20Management')/items?&$filter=ID%20eq%20%27${employeeId}%27`;
+    const url = `https://zlendoit.sharepoint.com/sites/production/_api/web/lists/getbytitle('Leave%20Management')/items?&$filter=ID%20eq%20%27${employeeId}%27`;
     console.log(url);
     fetch(url)
       .then((res) => res.text())
@@ -92,7 +90,7 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
           Reason: entry.content['m:properties']['d:Reason']._text,
           NoofDaysLeave: entry.content['m:properties']['d:count']._text,
           Status: entry.content['m:properties']['d:Status']._text,
-          Remark: entry.content['m:properties']['d:Remark']._text,
+          Remark: entry.content['m:properties']['d:n2yu']._text,
           // LeaveId: parseInt(entry.content["m:properties"]["d:ID"]._text),
         }));
         setApprove(leaveDetail[0].Status);
@@ -101,7 +99,7 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
   }, []);
   useEffect(() => {
     fetch(
-      "https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/web/lists/getbytitle('Employee%20Master')/items"
+      "https://zlendoit.sharepoint.com/sites/production/_api/web/lists/getbytitle('Employee%20Master')/items"
     )
       .then((res) => res.text())
       .then((data) => {
@@ -134,14 +132,13 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
     remark: string
   ) => {
     try {
-      const web = Web('https://zlendoit.sharepoint.com/sites/ZlendoTools');
+      const web = Web('https://zlendoit.sharepoint.com/sites/production');
       const list: IList = web.lists.getByTitle('Leave Management');
 
       const itemToUpdate = list.items.getById(id);
       await itemToUpdate.update({ Status: status });
-      await itemToUpdate.update({ Remark: remark });
+      await itemToUpdate.update({ n2yu: remark });
       console.log('Leave status updated successfully!');
-      navigate('/Leave Approval');
     } catch (error) {
       console.log('Error updating leave status:', error);
     }
@@ -205,14 +202,17 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
           <div className={styles.totalLeaveDiv1}>
             <div className={styles.totalLeaveDiv2}>
               <header className={styles.totalLeaveHeader}>
-                <div className={styles.totalLeaveHeaderDiv}>
-                  Confirm Approval
-                </div>
+                <div className={styles.totalLeaveHeaderDiv}>Action</div>
               </header>
 
               <button
                 type='button'
-                onClick={() => setAction(false)}
+                onClick={() => {
+                  console.log('Before:', reason, action);
+                  setReason('');
+                  setAction(false);
+                  console.log('After:', reason, action);
+                }}
                 style={{
                   color: 'rgb(153,171,180)',
                   borderRadius: '50%',

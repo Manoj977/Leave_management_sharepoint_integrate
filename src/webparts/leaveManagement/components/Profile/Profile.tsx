@@ -2,12 +2,15 @@
 /* eslint-disable no-void */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import style from './Profile.module.scss';
 import { MyContext } from '../../context/contextProvider';
 import LeaveCalculation from '../LeaveCalculation/LeaveCalculation';
-import { sp } from '@pnp/sp/presets/all';
-export default function Profile() {
+type ProfileProps = {
+  loggedUserName: string;
+};
+
+export default function Profile(props: ProfileProps) {
   const {
     activeMenu,
     earningData,
@@ -22,13 +25,10 @@ export default function Profile() {
   } = React.useContext(MyContext);
 
   LeaveCalculation();
-  const [userName, setUserName] = useState('');
+
   useEffect(() => {
     setLossofPay(lossOfPay); // update the state whenever lossOfPay changes
-    void sp.web.currentUser.get().then((user) => {
-      setUserName(user.Title);
-    });
-  }, [lossOfPay, userName]);
+  }, [lossOfPay]);
   console.log(
     'takenLeaves',
     takenLeaves,
@@ -82,8 +82,10 @@ export default function Profile() {
               >
                 Hi,
               </span>
-              {userName ? (
-                <p className={style.nameBoard_layout_title_Name}>{userName}</p>
+              {props.loggedUserName ? (
+                <p className={style.nameBoard_layout_title_Name}>
+                  {props.loggedUserName}
+                </p>
               ) : (
                 <div className={style.shadowLoading}>
                   <div className={style.nameShadowLoading} />

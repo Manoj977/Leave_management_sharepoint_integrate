@@ -23,7 +23,7 @@ type LeaveDetail = {
   Reason: string;
   Days: string;
   Status: string;
-  leaveId: number;
+  leaveID: number;
 };
 type SortOption = { name: string; value: string };
 const sortOptions: SortOption[] = [
@@ -58,7 +58,7 @@ export const LeaveDetails = () => {
   }, []);
   useEffect(() => {
     fetch(
-      "https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/web/lists/getbytitle('Leave%20Management')/items"
+      "https://zlendoit.sharepoint.com/sites/production/_api/web/lists/getbytitle('Leave%20Management')/items"
     )
       .then((res) => res.text())
       .then((data) => {
@@ -67,6 +67,9 @@ export const LeaveDetails = () => {
         const entries = Array.isArray(parsedData.feed.entry)
           ? parsedData.feed.entry
           : [parsedData.feed.entry];
+        entries.map((e: any) => {
+          console.log(e);
+        });
         const leaveDetail: LeaveDetail[] = entries
           .map((entry: any) => {
             try {
@@ -85,9 +88,9 @@ export const LeaveDetails = () => {
                 ).toLocaleDateString(),
                 Reason: entry.content['m:properties']['d:Reason']._text,
                 Status: entry.content['m:properties']['d:Status']._text,
-                Remark: entry.content['m:properties']['d:Remark']._text,
+                Remark: entry.content['m:properties']['d:n2yu']._text,
                 Days: entry.content['m:properties']['d:count']._text,
-                leaveID: entry.content['m:properties']['d:ID']._text,
+                leaveID: entry.content['m:properties']['d:Id']._text,
               };
             } catch (error) {
               if (
@@ -131,7 +134,7 @@ export const LeaveDetails = () => {
 
   const updateLeaveStatus = async (id: number, status: string) => {
     try {
-      const web = Web('https://zlendoit.sharepoint.com/sites/ZlendoTools');
+      const web = Web('https://zlendoit.sharepoint.com/sites/production');
       const list: IList = web.lists.getByTitle('Leave Management');
 
       const itemToUpdate = list.items.getById(id);
@@ -146,8 +149,9 @@ export const LeaveDetails = () => {
     await updateLeaveStatus(id, status);
     // Update the leaveDetails state to reflect the new status
     const updatedLeaveDetails = leaveDetails.map((leave: any) =>
-      leave.leaveId === id ? { ...leave, Status: status } : leave
+      leave.leaveID === id ? { ...leave, Status: status } : leave
     );
+
     setLeaveDetails(updatedLeaveDetails);
     setLeaveStatus(status);
     setCancelReason(false);
@@ -160,7 +164,17 @@ export const LeaveDetails = () => {
       const data = { CancelReason: reason };
       console.log(data);
       // Get a reference to the "Leave Management" list using the website URL
-      // const web = Web('https://zlendoit.sharepoint.com/sites/ZlendoTools'); // const list: IList = web.lists.getByTitle('Leave Management'); // Add the new item to the list // list.items // .add(itemData) // .then(() => { // console.log('New item added to the list'); // }) // .catch((error) => { // console.log('Error adding new item to the list: ', error); // });
+      // const web = Web('https://zlendoit.sharepoint.com/sites/production');
+      // const list: IList = web.lists.getByTitle('Leave Management');
+      // Add the new item to the list
+      // list.items
+      // .add(itemData)
+      // .then(() => {
+      // console.log('New item added to the list');
+      // })
+      // .catch((error) => {
+      // console.log('Error adding new item to the list: ', error);
+      // });
     }
   }
   return (
@@ -264,7 +278,7 @@ export const LeaveDetails = () => {
                           <button
                             style={{ margin: '0px 2rem' }}
                             onClick={() =>
-                              handleCancel(leave.leaveId, 'Cancelled')
+                              handleCancel(leave.leaveID, 'Cancelled')
                             }
                             className={styles.leaveCancelButton}
                           >

@@ -125,12 +125,8 @@ const Sidebar = ({ loggedUserRole }: any) => {
                   <span className={styles.sidebarSpan}>Zlendo</span>
                 </div>
                 <div>
-                  <button
-                    type='button'
-                    onClick={() => handleCloseSideBar()}
-                    className={styles.Cancel}
-                  >
-                    <MdOutlineCancel />
+                  <button type='button' className={styles.Cancel}>
+                    <MdOutlineCancel onClick={() => handleCloseSideBar()} />
                   </button>
                 </div>
               </div>

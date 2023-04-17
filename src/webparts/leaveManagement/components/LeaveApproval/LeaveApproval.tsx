@@ -60,7 +60,7 @@ export const LeaveApproval: React.FC = () => {
 
   useEffect(() => {
     fetch(
-      "https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/web/lists/getbytitle('Leave%20Management')/items"
+      "https://zlendoit.sharepoint.com/sites/production/_api/web/lists/getbytitle('Leave%20Management')/items"
     )
       .then((res) => res.text())
       .then((data) => {
@@ -87,7 +87,7 @@ export const LeaveApproval: React.FC = () => {
                 ).toLocaleDateString(),
                 Reason: entry.content['m:properties']['d:Reason']._text,
                 Status: entry.content['m:properties']['d:Status']._text,
-                Remark: entry.content['m:properties']['d:Remark']._text,
+                Remark: entry.content['m:properties']['d:n2yu']._text,
                 Days: entry.content['m:properties']['d:count']._text,
                 leaveID: entry.content['m:properties']['d:ID']._text,
               };

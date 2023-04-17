@@ -1,3 +1,4 @@
+/* eslint-disable react/self-closing-comp */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-void */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -27,6 +28,7 @@ export const ApplyLeave = () => {
   LeaveCalculation();
   const { availableLeaves } = React.useContext(MyContext);
   const navigate = useNavigate();
+  // console.log(navigate);
 
   const [employeeData, setEmployeeData] = useState<employeeData[]>([]);
   const [apileaveType, setApiLeaveType] = useState<leaveType[]>([]);
@@ -45,14 +47,13 @@ export const ApplyLeave = () => {
   const [toDateError, setToDateError] = useState('');
   const [dateSameError, setDateSameError] = useState('');
   const [weekOffError, setWeekOffError] = useState('');
-  let overlap = false;
 
   const [userEmail, setUserEmail] = useState('');
   const [employeeData1, setEmployeeData1] = useState<empData[]>([]);
 
   useEffect(() => {
     fetch(
-      "https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/lists/GetByTitle('Employee%20Master')/items"
+      "https://zlendoit.sharepoint.com/sites/production/_api/lists/GetByTitle('Employee%20Master')/items"
     )
       .then((res) => res.text())
       .then((data) => {
@@ -89,7 +90,7 @@ export const ApplyLeave = () => {
 
   useEffect(() => {
     fetch(
-      "https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/lists/GetByTitle('Leave%20Type%20Master')/items"
+      "https://zlendoit.sharepoint.com/sites/production/_api/lists/GetByTitle('Leave%20Type%20Master')/items"
     )
       .then((res) => res.text())
       .then((data) => {
@@ -124,8 +125,8 @@ export const ApplyLeave = () => {
 
   let userName = '';
   let ID = '';
-  let leaveCount = 0;
 
+  let state = false;
   void sp.web.currentUser.get().then((user) => {
     setUserEmail(user.Email);
   });
@@ -135,9 +136,8 @@ export const ApplyLeave = () => {
       userName = e.name;
     }
   });
-
   useEffect(() => {
-    const url = `https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/web/lists/getbytitle('Leave%20Management')/items?$filter=Title%20eq%20%27${ID}%27`;
+    const url = `https://zlendoit.sharepoint.com/sites/production/_api/web/lists/getbytitle('Leave%20Management')/items?$filter=Title%20eq%20%27${ID}%27`;
 
     fetch(url)
       .then((res) => res.text())
@@ -182,20 +182,26 @@ export const ApplyLeave = () => {
     toDate: any
   ) {
     const overlappingRecords = employeeData.filter((record: any) => {
-      const recordStart = new Date(record.FormDate);
-      const recordEnd = new Date(record.ToDate);
-      const requestedStart = new Date(fromDate);
-      const requestedEnd = new Date(toDate);
+      const recordStart = new Date(record.FormDate).toISOString().substr(0, 10);
+      const recordEnd = new Date(record.ToDate).toISOString().substr(0, 10);
+      const requestedStart = new Date(fromDate).toISOString().substr(0, 10);
+      const requestedEnd = new Date(toDate).toISOString().substr(0, 10);
+
       return (
         (requestedStart >= recordStart && requestedStart <= recordEnd) ||
         (requestedEnd >= recordStart && requestedEnd <= recordEnd) ||
         (requestedStart <= recordStart && requestedEnd >= recordEnd)
       );
     });
+
     if (overlappingRecords.length > 0) {
       const overlappingApprovedOrPendingRecords = overlappingRecords.filter(
         (record: any) => {
-          return record.Status !== 'Cancelled' && record.Status !== 'Rejected';
+          return (
+            (record.Status === 'Pending' || record.Status === 'Approved') &&
+            record.Status !== 'Cancelled' &&
+            record.Status !== 'Rejected'
+          );
         }
       );
       if (overlappingApprovedOrPendingRecords.length > 0) {
@@ -203,38 +209,34 @@ export const ApplyLeave = () => {
           status: overlappingApprovedOrPendingRecords[0].Status,
           message:
             overlappingApprovedOrPendingRecords[0].Status === 'Approved'
-              ? `Your leave has already been taken and approved by Admin.`
-              : `You have already applied for a leave on ${new Date(
+              ? `You have already applied for leave on the same date, which is approved.`
+              : `You have already applied for leave on ${new Date(
                   overlappingApprovedOrPendingRecords[0].FormDate
                 ).toLocaleDateString()} - ${new Date(
                   overlappingApprovedOrPendingRecords[0].ToDate
-                ).toLocaleDateString()}. Please wait for admin approval. If you need overwrite it Please cancel the leave and Try Again`,
+                ).toLocaleDateString()}. Please wait for approval.`,
         };
       }
     }
-
     return false;
   }
-
   const handleSubmit = async (e: any) => {
+    let leaveCount = 0;
     e.preventDefault();
+    const overlappingRecord = isLeaveAlreadyApplied(
+      employeeData1,
+      fromDate,
+      toDate
+    );
 
-    if (toDate) {
-      const overlappingRecord = isLeaveAlreadyApplied(
-        employeeData1,
-        fromDate,
-        toDate
-      );
-      if (overlappingRecord) {
-        setDateSameError(overlappingRecord.message);
-
-        setTimeout(() => {
-          setDateSameError('');
-        }, 5500);
-      } else {
-        overlap = true;
+    if (overlappingRecord) {
+      setDateSameError(overlappingRecord.message);
+      setTimeout(() => {
         setDateSameError('');
-      }
+      }, 5500);
+    } else {
+      state = true;
+      setDateSameError('');
     }
 
     // Validate the leave type
@@ -269,13 +271,12 @@ export const ApplyLeave = () => {
     }
     const fromDayOfWeek = new Date(fromDate).getDay();
     const toDayOfWeek = new Date(toDate).getDay();
-    console.log(fromDayOfWeek, toDayOfWeek);
+
     if (
       (fromDayOfWeek === 6 && toDayOfWeek === 0) ||
       toDayOfWeek === 0 ||
       fromDayOfWeek === 6
     ) {
-      console.log(fromDayOfWeek, toDayOfWeek);
       setWeekOffError('You cannot apply for leave on a weekend');
       setTimeout(() => {
         setWeekOffError('');
@@ -301,6 +302,9 @@ export const ApplyLeave = () => {
       }, 3500);
     } else if (new Date(toDate) < new Date(fromDate)) {
       setToDateError('To date must be after the from date');
+      setTimeout(() => {
+        setToDateError('');
+      }, 3500);
     } else {
       const oneDay = 1000 * 60 * 60 * 24; // milliseconds in one day
 
@@ -330,7 +334,24 @@ export const ApplyLeave = () => {
       setLeaveTypeError('');
     }
 
-    if (leave && fromDate && toDate && leaveType && overlap && reason) {
+    // Check if the leave dates are already present in the list
+
+    if (
+      leave &&
+      fromDate &&
+      toDate &&
+      leaveType &&
+      reason &&
+      state &&
+      leave !== 'Select Leave' &&
+      reasonError === '' &&
+      toDateError.length === 0 &&
+      leaveError === '' &&
+      leaveTypeError.length === 0 &&
+      weekOffError.length === 0 &&
+      dateSameError.length === 0 &&
+      reasonLengthError.length === 0
+    ) {
       // Send the REST API request to add the item to the list
       // Define the data for the new item
       const itemData = {
@@ -339,12 +360,12 @@ export const ApplyLeave = () => {
         Email: userEmail,
         LeaveType: leave,
         Leave: leaveType,
-        FormDate: new Date(fromDate).toISOString(),
-        ToDate: new Date(toDate).toISOString(),
+        FormDate: fromDate,
+        ToDate: toDate,
         count: leaveCount,
         Reason: reason,
         Status: 'Pending',
-        Remark: '-',
+        n2yu: '-',
         LOP:
           leaveCount < 3
             ? 0
@@ -355,10 +376,11 @@ export const ApplyLeave = () => {
             : leaveCount,
       };
       console.log(itemData);
-      // Get a reference to the "Leave Management" list using the website URL
-      const web = Web('https://zlendoit.sharepoint.com/sites/ZlendoTools');
-      const list: IList = web.lists.getByTitle('Leave Management');
 
+      // Get a reference to the "Leave Management" list using the website URL
+      const web = Web('https://zlendoit.sharepoint.com/sites/production');
+      const list: IList = web.lists.getByTitle('Leave Management');
+      // console.log(list);
       //Add the new item to the list
       list.items
         .add(itemData)
@@ -368,6 +390,7 @@ export const ApplyLeave = () => {
         .catch((error) => {
           console.log('Error adding new item to the list: ', error);
         });
+
       navigate('/Leave Details');
       window.location.reload();
       setLeave('');
@@ -413,7 +436,7 @@ export const ApplyLeave = () => {
               })}
             </select>
           </div>
-          <div className={''}>
+          <div>
             {leave && leave !== 'Select Leave' && (
               <div className={styles.ApplyLeave_form_leaveInput}>
                 <svg
@@ -462,7 +485,7 @@ export const ApplyLeave = () => {
               onChange={(event) => setToDate(event.target.value)}
             />
           </div>
-          <div className={''}>
+          <div>
             {toDateError && <p className={styles.error}> {toDateError}</p>}
           </div>
           <div>
@@ -472,7 +495,7 @@ export const ApplyLeave = () => {
           <div>
             {dateSameError && <p className={styles.error}>{dateSameError}</p>}
           </div>
-          <div className={''}></div>
+
           <div className={styles.formAlign}>
             <label htmlFor='from-date' className={styles.ApplyLeave_form_label}>
               Leave
@@ -499,7 +522,7 @@ export const ApplyLeave = () => {
               </>
             )}
           </div>
-          <div className={''}>
+          <div>
             {leaveTypeError && <p className={styles.error}>{leaveTypeError}</p>}
           </div>
           <div className={styles.formAlign}>
@@ -517,7 +540,7 @@ export const ApplyLeave = () => {
               onChange={(event) => setReason(event.target.value)}
             />
           </div>
-          <div className={''}>
+          <div>
             {reasonError && <p className={styles.error}> {reasonError}</p>}
             {reasonLengthError && (
               <p className={styles.error}> {reasonError}</p>

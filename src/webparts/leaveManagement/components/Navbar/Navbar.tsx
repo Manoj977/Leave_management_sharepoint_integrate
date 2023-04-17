@@ -21,16 +21,15 @@ const Navbar: React.FC = () => {
   return (
     <div className={styles.navbarHeader}>
       <div>
-        <button
-          type='button'
-          onClick={() => {
-            setSideBarActive(!sidebarActive);
-          }}
-          className={styles.navbarButton}
-          data-tip='Menu'
-        >
+        <button className={styles.navbarButton} data-tip='Menu'>
           <span className={styles.navbarButtonIcon} />
-          <AiOutlineMenu />
+          <AiOutlineMenu
+            type='button'
+            onClick={() => {
+              console.log('clicked');
+              setSideBarActive(!sidebarActive);
+            }}
+          />
         </button>
       </div>
       <div className={styles.navbarSection}>

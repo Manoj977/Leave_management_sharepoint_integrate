@@ -23,7 +23,7 @@ type Admin = {
   Role: string;
 };
 type employeeData = {
-  v: string;
+  id: string;
   name: string;
   email: string;
   leaveID: number;
@@ -34,10 +34,12 @@ const App: React.FC = () => {
   const [Admin, setAdmin] = useState<Admin[]>([]);
   const [employeeData, setEmployeeData] = useState<employeeData[]>([]);
   // const [userEmail, setUserEmail] = useState('');
-  const [userName, setUserName] = useState('');
+  let loggedUserName = '';
+  const [loggedUserEmail, setLoggedUserEmail] = useState('');
+
   useEffect(() => {
     fetch(
-      "https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/lists/GetByTitle('Employee%20Master')/items"
+      "https://zlendoit.sharepoint.com/sites/production/_api/lists/GetByTitle('Employee%20Master')/items"
     )
       .then((res) => res.text())
       .then((data) => {
@@ -46,7 +48,7 @@ const App: React.FC = () => {
         const parsedData = JSON.parse(jsonData);
         const empData: employeeData[] = parsedData.feed.entry.map(
           (entry: any) => ({
-            v: entry.content['m:properties']['d:Employee_x0020_ID']._text,
+            id: entry.content['m:properties']['d:Employee_x0020_ID']._text,
             name: entry.content['m:properties']['d:Display_x0020_Name']._text,
             email: entry.content['m:properties']['d:Email']._text,
             leaveID: entry.content['m:properties']['d:Id']._text,
@@ -57,7 +59,7 @@ const App: React.FC = () => {
       })
       .catch((err) => console.log(err));
     fetch(
-      "https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/lists/GetByTitle('Leave%20Management%20Admin')/items"
+      "https://zlendoit.sharepoint.com/sites/production/_api/lists/GetByTitle('Leave%20Management%20Admin')/items"
     )
       .then((res) => res.text())
       .then((data) => {
@@ -77,13 +79,18 @@ const App: React.FC = () => {
   }, []);
 
   let EmployeeRole = '';
+
   void sp.web.currentUser.get().then((user) => {
-    setUserName(user.Title);
+    setLoggedUserEmail(user.Email);
+  });
+  employeeData.find((e) => {
+    if (e.email === loggedUserEmail) {
+      loggedUserName = e.name;
+    }
   });
   Admin.forEach((admin) => {
     employeeData.find((e) => {
-      if (e.v === admin.ID && admin.name === userName)
-        EmployeeRole = admin.Role;
+      if (e.id === admin.ID) EmployeeRole = admin.Role;
     });
   });
 
@@ -109,8 +116,8 @@ const App: React.FC = () => {
             </div>
             <div className={styles.components}>
               <Routes>
-                <Route path='/' element={<Profile />} />
-                <Route path='/Profile' element={<Profile />} />
+                <Route path='/' element={<Profile loggedUserName={loggedUserName} />} />
+                <Route path='/Profile' element={<Profile loggedUserName={loggedUserName} />} />
                 {EmployeeRole === 'Admin' && (
                   <Route path='/Leave Approval' element={<LeaveApproval />} />
                 )}
