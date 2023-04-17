@@ -100,7 +100,7 @@
 }
 
 .icon1 {
-  margin-top: -1rem;
+  margin-top: -4px;
   position: relative;
 }
 
@@ -290,4 +290,31 @@
   margin-right: 1rem;
   font-size: 1rem;
   line-height: 1.5rem;
+}
+.shadowLoading {
+  display: flex;
+  justify-content: space-between;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+.nameShadowLoading {
+  height: 1rem;
+  width: 8rem;
+  border-radius: 0.25rem;
+  --tw-bg-opacity: 1;
+  background-color: rgb(107 114 128 / var(--tw-bg-opacity));
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@media (min-width: 768px) {
+  .nameShadowLoading {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+  }
 }

@@ -69,29 +69,45 @@ export const LeaveApproval: React.FC = () => {
         const entries = Array.isArray(parsedData.feed.entry)
           ? parsedData.feed.entry
           : [parsedData.feed.entry];
-        const leaveDetail: LeaveDetail[] = entries.map((entry: any) => ({
-          ID: entry.content['m:properties']['d:Title']._text,
-          Name: entry.content['m:properties']['d:Name']._text,
-          Email: entry.content['m:properties']['d:Email']._text,
-          Leave: entry.content['m:properties']['d:Leave']._text,
-          LeaveType: entry.content['m:properties']['d:LeaveType']._text,
-          count: entry.content['m:properties']['d:count']._text,
-          FromDate: new Date(
-            entry.content['m:properties']['d:FormDate']._text
-          ).toLocaleDateString(),
-          ToDate: new Date(
-            entry.content['m:properties']['d:ToDate']._text
-          ).toLocaleDateString(),
-          Reason: entry.content['m:properties']['d:Reason']._text,
-          Status: entry.content['m:properties']['d:Status']._text,
-          Remark: entry.content['m:properties']['d:Remark']._text,
-          Days: entry.content['m:properties']['d:count']._text,
-          leaveID: entry.content['m:properties']['d:ID']._text,
-        }));
+        const leaveDetail: LeaveDetail[] = entries
+          .map((entry: any) => {
+            try {
+              return {
+                ID: entry.content['m:properties']['d:Title']._text,
+                Name: entry.content['m:properties']['d:Name']._text,
+                Email: entry.content['m:properties']['d:Email']._text,
+                Leave: entry.content['m:properties']['d:Leave']._text,
+                LeaveType: entry.content['m:properties']['d:LeaveType']._text,
+                count: entry.content['m:properties']['d:count']._text,
+                FromDate: new Date(
+                  entry.content['m:properties']['d:FormDate']._text
+                ).toLocaleDateString(),
+                ToDate: new Date(
+                  entry.content['m:properties']['d:ToDate']._text
+                ).toLocaleDateString(),
+                Reason: entry.content['m:properties']['d:Reason']._text,
+                Status: entry.content['m:properties']['d:Status']._text,
+                Remark: entry.content['m:properties']['d:Remark']._text,
+                Days: entry.content['m:properties']['d:count']._text,
+                leaveID: entry.content['m:properties']['d:ID']._text,
+              };
+            } catch (error) {
+              if (
+                error instanceof TypeError &&
+                error.message.includes('Cannot read properties of undefined')
+              ) {
+                return null;
+              } else {
+                throw error;
+              }
+            }
+          })
+          .filter(Boolean); // Add filter to remove null values from the array
         setLeaveDetails(leaveDetail);
       })
       .catch((err) => console.log(err));
   }, []);
+
   let filteredEmployees;
   let CurrentData: LeaveDetail[];
   const handleSort = (sortBy: string) => {

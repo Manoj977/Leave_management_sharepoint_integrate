@@ -37,7 +37,7 @@ const LeaveCalculation = () => {
     sp.web.currentUser.get().then((user) => {
       userEmail = user.Email;
       const url = `https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/web/lists/getbytitle('Leave%20Management')/items?$filter=Email%20eq%20%27${userEmail}%27`;
-      console.log(url);
+
       fetch(url)
         .then((res) => res.text())
         .then((data) => {
@@ -46,21 +46,39 @@ const LeaveCalculation = () => {
           const entries = Array.isArray(parsedData.feed.entry)
             ? parsedData.feed.entry
             : [parsedData.feed.entry];
-          const leaveDetail: LeaveDetail[] = entries.map((entry: any) => ({
-            ID: entry.content['m:properties']['d:Title']._text,
-            Name: entry.content['m:properties']['d:Name']._text,
-            Email: entry.content['m:properties']['d:Email']._text,
-            Leave: entry.content['m:properties']['d:Leave']._text,
-            FromDate: new Date(
-              entry.content['m:properties']['d:FormDate']._text
-            ),
-            ToDate: new Date(entry.content['m:properties']['d:ToDate']._text),
-            Status: entry.content['m:properties']['d:Status']._text,
-            NoofDaysLeave: parseFloat(
-              entry.content['m:properties']['d:count']._text
-            ),
-          }));
-          setLeaveDetails(leaveDetail);
+          const leaveDetail: LeaveDetail[] = entries.map((entry: any) => {
+            try {
+              return {
+                ID: entry.content['m:properties']['d:Title']._text,
+                Name: entry.content['m:properties']['d:Name']._text,
+                Email: entry.content['m:properties']['d:Email']._text,
+                Leave: entry.content['m:properties']['d:Leave']._text,
+                FromDate: new Date(
+                  entry.content['m:properties']['d:FormDate']._text
+                ),
+                ToDate: new Date(
+                  entry.content['m:properties']['d:ToDate']._text
+                ),
+                Status: entry.content['m:properties']['d:Status']._text,
+                NoofDaysLeave: parseFloat(
+                  entry.content['m:properties']['d:count']._text
+                ),
+              };
+            } catch (error) {
+              if (
+                error instanceof TypeError &&
+                error.message.includes('Cannot read properties of undefined')
+              ) {
+                return null;
+              } else {
+                throw error;
+              }
+            }
+          });
+          const filteredLeaveDetail = leaveDetail.filter(
+            (item) => item !== null
+          );
+          setLeaveDetails(filteredLeaveDetail);
         })
         .catch((err) => console.log(err));
     });
@@ -102,7 +120,6 @@ const LeaveCalculation = () => {
       setAvailableLeaves(0);
     }
 
-    // lossOfPay = (takenLeaves - totalLeaves) * (totalLeaves / 12);
     setLossofPay(lossOfPay);
   }, [
     LeaveDetails,

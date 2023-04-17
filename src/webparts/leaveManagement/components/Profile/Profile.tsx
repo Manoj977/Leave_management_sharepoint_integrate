@@ -2,11 +2,11 @@
 /* eslint-disable no-void */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect, useState } from "react";
-import style from "./Profile.module.scss";
-import { MyContext } from "../../context/contextProvider";
-import LeaveCalculation from "../LeaveCalculation/LeaveCalculation";
-import { sp } from "@pnp/sp/presets/all";
+import React, { useEffect, useState } from 'react';
+import style from './Profile.module.scss';
+import { MyContext } from '../../context/contextProvider';
+import LeaveCalculation from '../LeaveCalculation/LeaveCalculation';
+import { sp } from '@pnp/sp/presets/all';
 export default function Profile() {
   const {
     activeMenu,
@@ -20,28 +20,39 @@ export default function Profile() {
     totalLeaves,
     availableLeaves,
   } = React.useContext(MyContext);
+
   LeaveCalculation();
-  const [userName, setUserName] = useState("");
+  const [userName, setUserName] = useState('');
   useEffect(() => {
     setLossofPay(lossOfPay); // update the state whenever lossOfPay changes
     void sp.web.currentUser.get().then((user) => {
       setUserName(user.Title);
     });
   }, [lossOfPay, userName]);
+  console.log(
+    'takenLeaves',
+    takenLeaves,
+    'totalLeaves',
+    totalLeaves,
+    'availableLeaves',
+    availableLeaves,
+    'lossOfPay',
+    lossOfPay
+  );
   const HandleLeave = (
     event: React.MouseEvent<HTMLButtonElement>,
     title: string
   ) => {
-    if (title === "Total Leaves") {
+    if (title === 'Total Leaves') {
       setLeaveData(true);
     }
-    if (title === "Taken Leaves") {
+    if (title === 'Taken Leaves') {
       setUsedLeave(true);
     }
-    if (title === "Available Leaves") {
+    if (title === 'Available Leaves') {
       setBalanceLeave(true);
     }
-    if (title === "Refresh") {
+    if (title === 'Refresh') {
       window.location.reload();
     }
   };
@@ -71,7 +82,13 @@ export default function Profile() {
               >
                 Hi,
               </span>
-              <p className={style.nameBoard_layout_title_Name}>{userName}</p>
+              {userName ? (
+                <p className={style.nameBoard_layout_title_Name}>{userName}</p>
+              ) : (
+                <div className={style.shadowLoading}>
+                  <div className={style.nameShadowLoading} />
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -94,7 +111,7 @@ export default function Profile() {
                   HandleLeave(event, item.title)
                 }
                 className={`${style.icon}${
-                  !item.count ? ` ${style.icon1}` : ''
+                  item.count === 0 ? ` ${style.icon1}` : ''
                 }`}
               >
                 {item.icon}
@@ -102,12 +119,9 @@ export default function Profile() {
 
               <p className={style.icon_count}>
                 <span className={style.icon_count_number}>
-                  {item.title === 'Taken Leaves'
-                    ? (item.count = takenLeaves)
-                    : ''}
-                  {item.title === 'Available Leaves'
-                    ? (item.count = availableLeaves)
-                    : ''}
+                  {item.title === 'Taken Leaves' && (item.count = takenLeaves)}
+                  {item.title === 'Available Leaves' &&
+                    (item.count = availableLeaves)}
 
                   {item.title === 'Total Leaves' ? totalLeaves : ''}
 
