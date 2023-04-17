@@ -4,15 +4,15 @@
 /* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import convert from 'xml-js';
-import { sp } from '@pnp/sp/presets/all';
-import { Web } from '@pnp/sp/webs';
-import { IList } from '@pnp/sp/lists';
-import styles from './ApplyLeave.module.scss';
-import { MyContext } from '../../context/contextProvider';
-import LeaveCalculation from '../LeaveCalculation/LeaveCalculation';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import convert from "xml-js";
+import { sp } from "@pnp/sp/presets/all";
+import { Web } from "@pnp/sp/webs";
+import { IList } from "@pnp/sp/lists";
+import styles from "./ApplyLeave.module.scss";
+import { MyContext } from "../../context/contextProvider";
+import LeaveCalculation from "../LeaveCalculation/LeaveCalculation";
 type employeeData = {
   id: string;
   name: string;
@@ -30,24 +30,24 @@ export const ApplyLeave = () => {
 
   const [employeeData, setEmployeeData] = useState<employeeData[]>([]);
   const [apileaveType, setApiLeaveType] = useState<leaveType[]>([]);
-  const [leave, setLeave] = useState('');
-  const [leaveError, setLeaveError] = useState('');
-  const [leaveType, setLeaveType] = useState('Full Day');
-  const [leaveTypeError, setLeaveTypeError] = useState('');
-  const [reason, setReason] = useState('');
-  const [reasonError, setReasonError] = useState('');
-  const [reasonLengthError, setReasonLengthError] = useState('');
+  const [leave, setLeave] = useState("");
+  const [leaveError, setLeaveError] = useState("");
+  const [leaveType, setLeaveType] = useState("Full Day");
+  const [leaveTypeError, setLeaveTypeError] = useState("");
+  const [reason, setReason] = useState("");
+  const [reasonError, setReasonError] = useState("");
+  const [reasonLengthError, setReasonLengthError] = useState("");
   const [fromDate, setFromDate] = useState(
     new Date().toISOString().substr(0, 10)
   );
-  const [, setFromDateError] = useState('');
-  const [toDate, setToDate] = useState('');
-  const [toDateError, setToDateError] = useState('');
-  const [dateSameError, setDateSameError] = useState('');
-  const [weekOffError, setWeekOffError] = useState('');
+  const [, setFromDateError] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [toDateError, setToDateError] = useState("");
+  const [dateSameError, setDateSameError] = useState("");
+  const [weekOffError, setWeekOffError] = useState("");
   let overlap = false;
 
-  const [userEmail, setUserEmail] = useState('');
+  const [userEmail, setUserEmail] = useState("");
   const [employeeData1, setEmployeeData1] = useState<empData[]>([]);
 
   useEffect(() => {
@@ -63,16 +63,16 @@ export const ApplyLeave = () => {
           .map((entry: any) => {
             try {
               return {
-                id: entry.content['m:properties']['d:Employee_x0020_ID']._text,
-                name: entry.content['m:properties']['d:Display_x0020_Name']
+                id: entry.content["m:properties"]["d:Employee_x0020_ID"]._text,
+                name: entry.content["m:properties"]["d:Display_x0020_Name"]
                   ._text,
-                email: entry.content['m:properties']['d:Email']._text,
-                leaveID: entry.content['m:properties']['d:Id']._text,
+                email: entry.content["m:properties"]["d:Email"]._text,
+                leaveID: entry.content["m:properties"]["d:Id"]._text,
               };
             } catch (error) {
               if (
                 error instanceof TypeError &&
-                error.message.includes('Cannot read properties of undefined')
+                error.message.includes("Cannot read properties of undefined")
               ) {
                 return null;
               } else {
@@ -102,12 +102,12 @@ export const ApplyLeave = () => {
             try {
               return {
                 leaveType:
-                  entry.content['m:properties']['d:Leave_x0020_Type']._text,
+                  entry.content["m:properties"]["d:Leave_x0020_Type"]._text,
               };
             } catch (error) {
               if (
                 error instanceof TypeError &&
-                error.message.includes('Cannot read properties of undefined')
+                error.message.includes("Cannot read properties of undefined")
               ) {
                 return null;
               } else {
@@ -122,8 +122,8 @@ export const ApplyLeave = () => {
       .catch((err) => console.log(err));
   }, []);
 
-  let userName = '';
-  let ID = '';
+  let userName = "";
+  let ID = "";
   let leaveCount = 0;
 
   void sp.web.currentUser.get().then((user) => {
@@ -152,16 +152,16 @@ export const ApplyLeave = () => {
           .map((entry: any) => {
             try {
               return {
-                FormDate: entry.content['m:properties']['d:FormDate']._text,
-                ToDate: entry.content['m:properties']['d:ToDate']._text,
-                Count: entry.content['m:properties']['d:count']._text,
-                LeaveId: entry.content['m:properties']['d:Id']._text,
-                Status: entry.content['m:properties']['d:Status']._text,
+                FormDate: entry.content["m:properties"]["d:FormDate"]._text,
+                ToDate: entry.content["m:properties"]["d:ToDate"]._text,
+                Count: entry.content["m:properties"]["d:count"]._text,
+                LeaveId: entry.content["m:properties"]["d:Id"]._text,
+                Status: entry.content["m:properties"]["d:Status"]._text,
               };
             } catch (error) {
               if (
                 error instanceof TypeError &&
-                error.message.includes('Cannot read properties of undefined')
+                error.message.includes("Cannot read properties of undefined")
               ) {
                 return null;
               } else {
@@ -195,14 +195,14 @@ export const ApplyLeave = () => {
     if (overlappingRecords.length > 0) {
       const overlappingApprovedOrPendingRecords = overlappingRecords.filter(
         (record: any) => {
-          return record.Status !== 'Cancelled' && record.Status !== 'Rejected';
+          return record.Status !== "Cancelled" && record.Status !== "Rejected";
         }
       );
       if (overlappingApprovedOrPendingRecords.length > 0) {
         return {
           status: overlappingApprovedOrPendingRecords[0].Status,
           message:
-            overlappingApprovedOrPendingRecords[0].Status === 'Approved'
+            overlappingApprovedOrPendingRecords[0].Status === "Approved"
               ? `Your leave has already been taken and approved by Admin.`
               : `You have already applied for a leave on ${new Date(
                   overlappingApprovedOrPendingRecords[0].FormDate
@@ -227,33 +227,34 @@ export const ApplyLeave = () => {
       );
       if (overlappingRecord) {
         setDateSameError(overlappingRecord.message);
+
         setTimeout(() => {
-          setDateSameError('');
+          setDateSameError("");
         }, 5500);
       } else {
         overlap = true;
-        setDateSameError('');
+        setDateSameError("");
       }
     }
 
     // Validate the leave type
-    if (!leave || leave === 'Select Leave') {
-      setLeaveError('Please select a leave');
+    if (!leave || leave === "Select Leave") {
+      setLeaveError("Please select a leave");
       setTimeout(() => {
-        setLeaveError('');
+        setLeaveError("");
       }, 3500);
     } else {
-      setLeaveError('');
+      setLeaveError("");
     }
 
     // Validate the reason
     if (!reason) {
-      setReasonError('Please enter a reason for the leave');
+      setReasonError("Please enter a reason for the leave");
       setTimeout(() => {
-        setReasonError('');
+        setReasonError("");
       }, 3500);
     } else {
-      setReasonError('');
+      setReasonError("");
     }
 
     if (reason.length > 50) {
@@ -261,10 +262,10 @@ export const ApplyLeave = () => {
         `Reason must have less than 50 characters. Current length: ${reason.length}`
       );
       setTimeout(() => {
-        setReasonLengthError('');
+        setReasonLengthError("");
       }, 3500);
     } else {
-      setReasonLengthError('');
+      setReasonLengthError("");
     }
     const fromDayOfWeek = new Date(fromDate).getDay();
     const toDayOfWeek = new Date(toDate).getDay();
@@ -275,31 +276,31 @@ export const ApplyLeave = () => {
       fromDayOfWeek === 6
     ) {
       console.log(fromDayOfWeek, toDayOfWeek);
-      setWeekOffError('You cannot apply for leave on a weekend');
+      setWeekOffError("You cannot apply for leave on a weekend");
       setTimeout(() => {
-        setWeekOffError('');
+        setWeekOffError("");
       }, 3500);
     } else {
-      setWeekOffError('');
+      setWeekOffError("");
     }
 
     if (!fromDate) {
-      setFromDateError('From date is required');
+      setFromDateError("From date is required");
       setTimeout(() => {
-        setReasonError('');
+        setReasonError("");
       }, 3500);
     } else {
-      setFromDateError('');
+      setFromDateError("");
     }
 
     // Validate the to date
     if (!toDate) {
-      setToDateError('To date is required');
+      setToDateError("To date is required");
       setTimeout(() => {
-        setToDateError('');
+        setToDateError("");
       }, 3500);
     } else if (new Date(toDate) < new Date(fromDate)) {
-      setToDateError('To date must be after the from date');
+      setToDateError("To date must be after the from date");
     } else {
       const oneDay = 1000 * 60 * 60 * 24; // milliseconds in one day
 
@@ -312,21 +313,21 @@ export const ApplyLeave = () => {
           leaveCount++;
         }
         currentDay.setTime(currentDay.getTime() + oneDay); // move to next day
-        if (leaveType !== 'Full Day') {
+        if (leaveType !== "Full Day") {
           leaveCount = 0.5;
         }
       }
-      setToDateError('');
+      setToDateError("");
     }
 
     // Validate the leave type
     if (!leaveType) {
-      setLeaveTypeError('Please select a leave type');
+      setLeaveTypeError("Please select a leave type");
       setTimeout(() => {
-        setLeaveTypeError('');
+        setLeaveTypeError("");
       }, 3500);
     } else {
-      setLeaveTypeError('');
+      setLeaveTypeError("");
     }
 
     if (leave && fromDate && toDate && leaveType && overlap && reason) {
@@ -342,8 +343,8 @@ export const ApplyLeave = () => {
         ToDate: new Date(toDate).toISOString(),
         count: leaveCount,
         Reason: reason,
-        Status: 'Pending',
-        Remark: '-',
+        Status: "Pending",
+        Remark: "-",
         LOP:
           leaveCount < 3
             ? 0
@@ -355,32 +356,32 @@ export const ApplyLeave = () => {
       };
       console.log(itemData);
       // Get a reference to the "Leave Management" list using the website URL
-      const web = Web('https://zlendoit.sharepoint.com/sites/ZlendoTools');
-      const list: IList = web.lists.getByTitle('Leave Management');
+      const web = Web("https://zlendoit.sharepoint.com/sites/ZlendoTools");
+      const list: IList = web.lists.getByTitle("Leave Management");
 
       //Add the new item to the list
       list.items
         .add(itemData)
         .then(() => {
-          console.log('New item added to the list');
+          console.log("New item added to the list");
         })
         .catch((error) => {
-          console.log('Error adding new item to the list: ', error);
+          console.log("Error adding new item to the list: ", error);
         });
-      navigate('/Leave Details');
+      navigate("/Leave Details");
       window.location.reload();
-      setLeave('');
-      setLeaveType('');
-      setReason('');
-      setLeaveType('Full Day');
+      setLeave("");
+      setLeaveType("");
+      setReason("");
+      setLeaveType("Full Day");
       setFromDate(new Date().toISOString().substr(0, 10));
-      setToDate('');
+      setToDate("");
     }
   };
 
   return (
     <div className={styles.ApplyLeave}>
-      <form className={styles.ApplyLeave_form}>
+      <form className={styles.ApplyLeave_form} onSubmit={handleSubmit}>
         <div className={styles.ApplyLeave_form_heading}>
           <p className={styles.ApplyLeave_form_heading_name}>Apply Leave</p>
         </div>
@@ -396,7 +397,7 @@ export const ApplyLeave = () => {
                 setLeave(event.target.value);
               }}
               className={`${styles.ApplyLeave_form_input} ${
-                leaveError !== '' ? `${styles.errorBorder}` : ''
+                leaveError !== "" ? `${styles.errorBorder}` : ""
               }`}
             >
               <option defaultValue="selected">Select Leave </option>
@@ -412,8 +413,8 @@ export const ApplyLeave = () => {
               })}
             </select>
           </div>
-          <div className={''}>
-            {leave && leave !== 'Select Leave' && (
+          <div className={""}>
+            {leave && leave !== "Select Leave" && (
               <div className={styles.ApplyLeave_form_leaveInput}>
                 <svg
                   className={styles.ApplyLeave_form_leaveInput_svg}
@@ -440,8 +441,8 @@ export const ApplyLeave = () => {
               id="from-date"
               value={fromDate}
               className={`${styles.ApplyLeave_form_input} ${
-                dateSameError !== '' ? `${styles.errorBorder}` : ''
-              } ${weekOffError !== '' ? `${styles.errorBorder}` : ''}`}
+                dateSameError !== "" ? `${styles.errorBorder}` : ""
+              } ${weekOffError !== "" ? `${styles.errorBorder}` : ""}`}
               onChange={(event) => setFromDate(event.target.value)}
             />
           </div>
@@ -455,13 +456,13 @@ export const ApplyLeave = () => {
               id="to-date"
               value={toDate}
               className={`${styles.ApplyLeave_form_input} ${
-                dateSameError !== '' ? `${styles.errorBorder}` : ''
-              } ${toDateError !== '' ? `${styles.errorBorder}` : ''}
-              ${weekOffError !== '' ? `${styles.errorBorder}` : ''}`}
+                dateSameError !== "" ? `${styles.errorBorder}` : ""
+              } ${toDateError !== "" ? `${styles.errorBorder}` : ""}
+              ${weekOffError !== "" ? `${styles.errorBorder}` : ""}`}
               onChange={(event) => setToDate(event.target.value)}
             />
           </div>
-          <div>
+          <div className={""}>
             {toDateError && <p className={styles.error}> {toDateError}</p>}
           </div>
           <div>
@@ -471,6 +472,7 @@ export const ApplyLeave = () => {
           <div>
             {dateSameError && <p className={styles.error}>{dateSameError}</p>}
           </div>
+          <div className={""}></div>
           <div className={styles.formAlign}>
             <label htmlFor="from-date" className={styles.ApplyLeave_form_label}>
               Leave
@@ -480,7 +482,7 @@ export const ApplyLeave = () => {
                 type="text"
                 value="FullDay"
                 className={styles.ApplyLeave_form_input}
-                onChange={() => setLeaveType('FullDay')}
+                onChange={() => setLeaveType("FullDay")}
               />
             ) : (
               <>
@@ -497,7 +499,7 @@ export const ApplyLeave = () => {
               </>
             )}
           </div>
-          <div className={''}>
+          <div className={""}>
             {leaveTypeError && <p className={styles.error}>{leaveTypeError}</p>}
           </div>
           <div className={styles.formAlign}>
@@ -509,13 +511,13 @@ export const ApplyLeave = () => {
               id="reason"
               placeholder="Enter the reason..."
               className={`${styles.ApplyLeave_form_input} ${
-                reasonError !== '' ? `${styles.errorBorder}` : ''
+                reasonError !== "" ? `${styles.errorBorder}` : ""
               }`}
               value={reason}
               onChange={(event) => setReason(event.target.value)}
             />
           </div>
-          <div className={''}>
+          <div className={""}>
             {reasonError && <p className={styles.error}> {reasonError}</p>}
             {reasonLengthError && (
               <p className={styles.error}> {reasonError}</p>
@@ -524,16 +526,16 @@ export const ApplyLeave = () => {
         </div>
 
         <div className={styles.button}>
-          <div className="px-2" style={{ padding: '0rem 0.5rem' }}>
+          <div className="px-2" style={{ padding: "0rem 0.5rem" }}>
             <button
-              onClick={(e) => handleSubmit(e)}
+              onClick={() => handleSubmit()}
               className={`${styles.buttonSubmit} ${
                 leave.length === 0 ||
                 reason.length === 0 ||
                 fromDate.length === 0 ||
                 toDate.length === 0
-                  ? `${''}`
-                  : ` ${''}`
+                  ? `${""}`
+                  : ` ${""}`
               }`}
               type="submit"
             >
