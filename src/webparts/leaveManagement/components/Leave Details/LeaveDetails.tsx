@@ -11,7 +11,7 @@ import { MyContext } from '../../context/contextProvider';
 import { Link } from 'react-router-dom';
 import Pagination from '../Pagination/Pagination';
 import { MdOutlineCancel } from 'react-icons/md';
-// import { RiLoader4Line } from 'react-icons/ri';
+
 type LeaveDetail = {
   ID: string;
   Name: string;
@@ -47,7 +47,6 @@ export const LeaveDetails = () => {
   const [dataPerPage] = useState(15);
   const [leaveStatus, setLeaveStatus] = useState('');
   const [reason, setReason] = useState('');
-
   // const [reasonError, setReasonError] = useState('');
   console.log(userEmail);
   useEffect(() => {
@@ -187,7 +186,7 @@ export const LeaveDetails = () => {
                   })}
               </thead>
               <tbody className={styles.tableBody}>
-                {filteredLeaveDetails.length === 0 &&
+                {filteredLeaveDetails.length > 0 &&
                   CurrentData.map((leave: any, index: any) => (
                     <tr key={index} className={styles.tableBodyRow}>
                       <td className={styles.tableBodyRow} data-label="S.No">
@@ -303,12 +302,6 @@ export const LeaveDetails = () => {
               </tbody>
             </table>
           </div>
-          {/* {filteredLeaveDetails === undefined ||
-            (filteredLeaveDetails.length === 0 && (
-              <div className={styles.LoaderDivision}>
-                <RiLoader4Line className={styles.loader} />
-              </div>
-            ))} */}
           {filteredLeaveDetails === undefined ||
             (filteredLeaveDetails.length > 0 && (
               <div>
