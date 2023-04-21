@@ -17,7 +17,6 @@ const Pagination = ({
 }) => {
   const totalPages = Math.ceil(totalData / dataPerPage);
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
-  console.log(pages);
 
   const handlePrevious = () => {
     if (currentPage > 1) {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import React, { createContext, useEffect, useState } from 'react';
 
@@ -13,6 +14,7 @@ import { TbListDetails } from 'react-icons/tb';
 import { MdOutlineDashboard } from 'react-icons/md';
 import { TfiCheckBox } from 'react-icons/tfi';
 import { RiFileTextLine } from 'react-icons/ri';
+import convert from 'xml-js';
 type MyContextType = {
   isSkeletonLoading: boolean;
   setIsSkeletonLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -74,8 +76,13 @@ type MyContextType = {
   rejectLeave: boolean;
   setRejectLeave: React.Dispatch<React.SetStateAction<boolean>>;
   totalLeaves: number;
+  setTotalLeaves: React.Dispatch<React.SetStateAction<number>>;
   availableLeaves: number;
   setAvailableLeaves: React.Dispatch<React.SetStateAction<number>>;
+  nextHoliday: upcomingHoliday[];
+  setNextHoliday: React.Dispatch<React.SetStateAction<upcomingHoliday[]>>;
+  holiday: Holiday[];
+  setHoliday: React.Dispatch<React.SetStateAction<Holiday[]>>;
 };
 type LeaveDetail = {
   ID: string;
@@ -84,8 +91,22 @@ type LeaveDetail = {
   ToDate: Date;
   NoofDaysLeave: number;
 };
-
+type upcomingHoliday = {
+  HolidayName: string;
+  Date: string;
+  Day: string;
+};
+type Holiday = {
+  'S.No': number;
+  HolidayName: string;
+  Date: string;
+  Day: string;
+};
 export const MyContext = createContext<MyContextType>({
+  nextHoliday: [],
+  setNextHoliday: () => {
+    ('');
+  },
   isSkeletonLoading: true,
   setIsSkeletonLoading: () => {
     ('');
@@ -258,9 +279,16 @@ export const MyContext = createContext<MyContextType>({
   setRejectLeave: () => {
     ('');
   },
-  totalLeaves: 12,
+  totalLeaves: 0,
+  setTotalLeaves: () => {
+    ('');
+  },
   availableLeaves: 0,
   setAvailableLeaves: () => {
+    ('');
+  },
+  holiday: [],
+  setHoliday: () => {
     ('');
   },
 });
@@ -285,13 +313,16 @@ export const MyContextProvider = ({ children }: Props) => {
   const [balanceLeave, setBalanceLeave] = useState(false);
   const [sidebarActive, setSideBarActive] = useState(false);
   const [takenLeaves, setTakenLeaves] = useState<number>(0);
+  const [totalLeaves, setTotalLeaves] = useState<number>(0);
   const [lossOfPay, setLossofPay] = useState<number>(0);
   const [action, setAction] = useState<boolean>(false);
   const [cancelReason, setCancelReason] = useState(false);
   const [approveLeave, setApproveLeave] = useState(false);
   const [rejectLeave, setRejectLeave] = useState(false);
-  const totalLeaves = 12;
   const [availableLeaves, setAvailableLeaves] = useState<number>(0);
+  const [nextHoliday, setNextHoliday] = useState([]);
+  const [holiday, setHoliday] = useState([]);
+
   const [earningData] = useState([
     {
       icon: <BiCalendarPlus />,
@@ -384,6 +415,35 @@ export const MyContextProvider = ({ children }: Props) => {
     },
   ]);
   useEffect(() => {
+    fetch(
+      "https://zlendoit.sharepoint.com/sites/production/_api/web/lists/getbytitle('Leaves%20Master')/items"
+    )
+      .then((res) => res.text())
+      .then((data) => {
+        const jsonData = convert.xml2json(data, { compact: true, spaces: 4 });
+        const parsedData = JSON.parse(jsonData);
+        const entries = Array.isArray(parsedData.feed.entry)
+          ? parsedData.feed.entry
+          : [parsedData.feed.entry];
+        entries.map((e: any) => {
+          setTotalLeaves(
+            e.content['m:properties']['d:Total_x0020_Leaves']._text
+          );
+        });
+      })
+      .catch((err) => {
+        if (
+          !(
+            err instanceof TypeError &&
+            err.message.includes('Cannot read properties of undefined')
+          )
+        ) {
+          console.log(err);
+        }
+      });
+  }, []);
+
+  useEffect(() => {
     const handleResize = () => {
       setScreenSize(window.innerWidth);
     };
@@ -410,10 +470,32 @@ export const MyContextProvider = ({ children }: Props) => {
     handleResize();
     return () => window.removeEventListener('resize', handleResize);
   }, [setScreenSize]);
+  useEffect(() => {
+    fetch(
+      "https://zlendoit.sharepoint.com/sites/production/_api/web/lists/getbytitle('Holiday%20List')/items"
+    )
+      .then((res) => res.text())
+      .then((data) => {
+        const jsonData = convert.xml2json(data, { compact: true, spaces: 4 });
+        const parsedData = JSON.parse(jsonData);
+        const holidays: Holiday[] = parsedData.feed.entry.map((entry: any) => ({
+          HolidayName: entry.content['m:properties']['d:Title']._text,
+          Date: entry.content['m:properties']['d:Date']._text,
 
+          Day: entry.content['m:properties']['d:Day']._text,
+        }));
+
+        const today = new Date();
+        const upcomingHoliday: Holiday | '' =
+          holidays.find((holiday) => new Date(holiday.Date) >= today) || '';
+
+        setNextHoliday([upcomingHoliday]);
+        setHoliday(holidays);
+      })
+      .catch((err) => console.log(err));
+  }, []);
   useEffect(() => {
     setScreenSize(window.innerWidth);
-    console.log('activeMenu', activeMenu);
   }, [screenSize, setScreenSize, activeMenu]);
   const contextValue: MyContextType = {
     isSkeletonLoading,
@@ -461,7 +543,12 @@ export const MyContextProvider = ({ children }: Props) => {
     setRejectLeave,
     totalLeaves,
     availableLeaves,
+    setTotalLeaves,
     setAvailableLeaves,
+    nextHoliday,
+    setNextHoliday,
+    holiday,
+    setHoliday,
   };
 
   return (

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable no-void */ /* eslint-disable prefer-const */ /* eslint-disable @typescript-eslint/no-explicit-any */ /* eslint-disable @typescript-eslint/no-unused-vars */ /* eslint-disable @typescript-eslint/no-floating-promises */ /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import React, { useEffect, useState } from 'react';
 import convert from 'xml-js';
@@ -43,8 +44,6 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
 }) => {
   const { action, setAction, setApproveLeave, approveLeave } =
     React.useContext(MyContext);
-  console.log('test', action);
-  console.log('ID', employeeId);
 
   const [leaveDetails, setLeaveDetails] = useState<LeaveDetail[]>([]);
   // const [contactNum, setContactNum] = useState(null);
@@ -52,26 +51,23 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
   const [reason, setReason] = useState('');
   const [reasonError, setReasonError] = useState('');
   const [status, setStatus] = useState('');
-
+  console.log(reason, status);
   const location = useLocation();
   const pathArray = location.pathname.split('/');
   const LeaveId = pathArray[pathArray.length - 1];
-  console.log(LeaveId);
 
   useEffect(() => {
     const url = `https://zlendoit.sharepoint.com/sites/production/_api/web/lists/getbytitle('Leave%20Management')/items?&$filter=ID%20eq%20%27${employeeId}%27`;
-    console.log(url);
+
     fetch(url)
       .then((res) => res.text())
       .then((data) => {
         const jsonData = convert.xml2json(data, { compact: true, spaces: 4 });
         const parsedData = JSON.parse(jsonData);
-        console.log(parsedData);
 
         const entries = Array.isArray(parsedData.feed.entry)
           ? parsedData.feed.entry
           : [parsedData.feed.entry];
-        console.log(entries);
 
         const leaveDetail: LeaveDetail[] = entries.map((entry: any) => ({
           leaveId: entry.content['m:properties']['d:Id']._text,
@@ -90,7 +86,7 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
           Reason: entry.content['m:properties']['d:Reason']._text,
           NoofDaysLeave: entry.content['m:properties']['d:count']._text,
           Status: entry.content['m:properties']['d:Status']._text,
-          Remark: entry.content['m:properties']['d:n2yu']._text,
+          Remark: entry.content['m:properties']['d:Remark']._text,
           // LeaveId: parseInt(entry.content["m:properties"]["d:ID"]._text),
         }));
         setApprove(leaveDetail[0].Status);
@@ -122,7 +118,6 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
       e.ID === leaveDetails[0].ID ? (contactNumber = e.phoneNumber) : '';
     });
   }
-  console.log(contactNumber);
 
   // Update the LeaveStatus value in SharePoint based on the leave item ID and the new status value
 
@@ -137,10 +132,10 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
 
       const itemToUpdate = list.items.getById(id);
       await itemToUpdate.update({ Status: status });
-      await itemToUpdate.update({ n2yu: remark });
-      console.log('Leave status updated successfully!');
+      await itemToUpdate.update({ Remark: remark });
+      alert('Leave status updated successfully!');
     } catch (error) {
-      console.log('Error updating leave status:', error);
+      alert(`Error updating leave status: ${error}`);
     }
   };
   const handleApproval = (leaveId: any) => {
@@ -164,7 +159,7 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
     } else {
       setReasonError('');
     }
-    console.log(id, status);
+
     if (reason) {
       await updateLeaveStatus(id, status, remark);
       // Update the leaveDetails state to reflect the new status
@@ -181,7 +176,7 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
     }
   };
   // const handleApproval = async (id: number, status: string) => {
-  //   console.log(id, status);
+  //
 
   //   await updateLeaveStatus(id, status);
   //   // Update the leaveDetails state to reflect the new status
@@ -193,7 +188,6 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
   //   setAction(false);
   //   window.location.reload();
   // };
-  console.log(leaveDetails);
 
   return (
     <div>
@@ -208,10 +202,8 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
               <button
                 type='button'
                 onClick={() => {
-                  console.log('Before:', reason, action);
                   setReason('');
                   setAction(false);
-                  console.log('After:', reason, action);
                 }}
                 style={{
                   color: 'rgb(153,171,180)',
@@ -353,7 +345,7 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
                     </button>
                   </div>
                   <div className={styles.totalLeaveTableContainer}>
-                    <form className={styles.approvalTable}>
+                    <div className={styles.approvalTable}>
                       <div className=''>
                         <textarea
                           rows={3}
@@ -388,7 +380,7 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
                           </button>
                         </div>
                       </div>
-                    </form>
+                    </div>
                   </div>
                 </div>
               </div>

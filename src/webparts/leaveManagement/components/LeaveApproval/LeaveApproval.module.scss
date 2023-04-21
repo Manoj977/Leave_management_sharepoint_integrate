@@ -133,7 +133,7 @@ $label-font-size: 1.3rem;
 }
 
 .leaveapprovalSearchBox {
-  justify-content: start;
+  justify-content: flex-start;
   display: flex;
   align-items: center;
   padding: 0rem 4rem;
@@ -377,11 +377,10 @@ $label-font-size: 1.3rem;
   padding-bottom: 0.25rem;
   font-weight: 600;
   --tw-text-opacity: 1;
-  color: rgb(17 24 39 / var(--tw-text-opacity));
   line-height: 1.25;
-
+  color: rgb(127 29 29 / var(--tw-text-opacity));
   --tw-bg-opacity: 1;
-  background: lightgray;
+  background-color: rgb(254 215 170 / var(--tw-bg-opacity));
   opacity: 0.5;
   border-radius: 9999px;
 }
@@ -458,9 +457,9 @@ $label-font-size: 1.3rem;
 
 .LoaderDivision {
   display: flex;
-  height: 100vh;
   align-items: center;
   justify-content: center;
+  margin: 3rem;
 }
 
 .loader {
@@ -561,8 +560,8 @@ $label-font-size: 1.3rem;
   }
 }
 
-@media (min-width: 768px) {
-  .LoaderDivision {
-    height: 70vh;
-  }
-}
+// @media (min-width: 768px) {
+//   .LoaderDivision {
+//     height: 45vh;
+//   }
+// }

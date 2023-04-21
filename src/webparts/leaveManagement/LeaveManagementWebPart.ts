@@ -44,12 +44,9 @@ export default class LeaveManagementWebPart extends BaseClientSideWebPart<ILeave
   }
 
   public onInit(): Promise<void> {
-    // console.log(this.context.pageContext.site.absoluteUrl);
-    // SPComponentLoader.loadCss(
-    //   `${this.context.pageContext.site.absoluteUrl}/SiteAssets/CSS/LeaveManagement.css?v=1.0`
-    // );
+
     SPComponentLoader.loadCss(
-      `https://zlendoit.sharepoint.com/sites/ZlendoTools/SiteAssets/LeaveManagement/CSS/LeaveManagement.css?v=1.0`
+      `https://zlendoit.sharepoint.com/sites/production/SiteAssets/LeaveManagement/CSS/LeaveManagement.css?v=1.0`
     );
 
     return super.onInit().then(() => {

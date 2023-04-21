@@ -92,11 +92,25 @@ const LeaveCalculation = () => {
       return leaveDetail.Status === 'Approved';
     });
 
+    const lopDates: Date[] = []; // store the dates of the leaves that exceed 3 days in a quarter
+
     ApprovedLeaveDetails.forEach((leaveDetail) => {
       const leaveDate = new Date(leaveDetail.FromDate);
       const quarterIndex = Math.floor(leaveDate.getMonth() / 3);
       quarterLeaveCounts[quarterIndex] += parseFloat(leaveDetail.NoofDaysLeave);
       totalTakenLeaves += parseFloat(leaveDetail.NoofDaysLeave);
+
+      if (quarterLeaveCounts[quarterIndex] > 3) {
+        const excessLeaveCount = quarterLeaveCounts[quarterIndex] - 3;
+        for (let i = 0; i < excessLeaveCount; i++) {
+          const date = new Date(leaveDate);
+          date.setDate(date.getDate() + i);
+          if (date.getDay() !== 0 && date.getDay() !== 6) {
+            // skip Saturday and Sunday
+            lopDates.push(date);
+          }
+        }
+      }
     });
 
     for (let i = 0; i < 4; i++) {
@@ -121,6 +135,8 @@ const LeaveCalculation = () => {
     }
 
     setLossofPay(lossOfPay);
+
+    console.log('LOP dates:', lopDates); // display the dates of the leaves that exceed 3 days in a quarter
   }, [
     LeaveDetails,
     setLossofPay,

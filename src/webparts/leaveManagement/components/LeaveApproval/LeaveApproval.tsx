@@ -8,9 +8,8 @@ import Pagination from '../Pagination/Pagination';
 import styles from './LeaveApproval.module.scss';
 import ApprovalPage from '../ApprovalPage/ApprovalPage';
 import { FaSortUp, FaSortDown } from 'react-icons/fa';
-// import { AiOutlineSearch } from 'react-icons/ai';
-// import { RiLoader4Line } from 'react-icons/ri';
-
+import { RiLoader4Line } from 'react-icons/ri';
+import LeaveCalculation from '../LeaveCalculation/LeaveCalculation';
 type LeaveDetail = {
   leaveID: number;
   ID: string;
@@ -34,21 +33,19 @@ const TableHeading: TableHeading[] = [
   { name: 'S.No', value: 'S.No' },
   { name: 'ID', value: 'ID' },
   { name: 'Name', value: 'Name' },
-  // { name: 'Email', value: 'Email' },
   { name: 'Leave', value: 'Leave' },
   { name: 'Leave Type', value: 'Leave Type' },
   { name: 'Date', value: 'Date' },
-  // { name: 'Reason', value: 'Reason' },
   { name: 'Days', value: 'Days' },
+  { name: 'Lop', value: 'Lop' },
   { name: 'Status', value: 'Status' },
   { name: 'Remark', value: 'Remark' },
   { name: 'Action', value: 'Action' },
 ];
 export const LeaveApproval: React.FC = () => {
+  LeaveCalculation();
   const { action, setAction } = React.useContext(MyContext);
-
   const [LeaveDetails, setLeaveDetails] = useState<LeaveDetail[]>([]);
-  // const [filteredData] = useState(LeaveDetails);
   const [approve, setApprove] = useState<string>('Pending');
   const [remark, setRemark] = useState<string>('-');
   const [sortBy, setSortBy] = useState<string>('');
@@ -57,55 +54,74 @@ export const LeaveApproval: React.FC = () => {
   // const [selectedOption, setSelectedOption] = React.useState('');
   const [dataPerPage] = useState(15);
   const [employeeId, setEmployeeId] = useState(0);
-
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
-    fetch(
-      "https://zlendoit.sharepoint.com/sites/production/_api/web/lists/getbytitle('Leave%20Management')/items"
-    )
-      .then((res) => res.text())
-      .then((data) => {
-        const jsonData = convert.xml2json(data, { compact: true, spaces: 4 });
-        const parsedData = JSON.parse(jsonData);
-        const entries = Array.isArray(parsedData.feed.entry)
-          ? parsedData.feed.entry
-          : [parsedData.feed.entry];
-        const leaveDetail: LeaveDetail[] = entries
-          .map((entry: any) => {
-            try {
-              return {
-                ID: entry.content['m:properties']['d:Title']._text,
-                Name: entry.content['m:properties']['d:Name']._text,
-                Email: entry.content['m:properties']['d:Email']._text,
-                Leave: entry.content['m:properties']['d:Leave']._text,
-                LeaveType: entry.content['m:properties']['d:LeaveType']._text,
-                count: entry.content['m:properties']['d:count']._text,
-                FromDate: new Date(
-                  entry.content['m:properties']['d:FormDate']._text
-                ).toLocaleDateString(),
-                ToDate: new Date(
-                  entry.content['m:properties']['d:ToDate']._text
-                ).toLocaleDateString(),
-                Reason: entry.content['m:properties']['d:Reason']._text,
-                Status: entry.content['m:properties']['d:Status']._text,
-                Remark: entry.content['m:properties']['d:n2yu']._text,
-                Days: entry.content['m:properties']['d:count']._text,
-                leaveID: entry.content['m:properties']['d:ID']._text,
-              };
-            } catch (error) {
-              if (
-                error instanceof TypeError &&
-                error.message.includes('Cannot read properties of undefined')
-              ) {
-                return null;
-              } else {
-                throw error;
+    setIsLoading(true);
+    const fetchLeaveDetails = () => {
+      fetch(
+        "https://zlendoit.sharepoint.com/sites/production/_api/web/lists/getbytitle('Leave%20Management')/items"
+      )
+        .then((res) => res.text())
+        .then((data) => {
+          const jsonData = convert.xml2json(data, { compact: true, spaces: 4 });
+          const parsedData = JSON.parse(jsonData);
+          const entries = Array.isArray(parsedData.feed.entry)
+            ? parsedData.feed.entry
+            : [parsedData.feed.entry];
+
+          const leaveDetail: LeaveDetail[] = entries
+            .map((entry: any) => {
+              try {
+                return {
+                  ID: entry.content['m:properties']['d:Title']._text,
+                  Name: entry.content['m:properties']['d:Name']._text,
+                  Email: entry.content['m:properties']['d:Email']._text,
+                  Leave: entry.content['m:properties']['d:Leave']._text,
+                  LeaveType: entry.content['m:properties']['d:LeaveType']._text,
+                  count: entry.content['m:properties']['d:count']._text,
+                  FromDate: new Date(
+                    entry.content['m:properties']['d:FormDate']._text
+                  ).toLocaleDateString(),
+                  ToDate: new Date(
+                    entry.content['m:properties']['d:ToDate']._text
+                  ).toLocaleDateString(),
+                  Reason: entry.content['m:properties']['d:Reason']._text,
+                  Status: entry.content['m:properties']['d:Status']._text,
+                  Remark: entry.content['m:properties']['d:Remark']._text,
+                  Days: entry.content['m:properties']['d:count']._text,
+                  leaveID: entry.content['m:properties']['d:Id']._text,
+                };
+              } catch (error) {
+                if (
+                  error instanceof TypeError &&
+                  error.message.includes('Cannot read properties of undefined')
+                ) {
+                  return null;
+                } else {
+                  throw error;
+                }
               }
-            }
-          })
-          .filter(Boolean); // Add filter to remove null values from the array
-        setLeaveDetails(leaveDetail);
-      })
-      .catch((err) => console.log(err));
+            })
+            .filter(Boolean);
+
+          setLeaveDetails(leaveDetail);
+          setIsLoading(false);
+        })
+        .catch((err) => {
+          if (
+            !(
+              err instanceof TypeError &&
+              err.message.includes('Cannot read properties of undefined')
+            )
+          ) {
+            console.log(err);
+          }
+        });
+    };
+
+    const intervalId = setInterval(fetchLeaveDetails, 50);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   let filteredEmployees;
@@ -120,7 +136,7 @@ export const LeaveApproval: React.FC = () => {
   const handleSearch = (event: any) => {
     setSearchTerm(event.target.value);
   };
-  console.log(LeaveDetails);
+
   // const handleDropdownChange = (
   //   event: React.FormEvent<HTMLSelectElement>
   // ): void => {
@@ -179,7 +195,7 @@ export const LeaveApproval: React.FC = () => {
     setEmployeeId(leaveID);
     setAction(true);
   };
-  console.log('CurrentData', CurrentData.length);
+
   return (
     <div>
       <div className={styles.leaveapproval}>
@@ -258,166 +274,187 @@ export const LeaveApproval: React.FC = () => {
                             </tr>
                           </thead>
                           <tbody className={styles.leaveDetailsTableBody}>
-                            {CurrentData.map((leave, index) => (
-                              <tr key={index}>
-                                {window.innerWidth > 590 && (
-                                  <td
-                                    className={styles.leaveDetailsDescription}
-                                    data-label='S.No'
+                            {isLoading ? (
+                              <tr>
+                                <td
+                                  className={styles.LeaveDetailsNoRecord}
+                                  colSpan={11}
+                                >
+                                  <p
+                                    style={{
+                                      textAlign: 'center',
+                                      fontWeight: 400,
+                                    }}
                                   >
-                                    {indexFirstData + index + 1}
-                                  </td>
-                                )}
-                                <td
-                                  className={`${styles.leaveDetailsDescription}`}
-                                  data-label='ID'
-                                >
-                                  {leave.ID}
-                                </td>
-                                <td
-                                  className={styles.leaveDetailsDescription}
-                                  data-label='Name'
-                                >
-                                  {leave.Name}
-                                </td>
-                                <td
-                                  className={styles.leaveDetailsDescription}
-                                  data-label='Leave'
-                                >
-                                  {leave.Leave}
-                                </td>
-                                <td
-                                  className={styles.leaveDetailsDescription}
-                                  data-label='Leave Type'
-                                >
-                                  {leave.LeaveType}
-                                </td>
-                                <td className={styles.leaveDetailsDescription}>
-                                  <div
-                                    className={`${styles.leaveApprovalButtonDiv} ${styles.leaveApprovalDate}`}
-                                  >
-                                    <p data-label='From Date'>
-                                      {leave.FromDate}
-                                    </p>
-                                    <span>-</span>
-                                    <p data-label='To Date'>{leave.ToDate}</p>
-                                  </div>
-                                </td>
-                                <td
-                                  className={styles.leaveDetailsDescription}
-                                  data-label='Days'
-                                >
-                                  {leave.Days}
-                                </td>
-                                <td
-                                  className={styles.leaveDetailsDescription}
-                                  data-label='Status'
-                                >
-                                  <span
-                                    className={`${
-                                      leave.Status === 'Pending'
-                                        ? `${styles.leaveStatusPending}`
-                                        : ''
-                                    } ${
-                                      leave.Status === 'Approved'
-                                        ? `${styles.leaveStatusApprove}`
-                                        : ''
-                                    } ${
-                                      leave.Status === 'Cancelled'
-                                        ? `${styles.leaveStatusCancel}`
-                                        : ''
-                                    } ${
-                                      leave.Status === 'Rejected'
-                                        ? `${styles.leaveStatusReject}`
-                                        : ''
-                                    }`}
-                                  >
-                                    <span
-                                      aria-hidden
-                                      className={styles.leaveStatusSpan}
-                                    >
-                                      {leave.Status}
-                                    </span>
-                                  </span>
-                                </td>
-
-                                <td
-                                  className={styles.leaveDetailsDescription}
-                                  data-label='RemarK'
-                                >
-                                  {leave.Remark}
-                                </td>
-                                <td
-                                  className={styles.leaveDetailsDescription}
-                                  data-label='Action'
-                                >
-                                  <div
-                                    className={styles.leaveApprovalButtonDiv}
-                                  >
-                                    <div>
-                                      {leave.Status === 'Pending' ? (
-                                        <button
-                                          onClick={() =>
-                                            handleApproval(leave.leaveID)
-                                          }
-                                          className={
-                                            styles.leaveApprovalViewButton
-                                          }
-                                        >
-                                          Action
-                                        </button>
-                                      ) : (
-                                        leave.Status && (
-                                          <p>Leave {leave.Status}</p>
-                                        )
-                                      )}
+                                    <div className={styles.LoaderDivision}>
+                                      <RiLoader4Line
+                                        className={styles.loader}
+                                      />
                                     </div>
-                                  </div>
+                                  </p>
                                 </td>
                               </tr>
-                            ))}
-                            {CurrentData === undefined ||
-                              (CurrentData.length === 0 && (
-                                <tr>
-                                  <td
-                                    className={styles.LeaveDetailsNoRecord}
-                                    colSpan={10}
-                                  >
-                                    <p
-                                      style={{
-                                        textAlign: 'center',
-                                        fontWeight: 400,
-                                      }}
+                            ) : filteredEmployees.length > 0 ? (
+                              CurrentData.map((leave, index) => (
+                                <tr key={index}>
+                                  {window.innerWidth > 590 && (
+                                    <td
+                                      className={styles.leaveDetailsDescription}
+                                      data-label='S.No'
                                     >
-                                      No records found
-                                    </p>
+                                      {indexFirstData + index + 1}
+                                    </td>
+                                  )}
+                                  <td
+                                    className={`${styles.leaveDetailsDescription}`}
+                                    data-label='ID'
+                                  >
+                                    {leave.ID}
+                                  </td>
+                                  <td
+                                    className={styles.leaveDetailsDescription}
+                                    data-label='Name'
+                                  >
+                                    {leave.Name}
+                                  </td>
+                                  <td
+                                    className={styles.leaveDetailsDescription}
+                                    data-label='Leave'
+                                  >
+                                    {leave.Leave}
+                                  </td>
+                                  <td
+                                    className={styles.leaveDetailsDescription}
+                                    data-label='Leave Type'
+                                  >
+                                    {leave.LeaveType}
+                                  </td>
+                                  <td
+                                    className={styles.leaveDetailsDescription}
+                                  >
+                                    <div
+                                      className={`${styles.leaveApprovalButtonDiv} ${styles.leaveApprovalDate}`}
+                                    >
+                                      <p data-label='From Date'>
+                                        {leave.FromDate}
+                                      </p>
+                                      <span>-</span>
+                                      <p data-label='To Date'>{leave.ToDate}</p>
+                                    </div>
+                                  </td>
+                                  <td
+                                    className={styles.leaveDetailsDescription}
+                                    data-label='Days'
+                                  >
+                                    {leave.Days}
+                                  </td>
+                                  <td
+                                    className={styles.leaveDetailsDescription}
+                                    data-label='Lop'
+                                  >
+                                    Lop
+                                  </td>
+                                  <td
+                                    className={styles.leaveDetailsDescription}
+                                    data-label='Status'
+                                  >
+                                    <span
+                                      className={`${
+                                        leave.Status === 'Pending'
+                                          ? `${styles.leaveStatusPending}`
+                                          : ''
+                                      } ${
+                                        leave.Status === 'Approved'
+                                          ? `${styles.leaveStatusApprove}`
+                                          : ''
+                                      } ${
+                                        leave.Status === 'Cancelled'
+                                          ? `${styles.leaveStatusCancel}`
+                                          : ''
+                                      } ${
+                                        leave.Status === 'Rejected'
+                                          ? `${styles.leaveStatusReject}`
+                                          : ''
+                                      }`}
+                                    >
+                                      <span
+                                        aria-hidden
+                                        className={styles.leaveStatusSpan}
+                                      >
+                                        {leave.Status}
+                                      </span>
+                                    </span>
+                                  </td>
+
+                                  <td
+                                    className={styles.leaveDetailsDescription}
+                                    data-label='Remark'
+                                  >
+                                    {leave.Remark}
+                                  </td>
+                                  <td
+                                    className={styles.leaveDetailsDescription}
+                                    data-label='Action'
+                                  >
+                                    <div
+                                      className={styles.leaveApprovalButtonDiv}
+                                    >
+                                      <div>
+                                        {leave.Status === 'Pending' ? (
+                                          <button
+                                            onClick={() =>
+                                              handleApproval(leave.leaveID)
+                                            }
+                                            className={
+                                              styles.leaveApprovalViewButton
+                                            }
+                                          >
+                                            Action
+                                          </button>
+                                        ) : (
+                                          leave.Status && (
+                                            <p>Leave {leave.Status}</p>
+                                          )
+                                        )}
+                                      </div>
+                                    </div>
                                   </td>
                                 </tr>
-                              ))}
+                              ))
+                            ) : (
+                              <tr>
+                                <td
+                                  className={styles.LeaveDetailsNoRecord}
+                                  colSpan={11}
+                                >
+                                  <p
+                                    style={{
+                                      textAlign: 'center',
+                                      fontWeight: 400,
+                                    }}
+                                  >
+                                    No records found
+                                  </p>
+                                </td>
+                              </tr>
+                            )}
                           </tbody>
                         </table>
                       </div>
                     </div>
-                    {filteredEmployees === undefined ||
-                      (filteredEmployees.length > 0 && (
-                        <div>
-                          <Pagination
-                            totalData={filteredEmployees.length}
-                            dataPerPage={dataPerPage}
-                            setCurrentPage={setCurrentPage}
-                            currentPage={currentPage}
-                          />
-                        </div>
-                      ))}
+                    {filteredEmployees.length > 0 && (
+                      <div>
+                        <Pagination
+                          totalData={filteredEmployees.length}
+                          dataPerPage={dataPerPage}
+                          setCurrentPage={setCurrentPage}
+                          currentPage={currentPage}
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
-              {/* {LeaveDetails === undefined ||
-                (LeaveDetails.length === 0 && (
-                  <div className={styles.LoaderDivision}>
-                    <RiLoader4Line className={styles.loader} />
-                  </div>
-                ))} */}
             </div>
           </div>
         )}

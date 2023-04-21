@@ -26,7 +26,7 @@ const Navbar: React.FC = () => {
           <AiOutlineMenu
             type='button'
             onClick={() => {
-              console.log('clicked');
+              
               setSideBarActive(!sidebarActive);
             }}
           />

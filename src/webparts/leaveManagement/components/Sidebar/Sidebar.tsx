@@ -9,6 +9,7 @@ import { MdOutlineCancel } from 'react-icons/md';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Sidebar = ({ loggedUserRole }: any) => {
+
   // eslint-disable-next-line no-unused-vars
   const { activeMenu, links, currentColor, setSideBarActive, sidebarActive } =
     React.useContext(MyContext);

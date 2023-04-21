@@ -2,10 +2,11 @@
 /* eslint-disable no-void */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import style from './Profile.module.scss';
 import { MyContext } from '../../context/contextProvider';
 import LeaveCalculation from '../LeaveCalculation/LeaveCalculation';
+import { IoMdNotificationsOutline } from 'react-icons/io';
 type ProfileProps = {
   loggedUserName: string;
 };
@@ -22,23 +23,22 @@ export default function Profile(props: ProfileProps) {
     takenLeaves,
     totalLeaves,
     availableLeaves,
-  } = React.useContext(MyContext);
-
+    nextHoliday,
+  } = useContext(MyContext);
   LeaveCalculation();
+  let HolidayName = '',
+    date = '';
+  // Day = '';
+  if (nextHoliday.length > 0) {
+    HolidayName = nextHoliday[0].HolidayName;
+    date = new Date(nextHoliday[0].Date).toLocaleDateString('en-GB');
+    // Day = nextHoliday[0].Day;
+  }
 
   useEffect(() => {
     setLossofPay(lossOfPay); // update the state whenever lossOfPay changes
   }, [lossOfPay]);
-  console.log(
-    'takenLeaves',
-    takenLeaves,
-    'totalLeaves',
-    totalLeaves,
-    'availableLeaves',
-    availableLeaves,
-    'lossOfPay',
-    lossOfPay
-  );
+
   const HandleLeave = (
     event: React.MouseEvent<HTMLButtonElement>,
     title: string
@@ -59,6 +59,22 @@ export default function Profile(props: ProfileProps) {
 
   return (
     <div>
+      <div className={''}>
+        <div className={style.announcement}>
+          <div className={style.announcementIcon}>
+            <div className={style.bellIcon}>
+              <IoMdNotificationsOutline className={style.bell} size={20} />
+            </div>
+          </div>
+          <div className={style.scrollLeft}>
+            <p>
+              Upcoming leave: <span>{HolidayName}</span>
+              <span>{date}</span>
+              {/* <span>{Day}</span> */}
+            </p>
+          </div>
+        </div>
+      </div>
       <div
         className={`${style.profilesection_layout} ${
           activeMenu ? style.activeMenu : style.activeMenuNot

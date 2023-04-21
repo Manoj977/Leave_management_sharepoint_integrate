@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable no-void */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-empty-pattern */
@@ -20,6 +21,7 @@ import { sp } from '@pnp/sp/presets/all';
 type Admin = {
   ID: string;
   name: string;
+  email: string;
   Role: string;
 };
 type employeeData = {
@@ -29,13 +31,15 @@ type employeeData = {
   leaveID: number;
   Role: string;
 };
+
 const App: React.FC = () => {
   const { activeMenu, sidebarActive } = React.useContext(MyContext);
   const [Admin, setAdmin] = useState<Admin[]>([]);
   const [employeeData, setEmployeeData] = useState<employeeData[]>([]);
   // const [userEmail, setUserEmail] = useState('');
-  let loggedUserName = '';
-  const [loggedUserEmail, setLoggedUserEmail] = useState('');
+  const [loggedUserName, setLoggedUserName] = useState<string>('');
+  const [loggedUserEmail, setLoggedUserEmail] = useState<string>('');
+  const [loggedUserRole, setLoggedUserRole] = useState<string>('');
 
   useEffect(() => {
     fetch(
@@ -69,37 +73,49 @@ const App: React.FC = () => {
           ? parsedData.feed.entry
           : [parsedData.feed.entry];
         const loggedUserDetail: Admin[] = entries.map((entry: any) => ({
-          ID: entry.content['m:properties']['d:Employee_x0020_ID']._text,
-          name: entry.content['m:properties']['d:Employee_x0020_Name']._text,
+          ID: entry.content['m:properties']['d:Admin_x0020_ID']._text,
+          name: entry.content['m:properties']['d:Name']._text,
+          email: entry.content['m:properties']['d:Admin_x0020_Email']._text,
           Role: entry.content['m:properties']['d:Role']._text,
         }));
         setAdmin(loggedUserDetail);
       })
       .catch((err) => console.log(err));
   }, []);
-
-  let EmployeeRole = '';
-
-  void sp.web.currentUser.get().then((user) => {
-    setLoggedUserEmail(user.Email);
-  });
-  employeeData.find((e) => {
-    if (e.email === loggedUserEmail) {
-      loggedUserName = e.name;
-    }
-  });
-  Admin.forEach((admin) => {
-    employeeData.find((e) => {
-      if (e.id === admin.ID) EmployeeRole = admin.Role;
+  useEffect(() => {
+    void sp.web.currentUser.get().then((user) => {
+      setLoggedUserEmail(user.Email);
     });
-  });
+  }, []);
+
+  useEffect(() => {
+    employeeData.find((e) => {
+      e.email === loggedUserEmail && setLoggedUserName(e.name);
+    });
+  }, [employeeData, loggedUserEmail]);
+
+  useEffect(() => {
+    Admin.forEach((admin) => {
+      employeeData.find((e) => {
+        if (
+          e.email === admin.email &&
+          e.email !== undefined &&
+          admin.email !== undefined
+        ) {
+          console.log(loggedUserEmail === admin.email);
+          setLoggedUserRole(admin.Role);
+          console.log(admin.Role);
+        }
+      });
+    });
+  }, [Admin, employeeData, loggedUserEmail]);
 
   return (
     <MyContextProvider>
       <HashRouter basename='/'>
         <div className={styles.mainSection}>
           <div className={styles.sideBar}>
-            <Sidebar loggedUserRole={EmployeeRole} />
+            <Sidebar loggedUserRole={loggedUserRole} />
           </div>
           <div
             className={`${styles.section} ${
@@ -116,9 +132,15 @@ const App: React.FC = () => {
             </div>
             <div className={styles.components}>
               <Routes>
-                <Route path='/' element={<Profile loggedUserName={loggedUserName} />} />
-                <Route path='/Profile' element={<Profile loggedUserName={loggedUserName} />} />
-                {EmployeeRole === 'Admin' && (
+                <Route
+                  path='/'
+                  element={<Profile loggedUserName={loggedUserName} />}
+                />
+                <Route
+                  path='/Profile'
+                  element={<Profile loggedUserName={loggedUserName} />}
+                />
+                {loggedUserRole.length > 0 && (
                   <Route path='/Leave Approval' element={<LeaveApproval />} />
                 )}
                 <Route path='/Apply Leave' element={<ApplyLeave />} />

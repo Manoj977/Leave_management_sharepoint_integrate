@@ -11,6 +11,7 @@ import { MyContext } from '../../context/contextProvider';
 import { Link } from 'react-router-dom';
 import Pagination from '../Pagination/Pagination';
 import { MdOutlineCancel } from 'react-icons/md';
+import { RiLoader4Line } from 'react-icons/ri';
 // import { RiLoader4Line } from 'react-icons/ri';
 type LeaveDetail = {
   ID: string;
@@ -45,11 +46,11 @@ export const LeaveDetails = () => {
   const [userEmail, setUserEmail] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [dataPerPage] = useState(15);
-  const [leaveStatus, setLeaveStatus] = useState('');
+  const [, setLeaveStatus] = useState('');
   const [reason, setReason] = useState('');
-
+  const [isLoading, setIsLoading] = useState(false);
+  const [leaveID, setLeaveID] = useState(0);
   // const [reasonError, setReasonError] = useState('');
-  console.log(userEmail);
   useEffect(() => {
     // eslint-disable-next-line no-void
     void sp.web.currentUser.get().then((user) => {
@@ -57,73 +58,78 @@ export const LeaveDetails = () => {
     });
   }, []);
   useEffect(() => {
-    fetch(
-      "https://zlendoit.sharepoint.com/sites/production/_api/web/lists/getbytitle('Leave%20Management')/items"
-    )
-      .then((res) => res.text())
-      .then((data) => {
-        const jsonData = convert.xml2json(data, { compact: true, spaces: 4 });
-        const parsedData = JSON.parse(jsonData);
-        const entries = Array.isArray(parsedData.feed.entry)
-          ? parsedData.feed.entry
-          : [parsedData.feed.entry];
-        entries.map((e: any) => {
-          console.log(e);
-        });
-        const leaveDetail: LeaveDetail[] = entries
-          .map((entry: any) => {
-            try {
-              return {
-                ID: entry.content['m:properties']['d:Title']._text,
-                Name: entry.content['m:properties']['d:Name']._text,
-                Email: entry.content['m:properties']['d:Email']._text,
-                Leave: entry.content['m:properties']['d:Leave']._text,
-                LeaveType: entry.content['m:properties']['d:LeaveType']._text,
-                count: entry.content['m:properties']['d:count']._text,
-                FromDate: new Date(
-                  entry.content['m:properties']['d:FormDate']._text
-                ).toLocaleDateString(),
-                ToDate: new Date(
-                  entry.content['m:properties']['d:ToDate']._text
-                ).toLocaleDateString(),
-                Reason: entry.content['m:properties']['d:Reason']._text,
-                Status: entry.content['m:properties']['d:Status']._text,
-                Remark: entry.content['m:properties']['d:n2yu']._text,
-                Days: entry.content['m:properties']['d:count']._text,
-                leaveID: entry.content['m:properties']['d:Id']._text,
-              };
-            } catch (error) {
-              if (
-                error instanceof TypeError &&
-                error.message.includes('Cannot read properties of undefined')
-              ) {
-                return null;
-              } else {
-                throw error;
-              }
-            }
-          })
-          .filter(Boolean);
+    setIsLoading(true);
+    const fetchLeaveDetails = () => {
+      fetch(
+        "https://zlendoit.sharepoint.com/sites/production/_api/web/lists/getbytitle('Leave%20Management')/items"
+      )
+        .then((res) => res.text())
+        .then((data) => {
+          const jsonData = convert.xml2json(data, { compact: true, spaces: 4 });
+          const parsedData = JSON.parse(jsonData);
+          const entries = Array.isArray(parsedData.feed.entry)
+            ? parsedData.feed.entry
+            : [parsedData.feed.entry];
 
-        setLeaveDetails(leaveDetail);
-      })
-      .catch((err) => {
-        if (
-          !(
-            err instanceof TypeError &&
-            err.message.includes('Cannot read properties of undefined')
-          )
-        ) {
-          console.log(err);
-        }
-      });
+          const leaveDetail: LeaveDetail[] = entries
+            .map((entry: any) => {
+              try {
+                return {
+                  ID: entry.content['m:properties']['d:Title']._text,
+                  Name: entry.content['m:properties']['d:Name']._text,
+                  Email: entry.content['m:properties']['d:Email']._text,
+                  Leave: entry.content['m:properties']['d:Leave']._text,
+                  LeaveType: entry.content['m:properties']['d:LeaveType']._text,
+                  count: entry.content['m:properties']['d:count']._text,
+                  FromDate: new Date(
+                    entry.content['m:properties']['d:FormDate']._text
+                  ).toLocaleDateString(),
+                  ToDate: new Date(
+                    entry.content['m:properties']['d:ToDate']._text
+                  ).toLocaleDateString(),
+                  Reason: entry.content['m:properties']['d:Reason']._text,
+                  Status: entry.content['m:properties']['d:Status']._text,
+                  Remark: entry.content['m:properties']['d:Remark']._text,
+                  Days: entry.content['m:properties']['d:count']._text,
+                  leaveID: entry.content['m:properties']['d:Id']._text,
+                };
+              } catch (error) {
+                if (
+                  error instanceof TypeError &&
+                  error.message.includes('Cannot read properties of undefined')
+                ) {
+                  return null;
+                } else {
+                  throw error;
+                }
+              }
+            })
+            .filter(Boolean);
+
+          setLeaveDetails(leaveDetail);
+          setIsLoading(false);
+        })
+        .catch((err) => {
+          if (
+            !(
+              err instanceof TypeError &&
+              err.message.includes('Cannot read properties of undefined')
+            )
+          ) {
+            console.log(err);
+          }
+        });
+    };
+
+    const intervalId = setInterval(fetchLeaveDetails, 50);
+
+    return () => clearInterval(intervalId);
   }, []);
 
-  console.log(leaveDetails);
   const filteredLeaveDetails = leaveDetails.filter(
     (detail) => detail.Email === userEmail
   );
-  console.log(leaveStatus);
+
   // pag
   const indexOfLastPage = currentPage * dataPerPage;
   const indexFirstData = indexOfLastPage - dataPerPage;
@@ -132,60 +138,37 @@ export const LeaveDetails = () => {
       ? filteredLeaveDetails.slice(indexFirstData, indexOfLastPage)
       : '';
 
-  const updateLeaveStatus = async (id: number, status: string) => {
+  const updateLeaveStatus = async (
+    id: number,
+    Remark: string,
+    status: string
+  ) => {
     try {
       const web = Web('https://zlendoit.sharepoint.com/sites/production');
       const list: IList = web.lists.getByTitle('Leave Management');
 
       const itemToUpdate = list.items.getById(id);
-      await itemToUpdate.update({ Status: status });
-      console.log('Leave status updated successfully!');
+      await itemToUpdate.update({ Status: status, Remark: Remark });
+      alert('Leave status updated successfully!');
     } catch (error) {
-      console.log('Error updating leave status:', error);
+      alert(`Error updating leave status: ${error}`);
     }
   };
-  const handleCancel = async (id: number, status: string) => {
-    console.log(id, status);
-    await updateLeaveStatus(id, status);
+  const handleCancel = async (id: number, Remark: string, status: string) => {
+    await updateLeaveStatus(id, Remark, status);
     // Update the leaveDetails state to reflect the new status
     const updatedLeaveDetails = leaveDetails.map((leave: any) =>
       leave.leaveID === id ? { ...leave, Status: status } : leave
     );
-
     setLeaveDetails(updatedLeaveDetails);
     setLeaveStatus(status);
     setCancelReason(false);
   };
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    // Validate the reason
 
-    // if (!reason) { // setReasonError('Please enter a reason for the leave'); // setTimeout(() => { // setReasonError(''); // }, 3500); // } else if (reason.length > 50) { // setReasonError( // `Reason must have less than 50 characters. Current length: ${reason.length}` // ); // } else { // setReasonError(''); // }
-    if (reason) {
-      const data = { CancelReason: reason };
-      console.log(data);
-      // Get a reference to the "Leave Management" list using the website URL
-      // const web = Web('https://zlendoit.sharepoint.com/sites/production');
-      // const list: IList = web.lists.getByTitle('Leave Management');
-      // Add the new item to the list
-      // list.items
-      // .add(itemData)
-      // .then(() => {
-      // console.log('New item added to the list');
-      // })
-      // .catch((error) => {
-      // console.log('Error adding new item to the list: ', error);
-      // });
-    }
-  }
   return (
-    <div
-      style={{
-        width: '100%',
-        height: '100%',
-      }}
-    >
+    <div>
       {filteredLeaveDetails && (
-        <div className={styles.leaveDetail}>
+        <div>
           <div className={styles.tableDetail}>
             <table className={styles.leaveTable}>
               <thead>
@@ -201,7 +184,22 @@ export const LeaveDetails = () => {
                   })}
               </thead>
               <tbody className={styles.tableBody}>
-                {filteredLeaveDetails.length > 0 &&
+                {isLoading ? (
+                  <tr>
+                    <td className={styles.LeaveDetailsNoRecord} colSpan={11}>
+                      <p
+                        style={{
+                          textAlign: 'center',
+                          fontWeight: 400,
+                        }}
+                      >
+                        <div className={styles.LoaderDivision}>
+                          <RiLoader4Line className={styles.loader} />
+                        </div>
+                      </p>
+                    </td>
+                  </tr>
+                ) : filteredLeaveDetails.length > 0 ? (
                   CurrentData.map((leave: any, index: any) => (
                     <tr key={index} className={styles.tableBodyRow}>
                       <td className={styles.tableBodyRow} data-label='S.No'>
@@ -270,16 +268,14 @@ export const LeaveDetails = () => {
                       <td className={styles.tableBodyRow} data-label='Remark'>
                         {leave.Remark}
                       </td>
-                      <td
-                        className={styles.tableBodyRow}
-                        data-label='Cancel Request'
-                      >
+                      <td className={styles.tableBodyRow} data-label='Action'>
                         {leave.Status === 'Pending' ? (
                           <button
                             style={{ margin: '0px 2rem' }}
-                            onClick={() =>
-                              handleCancel(leave.leaveID, 'Cancelled')
-                            }
+                            onClick={() => {
+                              setLeaveID(leave.leaveID);
+                              setCancelReason(true);
+                            }}
                             className={styles.leaveCancelButton}
                           >
                             Cancel
@@ -298,42 +294,34 @@ export const LeaveDetails = () => {
                         )}
                       </td>
                     </tr>
-                  ))}
-                {CurrentData === undefined ||
-                  (CurrentData.length === 0 && (
-                    <tr>
-                      <td className={styles.LeaveDetailsNoRecord} colSpan={11}>
-                        <p
-                          style={{
-                            textAlign: 'center',
-                            fontWeight: 400,
-                          }}
-                        >
-                          No records found
-                        </p>
-                      </td>
-                    </tr>
-                  ))}
+                  ))
+                ) : (
+                  <tr>
+                    <td className={styles.LeaveDetailsNoRecord} colSpan={11}>
+                      <p
+                        style={{
+                          textAlign: 'center',
+                          fontWeight: 400,
+                        }}
+                      >
+                        No records found
+                      </p>
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
-          {filteredLeaveDetails === undefined ||
-            (filteredLeaveDetails.length > 0 && (
-              <div>
-                <Pagination
-                  totalData={filteredLeaveDetails.length}
-                  dataPerPage={dataPerPage}
-                  setCurrentPage={setCurrentPage}
-                  currentPage={currentPage}
-                />
-              </div>
-            ))}
-          {/* {(CurrentData === undefined && leaveDetails !== undefined) ||
-            (leaveDetails.length !== 0 && CurrentData.length === 0 && (
-              <div className={styles.LoaderDivision}>
-                <RiLoader4Line className={styles.loader} />
-              </div>
-            ))} */}
+          {filteredLeaveDetails.length > 0 && (
+            <div>
+              <Pagination
+                totalData={filteredLeaveDetails.length}
+                dataPerPage={dataPerPage}
+                setCurrentPage={setCurrentPage}
+                currentPage={currentPage}
+              />
+            </div>
+          )}
         </div>
       )}
       <div className={styles.applyLeaveButtonDiv}>
@@ -343,46 +331,50 @@ export const LeaveDetails = () => {
       </div>
       {cancelReason && (
         <div className={styles.cancelReason}>
-          <div className={styles.cancelReasonDiv1}>
-            <div className={styles.cancelReasonDiv2}>
-              <header className={styles.header}>
-                <div className={styles.headerDiv}>
-                  Enter the reason for cancellation (Optional)
-                </div>
-              </header>
-              <button
-                type='button'
-                onClick={() => setCancelReason(false)}
-                style={{
-                  color: 'rgb(153,171,180)',
-                  borderRadius: '50%',
-                  border: 'none',
-                }}
-                className={styles.CloseButton}
-              >
-                <MdOutlineCancel />
-              </button>
-            </div>
-            <div className={styles.inputContainer}>
-              <form
-                className={styles.cancelReasonTextarea}
-                onSubmit={handleSubmit}
-              >
-                <div className=''>
-                  <textarea
-                    placeholder='Enter the reason...'
-                    onChange={(event) => setReason(event.target.value)}
-                    className={styles.CancelReasonTextarea}
-                    value={reason}
-                  />
-                </div>
-                {/* {reasonError && <p className={styles.error}> {reasonError}</p>} */}
-                <div className={styles.button}>
-                  <button className={styles.buttonSubmit} type='submit'>
-                    Submit
-                  </button>
-                </div>
-              </form>
+          <div className={styles.align}>
+            <div className={styles.cancelReasonDiv1}>
+              <div className={styles.cancelReasonDiv2}>
+                <header className={styles.header}>
+                  <div className={styles.headerDiv}>
+                    Enter the reason for cancellation (Optional)
+                  </div>
+                </header>
+                <button
+                  type='button'
+                  onClick={() => setCancelReason(false)}
+                  style={{
+                    color: 'rgb(153,171,180)',
+                    borderRadius: '50%',
+                    border: 'none',
+                  }}
+                  className={styles.CloseButton}
+                >
+                  <MdOutlineCancel />
+                </button>
+              </div>
+              <div className={styles.inputContainer}>
+                <form className={styles.cancelReasonTextarea}>
+                  <div className=''>
+                    <textarea
+                      rows={3}
+                      cols={50}
+                      style={{ resize: 'none' }}
+                      placeholder='Enter the reason...'
+                      onChange={(event) => setReason(event.target.value)}
+                      className={styles.CancelReasonTextarea}
+                      value={reason}
+                    />
+                  </div>
+                  <div className={styles.button}>
+                    <button
+                      className={styles.buttonSubmit}
+                      onClick={() => handleCancel(leaveID, reason, 'Cancelled')}
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
         </div>

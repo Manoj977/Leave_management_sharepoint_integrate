@@ -5,7 +5,7 @@
   position: relative;
   left: 0px;
   top: 0px;
-  overflow: hidden;
+  overflow: auto;
   z-index: 1;
   text-decoration: none;
   padding-left: 10px;
@@ -127,7 +127,7 @@
 
 @media (min-width: 768px) {
   .sidebar {
-    overflow: hidden;
+    overflow: auto;
   }
 
   .sidebar:hover {

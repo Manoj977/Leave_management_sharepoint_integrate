@@ -14,7 +14,98 @@
   margin-left: 1rem;
   margin-right: 1rem;
 }
+.announcement {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  margin: 0px 20px;
+}
 
+.scrollLeft {
+  white-space: nowrap;
+  direction: rtl;
+  animation: scrollLeft 10s linear infinite;
+}
+.scrollLeft p {
+  margin: 0;
+  padding-right: 25px;
+  box-sizing: border-box;
+}
+
+.scrollLeft p span:first-child {
+  display: inline-block;
+  padding-right: 10px;
+}
+@keyframes scrollLeft {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+@media (max-width: 768px) {
+  .scrollLeft {
+    font-size: 14px;
+    width: 80%;
+  }
+}
+.bellIcon {
+  position: relative;
+  display: inline-block;
+}
+
+.bellIcon .bell {
+  animation: bell 0.5s infinite;
+}
+
+.bellIcon .bell:before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  right: -2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #ff3b30;
+  box-shadow: 0 0 0 rgba(255, 59, 48, 0.4);
+  animation: pulse 2s infinite;
+}
+
+@keyframes bell {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .scrollLeft {
+    font-size: 12px;
+    width: 100%;
+  }
+}
+.announcementIcon {
+  z-index: 1;
+  background-color: white;
+  padding-top: 5px;
+}
 .employeeNameCard {
   background-color: white;
   overflow: hidden;

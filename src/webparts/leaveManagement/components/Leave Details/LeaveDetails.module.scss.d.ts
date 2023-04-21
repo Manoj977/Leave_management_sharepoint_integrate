@@ -9,6 +9,7 @@ interface CssExports {
   'CloseButton': string;
   'LeaveDetailsNoRecord': string;
   'LoaderDivision': string;
+  'align': string;
   'applyLeaveButton': string;
   'applyLeaveButtonDiv': string;
   'button': string;

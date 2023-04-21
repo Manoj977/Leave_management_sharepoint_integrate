@@ -8,6 +8,10 @@ interface CssExports {
   'activeLink': string;
   'activeMenu': string;
   'activeMenuNot': string;
+  'announcement': string;
+  'announcementIcon': string;
+  'bell': string;
+  'bellIcon': string;
   'bgDecor': string;
   'card': string;
   'card_gap1': string;
@@ -29,6 +33,7 @@ interface CssExports {
   'nameShadowLoading': string;
   'profilesection_layout': string;
   'pulse': string;
+  'scrollLeft': string;
   'shadowLoading': string;
 }
 const cssExports: CssExports;

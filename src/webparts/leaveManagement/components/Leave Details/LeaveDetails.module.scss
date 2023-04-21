@@ -12,6 +12,7 @@
     0 2px 4px -2px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
     var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  overflow: auto;
 }
 
 @media (min-width: 768px) {
@@ -33,6 +34,9 @@
     var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
   border-radius: 0.5rem;
   overflow-x: auto;
+  max-width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
 }
 
 .LeaveDetailsNoRecord {
@@ -60,13 +64,24 @@
     var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
   text-shadow: rgb(204, 204, 204) 3px 4px 5px;
 }
-
 .leaveTable {
   width: 100%;
   border-collapse: collapse;
   background-color: #fdcea0;
 }
 
+@media (max-width: 640px) {
+  .LeaveDetailsNoRecord {
+    font-size: 1.475rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .LeaveDetailsNoRecord {
+    height: 300px;
+  }
+}
 @media (max-width: 665px) {
   .leaveDetail {
     margin-top: 1px;
@@ -175,7 +190,14 @@
   text-align: center;
   white-space: nowrap;
 }
-
+.tableDetail {
+  margin: 0rem 2rem;
+}
+@media (min-width: 900px) {
+  .tableDetail {
+    margin: 0rem 3rem;
+  }
+}
 .tableDescription {
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
@@ -214,6 +236,7 @@
 .applyLeaveButtonDiv {
   display: flex;
   margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
   justify-content: center;
   align-items: center;
   // margin-top: -8vh;
@@ -234,6 +257,7 @@
   padding: 1rem;
   text-align: center;
   margin-right: 0.5rem;
+  margin-top: 0.5rem;
   margin-bottom: 0.5rem;
   border: none;
 }
@@ -259,6 +283,7 @@
 
 @media (max-width: 590px) {
   .applyLeaveButton {
+    margin-top: 2rem;
     width: 8rem;
     font-weight: 400;
     border-radius: 10px;
@@ -271,6 +296,7 @@
   }
 
   .applyLeaveButtonDiv {
+    margin-top: 1rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -404,59 +430,6 @@
     0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
-@media (min-width: 310px) {
-  .cancelReasonDiv1 {
-    margin-top: 5rem;
-    margin-left: 0.5rem;
-    height: 80%;
-    width: 95%;
-  }
-}
-
-@media (min-width: 350px) {
-  .cancelReasonDiv1 {
-    margin-top: 5rem;
-    margin-left: 2rem;
-    height: 75%;
-    width: 85%;
-  }
-}
-
-@media (min-width: 640px) {
-  .cancelReasonDiv1 {
-    margin-top: 4rem;
-    margin-left: 6rem;
-    width: 70%;
-  }
-}
-
-@media (min-width: 768px) {
-  .cancelReasonDiv1 {
-    margin-top: 4rem;
-    margin-left: 10rem;
-
-    width: 60%;
-  }
-}
-
-@media (min-width: 1024px) {
-  .cancelReasonDiv1 {
-    margin-top: 13rem;
-    margin-left: 24rem;
-    width: 50%;
-    height: 35%;
-  }
-}
-
-@media (min-width: 1280px) {
-  .cancelReasonDiv1 {
-    margin-top: 13rem;
-    margin-left: 24rem;
-    width: 50%;
-    height: 35%;
-  }
-}
-
 .cancelReasonDiv2 {
   display: flex;
   justify-content: space-between;
@@ -487,7 +460,14 @@
   padding-bottom: 1rem;
   background: none;
 }
-
+.align {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+}
 .inputContainer {
   max-width: 100%;
   overflow: hidden;
@@ -497,13 +477,16 @@
 .cancelReasonTextarea {
   min-width: 100%;
   line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .CancelReasonTextarea {
   width: 100%;
-
+  border: 1px solid gray;
   border-radius: 0.25rem;
-  border-width: 1px;
   --tw-border-opacity: 1;
   border-color: rgb(148 163 184 / var(--tw-border-opacity));
   padding-left: 0.75rem;
@@ -514,12 +497,13 @@
   --tw-text-opacity: 1;
   color: rgb(55 65 81 / var(--tw-text-opacity));
 }
-
+.CancelReasonTextarea:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
 .button {
   justify-content: stretch;
   position: relative;
-  left: 21vw;
-
   margin-top: 1rem;
 }
 
@@ -574,6 +558,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 3rem;
 }
 
 // @media (min-width: 768px) {

@@ -6,7 +6,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import convert from 'xml-js';
 import { sp } from '@pnp/sp/presets/all';
 import { Web } from '@pnp/sp/webs';
@@ -27,8 +26,6 @@ type leaveType = {
 export const ApplyLeave = () => {
   LeaveCalculation();
   const { availableLeaves } = React.useContext(MyContext);
-  const navigate = useNavigate();
-  // console.log(navigate);
 
   const [employeeData, setEmployeeData] = useState<employeeData[]>([]);
   const [apileaveType, setApiLeaveType] = useState<leaveType[]>([]);
@@ -209,7 +206,7 @@ export const ApplyLeave = () => {
           status: overlappingApprovedOrPendingRecords[0].Status,
           message:
             overlappingApprovedOrPendingRecords[0].Status === 'Approved'
-              ? `You have already applied for leave on the same date, which is approved.`
+              ? `You have already applied for leave on that date, which is approved.`
               : `You have already applied for leave on ${new Date(
                   overlappingApprovedOrPendingRecords[0].FormDate
                 ).toLocaleDateString()} - ${new Date(
@@ -220,6 +217,22 @@ export const ApplyLeave = () => {
     }
     return false;
   }
+  useEffect(() => {
+    if (
+      (fromDate &&
+        toDate &&
+        new Date(fromDate).getDay() === 6 &&
+        new Date(toDate).getDay() === 0) ||
+      new Date(toDate).getDay() === 0 ||
+      new Date(fromDate).getDay() === 6 ||
+      new Date(fromDate).getDay() === 0 ||
+      new Date(toDate).getDay() === 0
+    ) {
+      setWeekOffError('You cannot apply for leave on a weekend or on a Sunday');
+    } else {
+      setWeekOffError('');
+    }
+  }, [fromDate, toDate]);
   const handleSubmit = async (e: any) => {
     let leaveCount = 0;
     e.preventDefault();
@@ -269,21 +282,6 @@ export const ApplyLeave = () => {
     } else {
       setReasonLengthError('');
     }
-    const fromDayOfWeek = new Date(fromDate).getDay();
-    const toDayOfWeek = new Date(toDate).getDay();
-
-    if (
-      (fromDayOfWeek === 6 && toDayOfWeek === 0) ||
-      toDayOfWeek === 0 ||
-      fromDayOfWeek === 6
-    ) {
-      setWeekOffError('You cannot apply for leave on a weekend');
-      setTimeout(() => {
-        setWeekOffError('');
-      }, 3500);
-    } else {
-      setWeekOffError('');
-    }
 
     if (!fromDate) {
       setFromDateError('From date is required');
@@ -322,6 +320,20 @@ export const ApplyLeave = () => {
         }
       }
       setToDateError('');
+    }
+    if (
+      (fromDate &&
+        toDate &&
+        new Date(fromDate).getDay() === 6 &&
+        new Date(toDate).getDay() === 0) ||
+      new Date(toDate).getDay() === 0 ||
+      new Date(fromDate).getDay() === 6 ||
+      new Date(fromDate).getDay() === 0 ||
+      new Date(toDate).getDay() === 0
+    ) {
+      setWeekOffError('You cannot apply for leave on a weekend or on a Sunday');
+    } else {
+      setWeekOffError('');
     }
 
     // Validate the leave type
@@ -365,7 +377,7 @@ export const ApplyLeave = () => {
         count: leaveCount,
         Reason: reason,
         Status: 'Pending',
-        n2yu: '-',
+        Remark: '-',
         LOP:
           leaveCount < 3
             ? 0
@@ -375,24 +387,25 @@ export const ApplyLeave = () => {
             ? 0
             : leaveCount,
       };
-      console.log(itemData);
 
       // Get a reference to the "Leave Management" list using the website URL
       const web = Web('https://zlendoit.sharepoint.com/sites/production');
       const list: IList = web.lists.getByTitle('Leave Management');
-      // console.log(list);
-      //Add the new item to the list
+
+      //  Add the new item to the list
       list.items
         .add(itemData)
         .then(() => {
-          console.log('New item added to the list');
+          alert(
+            `Your Leave ${fromDate} - ${toDate} Has been Applied Successfully... `
+          );
         })
         .catch((error) => {
-          console.log('Error adding new item to the list: ', error);
+          alert(`Error Occur Try Again.... ${error}`);
         });
 
-      navigate('/Leave Details');
-      window.location.reload();
+      // navigate('/Leave Details');
+      // window.location.reload();
       setLeave('');
       setLeaveType('');
       setReason('');
@@ -404,7 +417,11 @@ export const ApplyLeave = () => {
 
   return (
     <div className={styles.ApplyLeave}>
-      <form className={styles.ApplyLeave_form} onSubmit={handleSubmit}>
+      <form
+        className={styles.ApplyLeave_form}
+        style={{ width: '100%' }}
+        onSubmit={handleSubmit}
+      >
         <div className={styles.ApplyLeave_form_heading}>
           <p className={styles.ApplyLeave_form_heading_name}>Apply Leave</p>
         </div>
