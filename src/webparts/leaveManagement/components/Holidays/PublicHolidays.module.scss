@@ -4,9 +4,12 @@
   justify-content: center;
   font-weight: 700;
   letter-spacing: 0.02em;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   line-height: 2rem;
   margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  color: #ff4400;
+  text-shadow: 1px 2px 3px #fdcea0;
 }
 .publicHolidaysSection {
   margin-top: 0rem;
@@ -38,9 +41,13 @@
   --tw-border-opacity: 1;
   border-color: rgb(156 163 175 / var(--tw-border-opacity));
   --tw-bg-opacity: 1;
+  color: #ff4400;
+  text-shadow: 1px 2px 3px #fdcea0;
   background-color: #fdcea0;
   // background-color: rgb(229 231 235 / var(--tw-bg-opacity));
   border-radius: 3px;
+  font-size: 1rem;
+  line-height: 1.25rem;
   padding: 0.75rem;
   text-align: center;
 }

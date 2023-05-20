@@ -6,7 +6,9 @@
 
 interface CssExports {
   'LeaveDetailsNoRecord': string;
+  'LeaveDetailsNoRecordP': string;
   'LoaderDivision': string;
+  'fromDate': string;
   'highlight': string;
   'leaveApprovalButtonDiv': string;
   'leaveApprovalDate': string;
@@ -50,6 +52,7 @@ interface CssExports {
   'loader': string;
   'searchLabel': string;
   'spin': string;
+  'toDate': string;
 }
 const cssExports: CssExports;
 export default cssExports;

@@ -43,20 +43,23 @@ export default class LeaveManagementWebPart extends BaseClientSideWebPart<ILeave
     return Version.parse("1.0");
   }
 
-  public onInit(): Promise<void> {
-
-    SPComponentLoader.loadCss(
-      `https://zlendoit.sharepoint.com/sites/production/SiteAssets/LeaveManagement/CSS/LeaveManagement.css?v=1.0`
-    );
-
-    return super.onInit().then(() => {
+  public async onInit(): Promise<void> { 
+    try {
+      await SPComponentLoader.loadCss(
+        `https://zlendoit.sharepoint.com/sites/production/SiteAssets/LeaveManagement/CSS/LeaveManagement.css?v=1.0`
+      );
+      
+      await super.onInit();
+      
       pnpSetup({
-        ie11: true,
-        spfxContext: this.context
+        ie11: true, 
+        spfxContext: this.context 
       });
-    });
+    } catch (error) {
+      // handle error
+      console.error(error);
+    }
   }
-
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
     return {
       pages: [

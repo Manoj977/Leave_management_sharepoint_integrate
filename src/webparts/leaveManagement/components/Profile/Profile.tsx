@@ -6,7 +6,8 @@ import React, { useContext, useEffect } from 'react';
 import style from './Profile.module.scss';
 import { MyContext } from '../../context/contextProvider';
 import LeaveCalculation from '../LeaveCalculation/LeaveCalculation';
-import { IoMdNotificationsOutline } from 'react-icons/io';
+import { IoMdNotifications } from 'react-icons/io';
+import LopCalculation from '../LopCalculation/LopCalculation';
 type ProfileProps = {
   loggedUserName: string;
 };
@@ -26,13 +27,31 @@ export default function Profile(props: ProfileProps) {
     nextHoliday,
   } = useContext(MyContext);
   LeaveCalculation();
+  // Calculation();
+  LopCalculation();
   let HolidayName = '',
     date = '';
-  // Day = '';
+  let today = new Date()
+    .toLocaleString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    })
+    .split(' ')
+    .join('-');
   if (nextHoliday.length > 0) {
     HolidayName = nextHoliday[0].HolidayName;
-    date = new Date(nextHoliday[0].Date).toLocaleDateString('en-GB');
-    // Day = nextHoliday[0].Day;
+
+    date = new Date(nextHoliday[0].Date)
+      .toLocaleString('en-GB', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+      })
+      .split(' ')
+      .join('-');
+    date = `${date.substr(0, 2)}-${date.substr(3, 3)}-${date.substr(7)}`;
+    today = `${today.substr(0, 2)}-${today.substr(3, 3)}-${today.substr(7)}`;
   }
 
   useEffect(() => {
@@ -46,7 +65,7 @@ export default function Profile(props: ProfileProps) {
     if (title === 'Total Leaves') {
       setLeaveData(true);
     }
-    if (title === 'Taken Leaves') {
+    if (title === 'Leaves Taken') {
       setUsedLeave(true);
     }
     if (title === 'Available Leaves') {
@@ -56,21 +75,29 @@ export default function Profile(props: ProfileProps) {
       window.location.reload();
     }
   };
-
   return (
     <div>
       <div className={''}>
         <div className={style.announcement}>
           <div className={style.announcementIcon}>
             <div className={style.bellIcon}>
-              <IoMdNotificationsOutline className={style.bell} size={20} />
+              <IoMdNotifications className={style.bell} size={30} />
             </div>
           </div>
           <div className={style.scrollLeft}>
-            <p>
-              Upcoming leave: <span>{HolidayName}</span>
-              <span>{date}</span>
-              {/* <span>{Day}</span> */}
+            <p className={style.scrollingText}>
+              {/*  */}
+              {today === date ? (
+                <p>
+                  Today is Holiday: <span className={style.Date}>{date}</span>
+                  <span>{HolidayName}</span>
+                </p>
+              ) : (
+                <p>
+                  Next leave on: <span className={style.Date}>{date}</span>
+                  <span>{HolidayName}</span>
+                </p>
+              )}
             </p>
           </div>
         </div>
@@ -137,7 +164,7 @@ export default function Profile(props: ProfileProps) {
 
               <p className={style.icon_count}>
                 <span className={style.icon_count_number}>
-                  {item.title === 'Taken Leaves' && (item.count = takenLeaves)}
+                  {item.title === 'Leaves Taken' && (item.count = takenLeaves)}
                   {item.title === 'Available Leaves' &&
                     (item.count = availableLeaves)}
 

@@ -14,7 +14,7 @@ const Navbar: React.FC = () => {
   const [, setUserEmail] = useState('');
 
   void sp.web.currentUser.get().then((user) => {
-    setUserEmail(user.Email);
+    setUserEmail(user.Email.toLocaleLowerCase());
     setUserName(user.Title);
   });
 

@@ -17,6 +17,8 @@ import { LeaveDetails } from '../Leave Details/LeaveDetails';
 import convert from 'xml-js';
 import { PublicHolidays } from '../Holidays/PublicHolidays';
 import { sp } from '@pnp/sp/presets/all';
+import {ApprovedList} from '../ApprovedList/ApprovedList';
+import { Lop } from '../Lop/Lop';
 // import LeaveCalculation from '../LeaveCalculation/LeaveCalculation';
 type Admin = {
   ID: string;
@@ -39,7 +41,7 @@ const App: React.FC = () => {
   // const [userEmail, setUserEmail] = useState('');
   const [loggedUserName, setLoggedUserName] = useState<string>('');
   const [loggedUserEmail, setLoggedUserEmail] = useState<string>('');
-  const [loggedUserRole, setLoggedUserRole] = useState<string>('');
+  const [loggedUserRole, setLoggedUserRole] = useState<string>('User');
 
   useEffect(() => {
     fetch(
@@ -84,7 +86,7 @@ const App: React.FC = () => {
   }, []);
   useEffect(() => {
     void sp.web.currentUser.get().then((user) => {
-      setLoggedUserEmail(user.Email);
+      setLoggedUserEmail(user.Email.toLocaleLowerCase());
     });
   }, []);
 
@@ -92,19 +94,19 @@ const App: React.FC = () => {
     employeeData.find((e) => {
       e.email === loggedUserEmail && setLoggedUserName(e.name);
     });
-  }, [employeeData, loggedUserEmail]);
-
+  }, [employeeData, loggedUserEmail, loggedUserName]);
+  // console.log('loggedUserRole', loggedUserRole);
+  // console.log('loggedUserName: ', loggedUserName.length);
+  if (loggedUserName.length < 1) {
+    Admin.find((e) => {
+      e.email === loggedUserEmail && setLoggedUserName(e.name);
+    });
+  }
   useEffect(() => {
     Admin.forEach((admin) => {
       employeeData.find((e) => {
-        if (
-          e.email === admin.email &&
-          e.email !== undefined &&
-          admin.email !== undefined
-        ) {
-          console.log(loggedUserEmail === admin.email);
-          setLoggedUserRole(admin.Role);
-          console.log(admin.Role);
+        if (loggedUserEmail === admin.email) {
+          if (admin.Role === 'Admin') setLoggedUserRole(admin.Role);
         }
       });
     });
@@ -130,6 +132,33 @@ const App: React.FC = () => {
               <Navbar />
               {/* <LeaveCalculation /> */}
             </div>
+            <div className={styles.headingPart}>
+              <div className={styles.headingTitle}>
+                <h2
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    position: 'relative',
+                  }}
+                >
+                  <p
+                    style={{
+                      position: 'absolute',
+                      left: '0',
+                      bottom: '0',
+                      width: '100%',
+                      height: '7%',
+                      backgroundColor: '#fdcfa1',
+                      borderBottomLeftRadius: '5px',
+                      borderBottomRightRadius: '5px',
+                      zIndex: 1,
+                    }}
+                  />
+                  <p className={styles.title}>Leave Management System</p>
+                </h2>
+              </div>
+            </div>
             <div className={styles.components}>
               <Routes>
                 <Route
@@ -140,8 +169,12 @@ const App: React.FC = () => {
                   path='/Profile'
                   element={<Profile loggedUserName={loggedUserName} />}
                 />
-                {loggedUserRole.length > 0 && (
-                  <Route path='/Leave Approval' element={<LeaveApproval />} />
+                {loggedUserRole === 'Admin' && (
+                  <>
+                    <Route path='/Leave Approval' element={<LeaveApproval />} />
+                    <Route path='/Approved List' element={<ApprovedList />} />
+                    <Route path='/Lop' element={<Lop />} />
+                  </>
                 )}
                 <Route path='/Apply Leave' element={<ApplyLeave />} />
                 <Route path='/Leave Details' element={<LeaveDetails />} />

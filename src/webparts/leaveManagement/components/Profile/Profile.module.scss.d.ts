@@ -5,6 +5,7 @@
 /* eslint-disable */
 
 interface CssExports {
+  'Date': string;
   'activeLink': string;
   'activeMenu': string;
   'activeMenuNot': string;
@@ -34,6 +35,7 @@ interface CssExports {
   'profilesection_layout': string;
   'pulse': string;
   'scrollLeft': string;
+  'scrollingText': string;
   'shadowLoading': string;
 }
 const cssExports: CssExports;

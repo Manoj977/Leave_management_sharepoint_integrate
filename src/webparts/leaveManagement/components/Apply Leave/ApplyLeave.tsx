@@ -43,14 +43,14 @@ export const ApplyLeave = () => {
   const [toDate, setToDate] = useState('');
   const [toDateError, setToDateError] = useState('');
   const [dateSameError, setDateSameError] = useState('');
+  const [dateValidationError, setDateValidationError] = useState('');
   const [weekOffError, setWeekOffError] = useState('');
 
   const [userEmail, setUserEmail] = useState('');
   const [employeeData1, setEmployeeData1] = useState<empData[]>([]);
-
-  useEffect(() => {
+  const fetchFunc = () => {
     fetch(
-      "https://zlendoit.sharepoint.com/sites/production/_api/lists/GetByTitle('Employee%20Master')/items"
+      "https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/lists/GetByTitle('Employee%20Master')/items"
     )
       .then((res) => res.text())
       .then((data) => {
@@ -83,11 +83,13 @@ export const ApplyLeave = () => {
         setEmployeeData(empData);
       })
       .catch((err) => console.log(err));
-  }, []);
-
+  };
   useEffect(() => {
+    fetchFunc();
+  }, []);
+  const func = () => {
     fetch(
-      "https://zlendoit.sharepoint.com/sites/production/_api/lists/GetByTitle('Leave%20Type%20Master')/items"
+      "https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/lists/GetByTitle('Leave%20Type%20Master')/items"
     )
       .then((res) => res.text())
       .then((data) => {
@@ -118,6 +120,9 @@ export const ApplyLeave = () => {
         setApiLeaveType(leaveType);
       })
       .catch((err) => console.log(err));
+  };
+  useEffect(() => {
+    func();
   }, []);
 
   let userName = '';
@@ -134,7 +139,7 @@ export const ApplyLeave = () => {
     }
   });
   useEffect(() => {
-    const url = `https://zlendoit.sharepoint.com/sites/production/_api/web/lists/getbytitle('Leave%20Management')/items?$filter=Title%20eq%20%27${ID}%27`;
+    const url = `https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/web/lists/getbytitle('Leave%20Management')/items?$filter=Title%20eq%20%27${ID}%27`;
 
     fetch(url)
       .then((res) => res.text())
@@ -178,12 +183,34 @@ export const ApplyLeave = () => {
     fromDate: any,
     toDate: any
   ) {
+    fetchFunc();
+    func();
     const overlappingRecords = employeeData.filter((record: any) => {
-      const recordStart = new Date(record.FormDate).toISOString().substr(0, 10);
-      const recordEnd = new Date(record.ToDate).toISOString().substr(0, 10);
-      const requestedStart = new Date(fromDate).toISOString().substr(0, 10);
-      const requestedEnd = new Date(toDate).toISOString().substr(0, 10);
-
+      const recordStart = new Date(record.FormDate)
+        .toLocaleString('en-IN', {
+          timeZone: 'Asia/Kolkata',
+        })
+        .substr(0, 10);
+      const recordEnd = new Date(record.ToDate)
+        .toLocaleString('en-IN', {
+          timeZone: 'Asia/Kolkata',
+        })
+        .substr(0, 10);
+      const requestedStart = new Date(fromDate)
+        .toLocaleString('en-IN', {
+          timeZone: 'Asia/Kolkata',
+        })
+        .substr(0, 10);
+      const requestedEnd = new Date(toDate)
+        .toLocaleString('en-IN', {
+          timeZone: 'Asia/Kolkata',
+        })
+        .substr(0, 10);
+      console.log(recordStart, 'recordStart');
+      console.log(recordEnd, 'recordEnd');
+      console.log(requestedStart, 'requestedStart');
+      console.log(requestedEnd, 'requestedEnd');
+      
       return (
         (requestedStart >= recordStart && requestedStart <= recordEnd) ||
         (requestedEnd >= recordStart && requestedEnd <= recordEnd) ||
@@ -206,12 +233,32 @@ export const ApplyLeave = () => {
           status: overlappingApprovedOrPendingRecords[0].Status,
           message:
             overlappingApprovedOrPendingRecords[0].Status === 'Approved'
-              ? `You have already applied for leave on that date, which is approved.`
+              ? `You have already applied for leave on that date, ${new Date(
+                  overlappingApprovedOrPendingRecords[0].FormDate
+                )
+                  .toLocaleDateString('en-IN', {
+                    timeZone: 'Asia/Kolkata',
+                  })
+                  .substr(0, 10)} - ${new Date(
+                  overlappingApprovedOrPendingRecords[0].ToDate
+                )
+                  .toLocaleDateString('en-IN', {
+                    timeZone: 'Asia/Kolkata',
+                  })
+                  .substr(0, 10)} which is approved.`
               : `You have already applied for leave on ${new Date(
                   overlappingApprovedOrPendingRecords[0].FormDate
-                ).toLocaleDateString()} - ${new Date(
+                )
+                  .toLocaleDateString('en-IN', {
+                    timeZone: 'Asia/Kolkata',
+                  })
+                  .substr(0, 10)} - ${new Date(
                   overlappingApprovedOrPendingRecords[0].ToDate
-                ).toLocaleDateString()}. Please wait for approval.`,
+                )
+                  .toLocaleDateString('en-IN', {
+                    timeZone: 'Asia/Kolkata',
+                  })
+                  .substr(0, 10)}. Please wait for approval.`,
         };
       }
     }
@@ -219,14 +266,12 @@ export const ApplyLeave = () => {
   }
   useEffect(() => {
     if (
-      (fromDate &&
-        toDate &&
-        new Date(fromDate).getDay() === 6 &&
-        new Date(toDate).getDay() === 0) ||
-      new Date(toDate).getDay() === 0 ||
-      new Date(fromDate).getDay() === 6 ||
-      new Date(fromDate).getDay() === 0 ||
-      new Date(toDate).getDay() === 0
+      fromDate &&
+      toDate &&
+      (new Date(toDate).getDay() === 6 ||
+        new Date(fromDate).getDay() === 6 ||
+        new Date(fromDate).getDay() === 0 ||
+        new Date(toDate).getDay() === 0)
     ) {
       setWeekOffError('You cannot apply for leave on a weekend or on a Sunday');
     } else {
@@ -236,20 +281,22 @@ export const ApplyLeave = () => {
   const handleSubmit = async (e: any) => {
     let leaveCount = 0;
     e.preventDefault();
-    const overlappingRecord = isLeaveAlreadyApplied(
-      employeeData1,
-      fromDate,
-      toDate
-    );
+    if (toDate) {
+      const overlappingRecord = isLeaveAlreadyApplied(
+        employeeData1,
+        fromDate,
+        toDate
+      );
 
-    if (overlappingRecord) {
-      setDateSameError(overlappingRecord.message);
-      setTimeout(() => {
+      if (overlappingRecord) {
+        setDateSameError(overlappingRecord.message);
+        setTimeout(() => {
+          setDateSameError('');
+        }, 5500);
+      } else {
+        state = true;
         setDateSameError('');
-      }, 5500);
-    } else {
-      state = true;
-      setDateSameError('');
+      }
     }
 
     // Validate the leave type
@@ -299,15 +346,13 @@ export const ApplyLeave = () => {
         setToDateError('');
       }, 3500);
     } else if (new Date(toDate) < new Date(fromDate)) {
-      setToDateError('To date must be after the from date');
+      setDateValidationError('To date must be after the from date');
       setTimeout(() => {
-        setToDateError('');
+        setDateValidationError('');
       }, 3500);
     } else {
       const oneDay = 1000 * 60 * 60 * 24; // milliseconds in one day
-
       let currentDay = new Date(fromDate);
-
       while (currentDay <= new Date(toDate)) {
         const dayOfWeek = currentDay.getDay();
         if (dayOfWeek !== 0 && dayOfWeek !== 6) {
@@ -351,14 +396,17 @@ export const ApplyLeave = () => {
     if (
       leave &&
       fromDate &&
-      toDate &&
+      toDate !== '' &&
       leaveType &&
       reason &&
       state &&
+      new Date(toDate) >= new Date(fromDate) &&
       leave !== 'Select Leave' &&
       reasonError === '' &&
       toDateError.length === 0 &&
       leaveError === '' &&
+      dateValidationError === '' &&
+      dateValidationError.length === 0 &&
       leaveTypeError.length === 0 &&
       weekOffError.length === 0 &&
       dateSameError.length === 0 &&
@@ -370,8 +418,8 @@ export const ApplyLeave = () => {
         Title: ID,
         Name: userName,
         Email: userEmail,
-        LeaveType: leave,
-        Leave: leaveType,
+        LeaveType: leaveType,
+        Leave: leave,
         FormDate: fromDate,
         ToDate: toDate,
         count: leaveCount,
@@ -389,10 +437,10 @@ export const ApplyLeave = () => {
       };
 
       // Get a reference to the "Leave Management" list using the website URL
-      const web = Web('https://zlendoit.sharepoint.com/sites/production');
+      const web = Web('https://zlendoit.sharepoint.com/sites/ZlendoTools');
       const list: IList = web.lists.getByTitle('Leave Management');
 
-      //  Add the new item to the list
+      // Add the new item to the list
       list.items
         .add(itemData)
         .then(() => {
@@ -498,12 +546,18 @@ export const ApplyLeave = () => {
               className={`${styles.ApplyLeave_form_input} ${
                 dateSameError !== '' ? `${styles.errorBorder}` : ''
               } ${toDateError !== '' ? `${styles.errorBorder}` : ''}
+              ${dateValidationError !== '' ? `${styles.errorBorder}` : ''}
               ${weekOffError !== '' ? `${styles.errorBorder}` : ''}`}
               onChange={(event) => setToDate(event.target.value)}
             />
           </div>
           <div>
             {toDateError && <p className={styles.error}> {toDateError}</p>}
+          </div>
+          <div>
+            {dateValidationError && (
+              <p className={styles.error}> {dateValidationError}</p>
+            )}
           </div>
           <div>
             {weekOffError && <p className={styles.error}> {weekOffError}</p>}

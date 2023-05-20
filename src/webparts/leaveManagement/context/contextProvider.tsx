@@ -1,5 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable no-unused-expressions */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import React, { createContext, useEffect, useState } from 'react';
 
 import {
@@ -14,6 +18,8 @@ import { TbListDetails } from 'react-icons/tb';
 import { MdOutlineDashboard } from 'react-icons/md';
 import { TfiCheckBox } from 'react-icons/tfi';
 import { RiFileTextLine } from 'react-icons/ri';
+import { BsPersonLinesFill } from 'react-icons/bs';
+import { MdAdminPanelSettings } from 'react-icons/md';
 import convert from 'xml-js';
 type MyContextType = {
   isSkeletonLoading: boolean;
@@ -83,6 +89,12 @@ type MyContextType = {
   setNextHoliday: React.Dispatch<React.SetStateAction<upcomingHoliday[]>>;
   holiday: Holiday[];
   setHoliday: React.Dispatch<React.SetStateAction<Holiday[]>>;
+  LopCount: LopCount[];
+  setLopCount: React.Dispatch<React.SetStateAction<LopCount[]>>;
+  defaultLop: any;
+  setDefaultLop: React.Dispatch<React.SetStateAction<any>>;
+  lopDate: any;
+  setLopDate: React.Dispatch<React.SetStateAction<any[]>>;
 };
 type LeaveDetail = {
   ID: string;
@@ -102,6 +114,11 @@ type Holiday = {
   Date: string;
   Day: string;
 };
+type LopCount = {
+  Title: string;
+  count: number;
+};
+
 export const MyContext = createContext<MyContextType>({
   nextHoliday: [],
   setNextHoliday: () => {
@@ -167,7 +184,7 @@ export const MyContext = createContext<MyContextType>({
     {
       icon: <BiCalendarPlus />,
       title: 'Total Leaves',
-      count: '12',
+      count: 12,
       iconColor: '#03C9D7',
       iconBg: '#E5FAFB',
       pcColor: 'red-600',
@@ -182,7 +199,7 @@ export const MyContext = createContext<MyContextType>({
     },
     {
       icon: <BiCalendarMinus />,
-      title: 'Taken Leaves',
+      title: 'Leaves Taken',
       count: '08',
       iconColor: 'rgb(228, 106, 118)',
       iconBg: 'rgb(255, 244, 229)',
@@ -199,7 +216,6 @@ export const MyContext = createContext<MyContextType>({
     {
       icon: <HiOutlineRefresh />,
       amount: '39,354',
-      percentage: '-12%',
       title: 'Refresh',
       iconColor: 'rgb(0, 194, 146)',
       iconBg: 'rgb(235, 250, 242)',
@@ -225,6 +241,16 @@ export const MyContext = createContext<MyContextType>({
           icon: <TfiCheckBox />,
           role: 'Admin',
         },
+        {
+          name: 'Approved List',
+          icon: <BsPersonLinesFill />,
+          role: 'Admin',
+        },
+        {
+          name: 'Lop',
+          icon: <MdAdminPanelSettings />,
+          role: 'Admin',
+        },
       ],
     },
     {
@@ -247,7 +273,7 @@ export const MyContext = createContext<MyContextType>({
       title: 'Apps',
       links: [
         {
-          name: 'public Holidays',
+          name: 'Public Holidays',
           icon: <AiOutlineCalendar />,
           role: 'User',
         },
@@ -291,6 +317,18 @@ export const MyContext = createContext<MyContextType>({
   setHoliday: () => {
     ('');
   },
+  LopCount: [],
+  setLopCount: () => {
+    ('');
+  },
+  defaultLop: 0,
+  setDefaultLop: () => {
+    ('');
+  },
+  lopDate: [],
+  setLopDate: () => {
+    ('');
+  },
 });
 
 interface Props {
@@ -322,12 +360,14 @@ export const MyContextProvider = ({ children }: Props) => {
   const [availableLeaves, setAvailableLeaves] = useState<number>(0);
   const [nextHoliday, setNextHoliday] = useState([]);
   const [holiday, setHoliday] = useState([]);
-
+  const [LopCount, setLopCount] = useState<LopCount[]>();
+  const [defaultLop, setDefaultLop] = useState<number>();
+  const [lopDate, setLopDate] = useState<any[]>([]);
   const [earningData] = useState([
     {
       icon: <BiCalendarPlus />,
       title: 'Total Leaves',
-      count: '12',
+      count: 12,
       iconColor: '#03C9D7',
       iconBg: '#E5FAFB',
       pcColor: 'red-600',
@@ -342,7 +382,7 @@ export const MyContextProvider = ({ children }: Props) => {
     },
     {
       icon: <BiCalendarMinus />,
-      title: 'Taken Leaves',
+      title: 'Leaves Taken',
       count: '08',
       iconColor: 'rgb(228, 106, 118)',
       iconBg: 'rgb(255, 244, 229)',
@@ -359,7 +399,6 @@ export const MyContextProvider = ({ children }: Props) => {
     {
       icon: <HiOutlineRefresh />,
       amount: '39,354',
-      percentage: '-12%',
       title: 'Refresh',
       iconColor: 'rgb(0, 194, 146)',
       iconBg: 'rgb(235, 250, 242)',
@@ -385,6 +424,16 @@ export const MyContextProvider = ({ children }: Props) => {
           icon: <TfiCheckBox />,
           role: 'Admin',
         },
+        {
+          name: 'Approved List',
+          icon: <BsPersonLinesFill />,
+          role: 'Admin',
+        },
+        {
+          name: 'Lop',
+          icon: <MdAdminPanelSettings />,
+          role: 'Admin',
+        },
       ],
     },
     {
@@ -407,13 +456,50 @@ export const MyContextProvider = ({ children }: Props) => {
       title: 'Apps',
       links: [
         {
-          name: 'public Holidays',
+          name: 'Public Holidays',
           icon: <AiOutlineCalendar />,
           role: 'User',
         },
       ],
     },
   ]);
+  useEffect(() => {
+    lopDate;
+  }, [setLopDate, lopDate]);
+  useEffect(() => {
+    const lopUrl =
+      "https://zlendoit.sharepoint.com/sites/production/_api/web/lists/getbytitle('Leave%20Management%20Lop')/items";
+    fetch(lopUrl)
+      .then((res) => res.text())
+      .then((data) => {
+        const jsonData = convert.xml2json(data, { compact: true, spaces: 4 });
+        const parsedData = JSON.parse(jsonData);
+        const entries = Array.isArray(parsedData.feed.entry)
+          ? parsedData.feed.entry
+          : [parsedData.feed.entry];
+        const lopCount: LopCount = entries.map((entry: any) => {
+          try {
+            return {
+              Title: entry.content['m:properties']['d:Title']._text,
+              count: entry.content['m:properties']['d:Lop_x0020_Date']._text,
+            };
+          } catch (error) {
+            if (
+              error instanceof TypeError &&
+              error.message.includes('Cannot read properties of undefined')
+            ) {
+              return null;
+            } else {
+              throw error;
+            }
+          }
+        });
+
+        setLopCount([lopCount]);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
   useEffect(() => {
     fetch(
       "https://zlendoit.sharepoint.com/sites/production/_api/web/lists/getbytitle('Leaves%20Master')/items"
@@ -427,7 +513,7 @@ export const MyContextProvider = ({ children }: Props) => {
           : [parsedData.feed.entry];
         entries.map((e: any) => {
           setTotalLeaves(
-            e.content['m:properties']['d:Total_x0020_Leaves']._text
+            parseInt(e.content['m:properties']['d:Total_x0020_Leaves']._text)
           );
         });
       })
@@ -495,6 +581,27 @@ export const MyContextProvider = ({ children }: Props) => {
       .catch((err) => console.log(err));
   }, []);
   useEffect(() => {
+    const Lop =
+      "https://zlendoit.sharepoint.com/sites/production/_api/web/lists/getbytitle('Leave%20Management%20Default%20Lop')/items";
+    fetch(Lop)
+      .then((res) => res.text())
+      .then((data) => {
+        const jsonData = convert.xml2json(data, { compact: true, spaces: 4 });
+        const parsedData = JSON.parse(jsonData);
+        const entries = Array.isArray(parsedData.feed.entry)
+          ? parsedData.feed.entry
+          : [parsedData.feed.entry];
+        entries.map((e: any) => {
+          setDefaultLop(e.content['m:properties']['d:Default_x0020_Lop']._text);
+        });
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  useEffect(() => {
+    setDefaultLop(defaultLop);
+  }, [defaultLop, setDefaultLop]);
+  useEffect(() => {
     setScreenSize(window.innerWidth);
   }, [screenSize, setScreenSize, activeMenu]);
   const contextValue: MyContextType = {
@@ -549,6 +656,12 @@ export const MyContextProvider = ({ children }: Props) => {
     setNextHoliday,
     holiday,
     setHoliday,
+    LopCount,
+    setLopCount,
+    defaultLop,
+    setDefaultLop,
+    lopDate,
+    setLopDate,
   };
 
   return (

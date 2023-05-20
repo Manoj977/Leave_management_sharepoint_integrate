@@ -7,6 +7,9 @@
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .totalLeaveDiv1 {
@@ -34,7 +37,7 @@
 .totalLeaveHeaderDiv {
   color: #1f2937;
   font-weight: 600;
-  text-transform: uppercase;
+  text-transform: capitalize;
   position: relative;
   top: 0.5vw;
 }
@@ -65,7 +68,7 @@
 .totalLeaveTableContainer td {
   padding: 0.5rem;
   text-align: left;
-
+  white-space: nowrap;
   border: 1px solid #d1d5db;
   border-collapse: collapse;
 }
@@ -87,13 +90,14 @@
   padding: 2rem;
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-  font-size: 0.75rem;
   line-height: 1rem;
   text-align: center;
   --tw-text-opacity: 1;
   color: rgb(75 85 99 / var(--tw-text-opacity));
-  text-transform: uppercase;
+  text-transform: capitalize;
   letter-spacing: 0.05em;
+  font-size: 0.85rem;
+  width: 25%;
 }
 
 .approvalTableDescription {
@@ -104,10 +108,10 @@
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
   font-size: 0.75rem;
-
+  text-transform: capitalize;
   --tw-text-opacity: 1;
   color: rgb(75 85 99 / var(--tw-text-opacity));
-
+  font-size: 0.85rem;
   letter-spacing: 0.05em;
 }
 
@@ -228,6 +232,56 @@
     margin-top: 11rem;
   }
 }
+@media (min-width: 530px) {
+  .totalLeaveDiv1 {
+    width: 80%;
+  }
+}
+.LeaveDetailsNoRecord {
+  height: 10rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+@media (max-width: 640px) {
+  .LeaveDetailsNoRecord {
+    font-size: 1.475rem;
+    line-height: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .LeaveDetailsNoRecord {
+    height: 300px;
+  }
+}
+.LoaderDivision {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 3rem;
+}
+.loader {
+  --tw-rotate: 3deg;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y))
+    rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y))
+    scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+  --tw-text-opacity: 1;
+  color: rgb(249 115 22 / var(--tw-text-opacity));
+  animation: spin 1s infinite linear;
+}
+
+@keyframes spin {
+  from {
+    transform: scale(1) rotate(0deg);
+  }
+
+  to {
+    transform: scale(1) rotate(360deg);
+  }
+}
 
 .ApprovalLeaveTextarea {
   width: 100%;
@@ -274,4 +328,57 @@
 .errorBorder {
   border: 1.5px solid;
   border-color: rgb(248 113 113);
+}
+.scrollable {
+  overflow-y: scroll;
+  border: none;
+  position: relative;
+  white-space: break-spaces;
+  text-align: justify;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+.scrollable::-webkit-scrollbar {
+  display: none;
+}
+.leaveDetailsDescription {
+  white-space: break-spaces;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ShowLess {
+  cursor: pointer;
+  color: #f40;
+  font-size: 1rem;
+  border-radius: 1rem;
+  transition-duration: 100ms;
+}
+.reason {
+  display: flex;
+}
+
+.clickHere {
+  margin-top: 0.3rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  text-decoration: underline;
+  color: #f40;
+  -webkit-transition: ease-in-out;
+  transition: ease-in-out;
+  white-space: pre;
+  margin-left: 0.2rem;
+}
+
+.leaveApprovalButtonDiv {
+  display: flex;
+  flex-direction: column;
+  white-space: break-spaces;
+  position: relative;
+}
+.leaveApprovalButtonDiv1 {
+  width: calc(100% - 40%);
+}
+.leaveApprovalButtonDiv2 {
+  width: 100%;
 }

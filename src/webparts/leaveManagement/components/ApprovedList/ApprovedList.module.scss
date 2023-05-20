@@ -136,12 +136,11 @@ $label-font-size: 1.3rem;
   justify-content: flex-start;
   display: flex;
   align-items: center;
-  padding: 0rem 4rem;
+
   position: -webkit-sticky;
-  /* Safari */
   position: sticky;
   top: 0;
-  // z-index: 14;
+  width: 100%;
 }
 
 .leaveapprovalInput {
@@ -456,7 +455,34 @@ $label-font-size: 1.3rem;
   border: 1px solid;
   background: none;
 }
-
+.topSection {
+  display: flex;
+  justify-content: space-between;
+  padding: 0rem 4rem;
+}
+.export {
+  display: flex;
+}
+.exportButton {
+  border: 0.5px solid #f40;
+  border-radius: 3px;
+  padding: 0.5rem;
+  background: transparent;
+}
+.exportButton:hover {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+.exportButtonText {
+  display: flex;
+  align-items: center;
+}
+.exportButtonIcon {
+  margin: auto 0.5rem;
+}
+.exportButtonName {
+  font-size: large;
+  font-weight: 500;
+}
 .leaveRejectButton:hover {
   opacity: 1;
   background-color: red;

@@ -7,6 +7,7 @@
 interface CssExports {
   'Cancel': string;
   'activeLink': string;
+  'linkName': string;
   'normalLink': string;
   'sidebar': string;
   'sidebarDetail': string;

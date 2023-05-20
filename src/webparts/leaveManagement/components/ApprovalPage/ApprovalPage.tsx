@@ -7,8 +7,9 @@ import { Web } from '@pnp/sp/webs';
 import { IList } from '@pnp/sp/lists';
 import { useLocation } from 'react-router-dom';
 import { MyContext } from '../../context/contextProvider';
-
+import { RxBorderDotted } from 'react-icons/rx';
 import { MdOutlineCancel } from 'react-icons/md';
+import { RiLoader4Line } from 'react-icons/ri';
 type LeaveDetail = {
   ID: string;
   Name: string;
@@ -33,10 +34,14 @@ interface ApprovalPageProps {
   employeeId: number;
   setRemark: React.Dispatch<React.SetStateAction<string>>;
   remark: string;
+  setStatus: React.Dispatch<React.SetStateAction<string>>;
+  status: string;
 }
 
 export const ApprovalPage: React.FC<ApprovalPageProps> = ({
   employeeId,
+  status,
+  setStatus,
   setApprove,
   approve,
   setRemark,
@@ -50,14 +55,32 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
   const [employeeDetail, setEmployeeDetail] = useState<EmployeeDetail[]>([]);
   const [reason, setReason] = useState('');
   const [reasonError, setReasonError] = useState('');
-  const [status, setStatus] = useState('');
-  console.log(reason, status);
+  const [isLoading, setIsLoading] = useState(false);
+  const [reasonpopup, setReasonPopup] = useState(false);
   const location = useLocation();
   const pathArray = location.pathname.split('/');
   const LeaveId = pathArray[pathArray.length - 1];
-
+  const [expandedID, setExpandedID] = useState(null);
+  const [MAX_LENGTH, setMaxLength] = useState(20);
   useEffect(() => {
-    const url = `https://zlendoit.sharepoint.com/sites/production/_api/web/lists/getbytitle('Leave%20Management')/items?&$filter=ID%20eq%20%27${employeeId}%27`;
+    // adjust MAX_LENGTH based on screen size
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setMaxLength(10);
+      } else if (window.innerWidth < 1024) {
+        setMaxLength(15);
+      } else {
+        setMaxLength(20);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    handleResize(); // call initially
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  const func = () => {
+    setIsLoading(true);
+
+    const url = `https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/web/lists/getbytitle('Leave%20Management')/items?&$filter=ID%20eq%20%27${employeeId}%27`;
 
     fetch(url)
       .then((res) => res.text())
@@ -77,12 +100,22 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
           Leave: entry.content['m:properties']['d:Leave']._text,
           LeaveType: entry.content['m:properties']['d:LeaveType']._text,
           count: entry.content['m:properties']['d:count']._text,
-          FromDate: new Date(
-            entry.content['m:properties']['d:FormDate']._text
-          ).toLocaleDateString(),
-          ToDate: new Date(
-            entry.content['m:properties']['d:ToDate']._text
-          ).toLocaleDateString(),
+          FromDate: new Date(entry.content['m:properties']['d:FormDate']._text)
+            .toLocaleString('en-GB', {
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric',
+            })
+            .split(' ')
+            .join('-'),
+          ToDate: new Date(entry.content['m:properties']['d:ToDate']._text)
+            .toLocaleString('en-GB', {
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric',
+            })
+            .split(' ')
+            .join('-'),
           Reason: entry.content['m:properties']['d:Reason']._text,
           NoofDaysLeave: entry.content['m:properties']['d:count']._text,
           Status: entry.content['m:properties']['d:Status']._text,
@@ -91,11 +124,19 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
         }));
         setApprove(leaveDetail[0].Status);
         setLeaveDetails(leaveDetail);
+        setIsLoading(false);
       });
+  };
+  useEffect(() => {
+    func();
   }, []);
   useEffect(() => {
+    func();
+  }, [setApproveLeave, approveLeave]);
+  useEffect(() => {
+    setIsLoading(true);
     fetch(
-      "https://zlendoit.sharepoint.com/sites/production/_api/web/lists/getbytitle('Employee%20Master')/items"
+      "https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/web/lists/getbytitle('Employee%20Master')/items"
     )
       .then((res) => res.text())
       .then((data) => {
@@ -110,6 +151,7 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
             entry.content['m:properties']['d:Contact_x0020_Number']._text,
         }));
         setEmployeeDetail(EmployeeDetail);
+        setIsLoading(false);
       });
   }, [LeaveId]);
   let contactNumber = '';
@@ -119,7 +161,7 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
     });
   }
 
-  // Update the LeaveStatus value in SharePoint based on the leave item ID and the new status value
+  // Update the LeaveStatus value in SharePoint based on the leaveDetail item ID and the new status value
 
   const updateLeaveStatus = async (
     id: number,
@@ -127,7 +169,7 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
     remark: string
   ) => {
     try {
-      const web = Web('https://zlendoit.sharepoint.com/sites/production');
+      const web = Web('https://zlendoit.sharepoint.com/sites/ZlendoTools');
       const list: IList = web.lists.getByTitle('Leave Management');
 
       const itemToUpdate = list.items.getById(id);
@@ -135,7 +177,7 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
       await itemToUpdate.update({ Remark: remark });
       alert('Leave status updated successfully!');
     } catch (error) {
-      alert(`Error updating leave status: ${error}`);
+      alert(`Error updating leaveDetail status: ${error}`);
     }
   };
   const handleApproval = (leaveId: any) => {
@@ -163,31 +205,19 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
     if (reason) {
       await updateLeaveStatus(id, status, remark);
       // Update the leaveDetails state to reflect the new status
-      const updatedLeaveDetails = leaveDetails.map((leave) =>
-        leave.leaveId === id
-          ? { ...leave, Status: status, Remark: remark }
-          : leave
+      const updatedLeaveDetails = leaveDetails.map((leaveDetail) =>
+        leaveDetail.leaveId === id
+          ? { ...leaveDetail, Status: status, Remark: remark }
+          : leaveDetail
       );
       setLeaveDetails(updatedLeaveDetails);
       setApprove(status);
       setRemark(remark);
       setAction(false);
-      window.location.reload();
+      setApproveLeave(false);
+      setReasonPopup(!reasonpopup);
     }
   };
-  // const handleApproval = async (id: number, status: string) => {
-  //
-
-  //   await updateLeaveStatus(id, status);
-  //   // Update the leaveDetails state to reflect the new status
-  //   const updatedLeaveDetails = leaveDetails.map((leave) =>
-  //     leave.leaveId === id ? { ...leave, Status: status } : leave
-  //   );
-  //   setLeaveDetails(updatedLeaveDetails);
-  //   setApprove(status);
-  //   setAction(false);
-  //   window.location.reload();
-  // };
 
   return (
     <div>
@@ -217,105 +247,188 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
             </div>
 
             <div className={styles.totalLeaveTableContainer}>
-              {leaveDetails.map((leaveDetail) => (
-                <>
-                  <table key={leaveDetail.ID} className={styles.approvalTable}>
-                    <thead className={styles.approvalTableHead}>
-                      <tr>
-                        <th className={styles.approvalTableHeading}>
-                          Employee ID
-                        </th>
-                        <td className={styles.approvalTableDescription}>
-                          {leaveDetail.ID}
-                        </td>
-                      </tr>
-                      <tr>
-                        <th className={styles.approvalTableHeading}>Name</th>
-                        <td className={styles.approvalTableDescription}>
-                          {leaveDetail.Name}
-                        </td>
-                      </tr>
+              {isLoading ? (
+                <table style={{ width: '100%' }}>
+                  <tbody>
+                    <tr>
+                      <td className={styles.LeaveDetailsNoRecord} colSpan={11}>
+                        <p
+                          style={{
+                            textAlign: 'center',
+                            fontWeight: 400,
+                          }}
+                        >
+                          <div className={styles.LoaderDivision}>
+                            <RiLoader4Line className={styles.loader} />
+                          </div>
+                        </p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              ) : (
+                leaveDetails.map((leaveDetail) => (
+                  <>
+                    <table
+                      key={leaveDetail.ID}
+                      className={styles.approvalTable}
+                    >
+                      <thead className={styles.approvalTableHead}>
+                        <tr>
+                          <th className={styles.approvalTableHeading}>
+                            Employee ID
+                          </th>
+                          <td className={styles.approvalTableDescription}>
+                            {leaveDetail.ID}
+                          </td>
+                        </tr>
+                        <tr>
+                          <th className={styles.approvalTableHeading}>Name</th>
+                          <td className={styles.approvalTableDescription}>
+                            {leaveDetail.Name}
+                          </td>
+                        </tr>
 
-                      <tr>
-                        <th className={styles.approvalTableHeading}>Email</th>
-                        <td className={styles.approvalTableDescription}>
-                          {leaveDetail.Email}
-                        </td>
-                      </tr>
-                      <tr>
-                        <th className={styles.approvalTableHeading}>
-                          Contact Number
-                        </th>
+                        <tr>
+                          <th className={styles.approvalTableHeading}>Email</th>
+                          <td className={styles.approvalTableDescription}>
+                            {leaveDetail.Email}
+                          </td>
+                        </tr>
+                        <tr>
+                          <th className={styles.approvalTableHeading}>
+                            Contact Number
+                          </th>
 
-                        <td className={styles.approvalTableDescription}>
-                          {contactNumber}
-                        </td>
-                      </tr>
-                      <tr>
-                        <th className={styles.approvalTableHeading}>
-                          Leave Type
-                        </th>
-                        <td className={styles.approvalTableDescription}>
-                          {leaveDetail.LeaveType}
-                        </td>
-                      </tr>
-                      <tr>
-                        <th className={styles.approvalTableHeading}>
-                          From Date
-                        </th>
-                        <td className={styles.approvalTableDescription}>
-                          {leaveDetail.FromDate}
-                        </td>
-                      </tr>
-                      <tr>
-                        <th className={styles.approvalTableHeading}>To Date</th>
-                        <td className={styles.approvalTableDescription}>
-                          {leaveDetail.ToDate}
-                        </td>
-                      </tr>
-                      <tr>
-                        <th className={styles.approvalTableHeading}>
-                          No of Days Leave
-                        </th>
-                        <td className={styles.approvalTableDescription}>
-                          {leaveDetail.NoofDaysLeave}
-                        </td>
-                      </tr>
-                      <tr>
-                        <th className={styles.approvalTableHeading}>Reason</th>
-                        <td className={styles.approvalTableDescription}>
-                          {leaveDetail.Reason}
-                        </td>
-                      </tr>
-                      <tr>
-                        <th className={styles.approvalTableHeading}>Status</th>
-                        <td className={styles.approvalTableDescription}>
-                          {leaveDetail.Status}
-                        </td>
-                      </tr>
-                    </thead>
-                  </table>
-                  <div style={{ display: 'flex', justifyContent: 'center' }}>
-                    <div className={styles.approveButtonDiv}>
-                      <button
-                        onClick={handleApproval}
-                        className={styles.approveButton}
-                      >
-                        Approve
-                      </button>
-                      <button
-                        // onClick={() =>
-                        //   handleApproval(leaveDetail.leaveId, "Rejected")
-                        // }
-                        onClick={handleReject}
-                        className={styles.approveButton}
-                      >
-                        Reject
-                      </button>
+                          <td className={styles.approvalTableDescription}>
+                            {contactNumber}
+                          </td>
+                        </tr>
+                        <tr>
+                          <th className={styles.approvalTableHeading}>
+                            Leave Type
+                          </th>
+                          <td className={styles.approvalTableDescription}>
+                            {leaveDetail.LeaveType}
+                          </td>
+                        </tr>
+                        <tr>
+                          <th className={styles.approvalTableHeading}>
+                            From Date
+                          </th>
+                          <td className={styles.approvalTableDescription}>
+                            {leaveDetail.FromDate}
+                          </td>
+                        </tr>
+                        <tr>
+                          <th className={styles.approvalTableHeading}>
+                            To Date
+                          </th>
+                          <td className={styles.approvalTableDescription}>
+                            {leaveDetail.ToDate}
+                          </td>
+                        </tr>
+                        <tr>
+                          <th className={styles.approvalTableHeading}>
+                            No of Days Leave
+                          </th>
+                          <td className={styles.approvalTableDescription}>
+                            {leaveDetail.NoofDaysLeave}
+                          </td>
+                        </tr>
+                        <tr>
+                          <th className={styles.approvalTableHeading}>
+                            Reason
+                          </th>
+                          <td className={styles.approvalTableDescription}>
+                            <div
+                              className={`${styles.leaveApprovalButtonDiv} ${
+                                expandedID === null
+                                  ? styles.leaveApprovalButtonDiv1
+                                  : styles.leaveApprovalButtonDiv2
+                              }`}
+                            >
+                              {leaveDetail.Reason.length > MAX_LENGTH ? (
+                                <>
+                                  {!expandedID ||
+                                  expandedID !== leaveDetail.ID ? (
+                                    <div className={styles.scrollable}>
+                                      <div className={styles.reason}>
+                                        <p style={{ whiteSpace: 'nowrap' }}>
+                                          {`${leaveDetail.Reason.slice(
+                                            0,
+                                            MAX_LENGTH
+                                          )} `}
+                                        </p>
+                                        <a
+                                          onClick={() => {
+                                            setExpandedID(leaveDetail.ID);
+                                          }}
+                                          id={`reason-link-${leaveDetail.ID}`}
+                                          className={styles.clickHere}
+                                        >
+                                          <RxBorderDotted />
+                                        </a>
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <>
+                                      <div className={styles.scrollable}>
+                                        <span id={`reason-${leaveDetail.ID}`}>
+                                          {leaveDetail.Reason}
+                                        </span>
+                                      </div>
+
+                                      <a
+                                        onClick={() => {
+                                          setExpandedID(null);
+                                        }}
+                                        id={`reason-link-${leaveDetail.ID}`}
+                                        className={styles.ShowLess}
+                                      >
+                                        {!expandedID ? 'Show less' : 'Hide'}
+                                      </a>
+                                    </>
+                                  )}
+                                </>
+                              ) : (
+                                <div>{leaveDetail.Reason}</div>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th className={styles.approvalTableHeading}>
+                            Status
+                          </th>
+                          <td className={styles.approvalTableDescription}>
+                            {leaveDetail.Status}
+                          </td>
+                        </tr>
+                      </thead>
+                    </table>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <div className={styles.approveButtonDiv}>
+                        <button
+                          onClick={handleApproval}
+                          className={styles.approveButton}
+                        >
+                          Approve
+                        </button>
+                        <button
+                          // onClick={() =>
+                          //   handleApproval(leaveDetail.leaveId, "Rejected")
+                          // }
+                          onClick={handleReject}
+                          className={styles.approveButton}
+                        >
+                          Reject
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                </>
-              ))}
+                  </>
+                ))
+              )}
             </div>
           </div>
           {approveLeave &&

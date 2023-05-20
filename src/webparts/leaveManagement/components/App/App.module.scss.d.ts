@@ -5,7 +5,12 @@
 /* eslint-disable */
 
 interface CssExports {
+  'announcement': string;
+  'background': string;
   'components': string;
+  'headingPart': string;
+  'headingTitle': string;
+  'headingTitleBackground': string;
   'mainSection': string;
   'navbar': string;
   'navbar_section': string;
@@ -13,6 +18,7 @@ interface CssExports {
   'section': string;
   'sideBar': string;
   'sideBar1': string;
+  'title': string;
 }
 const cssExports: CssExports;
 export default cssExports;

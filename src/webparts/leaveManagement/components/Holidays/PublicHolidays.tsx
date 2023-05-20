@@ -12,25 +12,28 @@ export const PublicHolidays = () => {
     <>
       {holiday && (
         <>
-          <div className={styles.publicHolidaysTitle}>PublicHolidays</div>
+          <div className={styles.publicHolidaysTitle}>Public Holidays</div>
           <div className={styles.publicHolidaysSection}>
             <div className={styles.publicHolidaysSection_one}>
               <table className={styles.publicHolidaysSection_one_Table}>
                 <thead>
                   <tr>
-                    <th className={styles.publicHolidaysSection_one_Table_th}>
-                      S.No
+                    <th
+                      className={styles.publicHolidaysSection_one_Table_th}
+                      style={{ textAlign: 'left' }}
+                    >
+                      <p style={{ margin: '0px 20px' }}> Date</p>
                     </th>
                     <th
                       className={styles.publicHolidaysSection_one_Table_th_max}
                     >
                       Title
                     </th>
-                    <th className={styles.publicHolidaysSection_one_Table_th}>
-                      Date
-                    </th>
-                    <th className={styles.publicHolidaysSection_one_Table_th}>
-                      Day
+                    <th
+                      style={{ textAlign: 'left' }}
+                      className={styles.publicHolidaysSection_one_Table_th}
+                    >
+                      <p style={{ margin: '0px 20px' }}> Day</p>
                     </th>
                   </tr>
                 </thead>
@@ -40,21 +43,21 @@ export const PublicHolidays = () => {
                       <tr key={index}>
                         <td
                           className={`${styles.publicHolidaysSection_one_Table_tbody_td}`}
-                          data-label='S.No'
+                          data-label='Date'
                         >
-                          {index + 1}
+                          {new Date(holiday.Date)
+                            .toLocaleString('en-GB', {
+                              day: '2-digit',
+                              month: 'short',
+                              year: 'numeric',
+                            })
+                            .replace(/ /g, '-')}
                         </td>
                         <td
                           className={`${styles.publicHolidaysSection_one_Table_tbody_td}`}
                           data-label='Title'
                         >
                           {holiday.HolidayName}
-                        </td>
-                        <td
-                          className={`${styles.publicHolidaysSection_one_Table_tbody_td}`}
-                          data-label='Date'
-                        >
-                          {new Date(holiday.Date).toLocaleDateString('en-GB')}
                         </td>
                         <td
                           className={`${styles.publicHolidaysSection_one_Table_tbody_td}`}

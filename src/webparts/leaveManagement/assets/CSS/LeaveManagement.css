@@ -183,3 +183,96 @@
   width:100% !important;
  height:100% !important;
 }
+#SuiteNavWrapper{
+  display:none !important;
+}
+#spTopPlaceholder{
+  display:none !important;
+}
+.headerRow-102,.v_c_ada2ac09,.sp-appBar{
+  display:none !important;
+}
+.commandBarWrapper.gm_ag_ada2ac09,#workbenchCommandBar{
+  display:none !important;
+}
+.qe_bz_ada2ac09,.b_a_6b55bba6,.e_a_6b55bba6{
+  display:none !important;
+}
+.a_b_50a7110f:not(.c_b_50a7110f),.a_a_50a7110f:not(.c_a_50a7110f):not(.b_a_50a7110f){
+  padding: 0px !important;
+}
+.a_e_50a7110f:not(.c_e_50a7110f){
+  padding:0px !important;
+  margin:0px !important;
+}
+.i_a_8474018e{
+  left:0px !important;
+  right:0px !important;
+  margin:0px !important;
+  max-width:100% !important;
+  border:0px !important
+}
+.m_b_8474018e,.CanvasComponent.LCS .CanvasZone:not(.CanvasZone--fullWidth) .ControlZone{
+  padding:0px !important;
+}
+[dir=ltr] .CanvasComponent.LCS .Canvas--edit.Canvas--withLayout{
+  margin:0px !important;
+}
+[dir=ltr] .CanvasComponent.LCS .CanvasZone.CanvasZone--edit{
+  padding:0px !important;
+  margin:0px !important;
+}
+.CanvasComponent.LCS .CanvasToolboxHint,.root-88,.root-86,.root-82,.root-81{
+  display: none !important;
+} 
+#SuiteNavWrapper{
+  display:none !important;
+}
+#spSiteHeader{
+  display: none !important;
+}
+#pageHeader{
+    display: none !important;
+}
+#spLeftNav{
+    display: none !important;
+}
+#sp-appBar{
+    display: none !important;
+}
+.qe_bz_ada2ac09{
+     display: none !important; 
+}
+.v_c_ada2ac09{
+       display: none !important; 
+}
+.u_b_beed2cf1{
+  padding: 0px !important;
+}
+.ly_ar_ada2ac09{
+  display: none !important;
+}
+.yk_ck_ada2ac09{
+  display: none !important;
+}
+.qx_bw_ada2ac09{
+  display: none !important;
+}
+.lt_av_ada2ac09{
+  display: none !important;
+}
+.isFluent .SPPageChrome-app .commandBarWrapper{
+  display: none !important;
+}
+.ms-Overlay.ms-Overlay--dark.root-84{
+  display: none !important;
+}
+.ms-Modal.is-open.ms-Dialog.root-78{
+  display: none !important;
+}
+.a_c_50a7110f:not(.b_c_50a7110f):not(.i_c_50a7110f){
+  padding:0px !important;
+}
+.a_a_50a7110f:not(.b_a_50a7110f){
+  margin: 0px !important;
+}

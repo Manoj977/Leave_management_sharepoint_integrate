@@ -21,15 +21,19 @@
 
 .ApplyLeave_form_heading {
   align-items: center;
+  padding-bottom: 2rem;
 }
 
 .ApplyLeave_form_heading_name {
-  margin: 0.62rem 0rem;
-  padding: 0rem 0.5rem;
+  padding: 0.75rem;
   text-align: center;
   font-size: 1.25rem;
   line-height: 1.75rem;
   font-weight: 600;
+  color: #ff4400;
+  text-shadow: 1px 2px 3px #fdcea0;
+  font-size: 1.8rem;
+  line-height: 2rem;
 }
 
 .ApplyLeave_form_leaveInput {
@@ -52,12 +56,15 @@
 
 .ApplyLeave_form_leaveInput_desc {
   font-weight: 700;
-  margin-top: 0.6rem;
+  margin-top: 0.6rem !important;
 }
 
 .formAlign {
   display: flex;
   padding: 1em 0.5em;
+}
+.formAlign > label {
+  color: #ff4400be;
 }
 
 .formAlign label:after {

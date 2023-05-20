@@ -6,6 +6,9 @@
 
 interface CssExports {
   'ApprovalLeaveTextarea': string;
+  'LeaveDetailsNoRecord': string;
+  'LoaderDivision': string;
+  'ShowLess': string;
   'approvalLeave': string;
   'approvalLeaveDiv1': string;
   'approvalTable': string;
@@ -15,8 +18,17 @@ interface CssExports {
   'approveButton': string;
   'approveButtonDiv': string;
   'button': string;
+  'clickHere': string;
   'error': string;
   'errorBorder': string;
+  'leaveApprovalButtonDiv': string;
+  'leaveApprovalButtonDiv1': string;
+  'leaveApprovalButtonDiv2': string;
+  'leaveDetailsDescription': string;
+  'loader': string;
+  'reason': string;
+  'scrollable': string;
+  'spin': string;
   'totalLeave': string;
   'totalLeaveCloseButton': string;
   'totalLeaveDiv1': string;

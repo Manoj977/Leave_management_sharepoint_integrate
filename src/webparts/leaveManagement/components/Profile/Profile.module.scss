@@ -6,6 +6,7 @@
   flex-wrap: wrap;
   justify-content: center;
 }
+
 .activeMenu {
   flex-direction: row;
 }
@@ -19,12 +20,22 @@
   align-items: center;
   overflow: hidden;
   margin: 0px 20px;
+  padding-bottom: 0.5rem;
 }
-
-.scrollLeft {
+.scrollingText {
+  font-weight: 500;
+  color: #353433;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 500;
+  display: inline-block;
   white-space: nowrap;
-  direction: rtl;
   animation: scrollLeft 10s linear infinite;
+}
+.scrollLeft {
+  width: 96%;
+  overflow: hidden;
+  direction: ltr;
 }
 .scrollLeft p {
   margin: 0;
@@ -44,6 +55,11 @@
     transform: translateX(-100%);
   }
 }
+.Date {
+  font-weight: 700;
+  color: #ff4400;
+  text-shadow: 2px 3px 5px #ccc;
+}
 @media (max-width: 768px) {
   .scrollLeft {
     font-size: 14px;
@@ -53,9 +69,14 @@
 .bellIcon {
   position: relative;
   display: inline-block;
+  background-color: #fff;
+  box-shadow: 2px 3px 5px #ccc;
+  border-radius: 1rem;
 }
 
-.bellIcon .bell {
+.bell {
+  color: #ff4400;
+  text-shadow: 1px 2px 3px #fdcea0;
   animation: bell 0.5s infinite;
 }
 
@@ -67,8 +88,7 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background-color: #ff3b30;
-  box-shadow: 0 0 0 rgba(255, 59, 48, 0.4);
+
   animation: pulse 2s infinite;
 }
 
@@ -103,8 +123,6 @@
 }
 .announcementIcon {
   z-index: 1;
-  background-color: white;
-  padding-top: 5px;
 }
 .employeeNameCard {
   background-color: white;
@@ -242,7 +260,8 @@
     // margin-top: 1rem;
   }
 
-  .icon_title {
+  .icon_title,
+  .scrollingText {
     margin-top: 0px;
     font-size: 1.125rem;
     line-height: 1.75rem;
@@ -407,5 +426,16 @@
   .nameShadowLoading {
     font-size: 1.875rem;
     line-height: 2.25rem;
+  }
+}
+@media (max-width: 900px) {
+  .bell {
+    width: 22px;
+    height: 22px;
+    padding-left: 4px;
+  }
+  .bellIcon {
+    width: 25px;
+    height: 25px;
   }
 }

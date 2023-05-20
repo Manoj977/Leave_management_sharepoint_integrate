@@ -5,11 +5,10 @@ import { MyContext } from '../../context/contextProvider';
 
 import styles from './Sidebar.module.scss';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { MdOutlineCancel } from 'react-icons/md';
+import { GiCancel } from 'react-icons/gi';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Sidebar = ({ loggedUserRole }: any) => {
-
   // eslint-disable-next-line no-unused-vars
   const { activeMenu, links, currentColor, setSideBarActive, sidebarActive } =
     React.useContext(MyContext);
@@ -39,11 +38,10 @@ const Sidebar = ({ loggedUserRole }: any) => {
                   }}
                 >
                   <img
-                    src={require('../../assets/logo/logo-1-180x180.png')}
+                    src={require('../../assets/logo/Logo.png')}
                     className={styles.sidebarImage}
                     alt='zlendo'
                   />
-                  <span className={styles.sidebarSpan}>Zlendo</span>
                 </div>
                 <div>
                   <button
@@ -51,7 +49,12 @@ const Sidebar = ({ loggedUserRole }: any) => {
                     onClick={() => handleCloseSideBar()}
                     className={styles.Cancel}
                   >
-                    <MdOutlineCancel />
+                    <GiCancel
+                      style={{
+                        color: '#ff4400',
+                        filter: 'drop-shadow(3px 1px 3px #ccc)',
+                      }}
+                    />
                   </button>
                 </div>
               </div>
@@ -96,7 +99,7 @@ const Sidebar = ({ loggedUserRole }: any) => {
                           >
                             {link.icon}
 
-                            <span className='capitalize'>{link.name}</span>
+                            <span className={styles.linkName}>{link.name}</span>
                           </NavLink>
                         </div>
                       ))}
@@ -116,52 +119,72 @@ const Sidebar = ({ loggedUserRole }: any) => {
                 <div
                   onClick={() => {
                     navigate('/Profile');
+                    handleCloseSideBar();
                   }}
                 >
                   <img
-                    src={require('../../assets/logo/logo-1-180x180.png')}
+                    src={require('../../assets/logo/Logo.png')}
                     className={styles.sidebarImage}
                     alt='zlendo'
                   />
-                  <span className={styles.sidebarSpan}>Zlendo</span>
                 </div>
                 <div>
                   <button type='button' className={styles.Cancel}>
-                    <MdOutlineCancel onClick={() => handleCloseSideBar()} />
+                    <GiCancel
+                      style={{
+                        color: '#ff4400',
+                        filter: 'drop-shadow(3px 1px 3px #ccc)',
+                      }}
+                      onClick={() => handleCloseSideBar()}
+                    />
                   </button>
                 </div>
               </div>
               <div className={styles.sidebarLinks}>
                 {links.map((item) => (
                   <div key={item.title}>
-                    <p className={styles.sidebarTitle}>{item.title}</p>
-                    {item.links.map((link) => (
-                      <div className={styles.sidebarDetail} key={link.name}>
-                        <NavLink
-                          to={`/${encodeURIComponent(link.name)}`}
-                          onClick={() => {
-                            handleSidebar();
-                          }}
-                          style={({ isActive }) => ({
-                            backgroundColor:
+                    <p className={styles.sidebarTitle}>
+                      {' '}
+                      {loggedUserRole !== 'Admin' && item.title !== 'Admin'
+                        ? item.title
+                        : ''}
+                      {loggedUserRole === 'Admin' ? item.title : ''}
+                    </p>
+                    {item.links
+                      .filter((link) => {
+                        if (link.role === 'Admin') {
+                          return loggedUserRole === 'Admin';
+                        } else {
+                          return true;
+                        }
+                      })
+                      .map((link) => (
+                        <div className={styles.sidebarDetail} key={link.name}>
+                          <NavLink
+                            to={`/${encodeURIComponent(link.name)}`}
+                            onClick={() => {
+                              handleSidebar();
+                            }}
+                            style={({ isActive }) => ({
+                              backgroundColor:
+                                isActive ||
+                                location === `/${encodeURIComponent(link.name)}`
+                                  ? currentColor
+                                  : '',
+                            })}
+                            className={({ isActive }) =>
                               isActive ||
                               location === `/${encodeURIComponent(link.name)}`
-                                ? currentColor
-                                : '',
-                          })}
-                          className={({ isActive }) =>
-                            isActive ||
-                            location === `/${encodeURIComponent(link.name)}`
-                              ? activeLink
-                              : normalLink
-                          }
-                        >
-                          {link.icon}
+                                ? activeLink
+                                : normalLink
+                            }
+                          >
+                            {link.icon}
 
-                          <span className='capitalize'>{link.name}</span>
-                        </NavLink>
-                      </div>
-                    ))}
+                            <span className='capitalize'>{link.name}</span>
+                          </NavLink>
+                        </div>
+                      ))}
                   </div>
                 ))}
               </div>
