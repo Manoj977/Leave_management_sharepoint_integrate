@@ -50,40 +50,47 @@ export const Lop: React.FC = () => {
   return (
     <div style={{ marginTop: '1.25rem' }}>
       <div className={styles.Head}>
-        <div className={styles.inputContainer}>
-          <select
-            id='leave-type'
-            value={lop}
-            onChange={(event) => setLop(parseInt(event.target.value))}
-            className={styles.ApplyLeave_form_input}
-          >
-            {LopCount.map((value: any, index: number) => {
-              return value.map((LopData: any, index: number) => (
-                <option key={index} value={LopData.count}>
-                  {LopData.Title}
-                </option>
-              ));
-            })}
-          </select>
-          {LopError && <p className={`${styles.error}`}>{LopError}</p>}
+        <div style={{ width: '100%' }}>
+          <p className={styles.defaultLop}>
+            Default Lop Selected: {lop}
+          </p>
         </div>
-        <div className={styles.button}>
-          <div className='px-2' style={{ padding: '0rem 0.5rem' }}>
-            {}
-            <button
-              onClick={(e) => {
-                LopCount.map((value: any, index: number) => {
-                  return value.map(
-                    (LopData: any, index: number) =>
-                      LopData.count == lop && handleSubmit(LopData)
-                  );
-                });
-              }}
-              className={`${styles.buttonSubmit}`}
-              type='submit'
+        <div style={{ display: 'flex' }}>
+          <div className={styles.inputContainer}>
+            <select
+              id='leave-type'
+              value={lop}
+              onChange={(event) => setLop(parseInt(event.target.value))}
+              className={styles.ApplyLeave_form_input}
             >
-              Submit
-            </button>
+              {LopCount.map((value: any, index: number) => {
+                return value.map((LopData: any, index: number) => (
+                  <option key={index} value={LopData.count}>
+                    {LopData.Title}
+                  </option>
+                ));
+              })}
+            </select>
+            {LopError && <p className={`${styles.error}`}>{LopError}</p>}
+          </div>
+          <div className={styles.button}>
+            <div className='px-2' style={{ padding: '0rem 0.5rem' }}>
+              {}
+              <button
+                onClick={(e) => {
+                  LopCount.map((value: any, index: number) => {
+                    return value.map(
+                      (LopData: any, index: number) =>
+                        LopData.count == lop && handleSubmit(LopData)
+                    );
+                  });
+                }}
+                className={`${styles.buttonSubmit}`}
+                type='submit'
+              >
+                Submit
+              </button>
+            </div>
           </div>
         </div>
       </div>

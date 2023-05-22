@@ -247,7 +247,7 @@ export const MyContext = createContext<MyContextType>({
           role: 'Admin',
         },
         {
-          name: 'Lop',
+          name: 'Lop Calculation',
           icon: <MdAdminPanelSettings />,
           role: 'Admin',
         },
@@ -430,7 +430,7 @@ export const MyContextProvider = ({ children }: Props) => {
           role: 'Admin',
         },
         {
-          name: 'Lop',
+          name: 'LOP Calculation',
           icon: <MdAdminPanelSettings />,
           role: 'Admin',
         },

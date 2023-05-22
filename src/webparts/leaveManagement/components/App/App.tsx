@@ -173,7 +173,7 @@ const App: React.FC = () => {
                   <>
                     <Route path='/Leave Approval' element={<LeaveApproval />} />
                     <Route path='/Approved List' element={<ApprovedList />} />
-                    <Route path='/Lop' element={<Lop />} />
+                    <Route path='/Lop Calculation' element={<Lop />} />
                   </>
                 )}
                 <Route path='/Apply Leave' element={<ApplyLeave />} />

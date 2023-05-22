@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -8,7 +9,7 @@ import Pagination from '../Pagination/Pagination';
 import styles from './ApprovedList.module.scss';
 import { FaSortUp, FaSortDown } from 'react-icons/fa';
 import { RiLoader4Line } from 'react-icons/ri';
-
+import { MyContext } from "../../context/contextProvider";
 import LeaveCalculation from '../LeaveCalculation/LeaveCalculation';
 import LopCalculation from '../LopCalculation/LopCalculation';
 
@@ -64,7 +65,7 @@ export const ApprovedList: React.FC = () => {
   const func = () => {
     setIsLoading(true);
     fetch(
-      "https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/web/lists/getbytitle('Leave%20Management')/items"
+      "https://zlendoit.sharepoint.com/sites/production/_api/web/lists/getbytitle('Leave%20Management')/items"
     )
       .then((res) => res.text())
       .then((data) => {
@@ -84,7 +85,16 @@ export const ApprovedList: React.FC = () => {
                 Leave: entry.content['m:properties']['d:LeaveType']._text,
                 LeaveType: entry.content['m:properties']['d:Leave']._text,
                 count: entry.content['m:properties']['d:count']._text,
-                LopFromDate: entry.content['m:properties']['d:FormDate']._text,
+                LopFromDate: new Date(
+                  entry.content['m:properties']['d:FormDate']._text
+                )
+                  .toLocaleString('en-GB', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric',
+                  })
+                  .split(' ')
+                  .join('-'),
                 FromDate: new Date(
                   entry.content['m:properties']['d:FormDate']._text
                 )
@@ -95,7 +105,16 @@ export const ApprovedList: React.FC = () => {
                   })
                   .split(' ')
                   .join('-'),
-                LopToDate: entry.content['m:properties']['d:ToDate']._text,
+                LopToDate: new Date(
+                  entry.content['m:properties']['d:ToDate']._text
+                )
+                  .toLocaleString('en-GB', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric',
+                  })
+                  .split(' ')
+                  .join('-'),
                 ToDate: new Date(
                   entry.content['m:properties']['d:ToDate']._text
                 )
@@ -164,7 +183,7 @@ export const ApprovedList: React.FC = () => {
   const handleSearch = (event: any) => {
     setSearchTerm(event.target.value.toLowerCase().replace(/\s/g, ''));
   };
-  console.log(filteredEmployees);
+
   // const handleDropdownChange = (
   //   event: React.FormEvent<HTMLSelectElement>
   // ): void => {
@@ -259,7 +278,7 @@ export const ApprovedList: React.FC = () => {
               </select> */}
               </div>
               <div className={styles.export}>
-                <CurrentMonth table={(filteredEmployees)} />
+                <CurrentMonth table={filteredEmployees} />
               </div>
             </div>
             <div className={styles.leaveDetailsDiv1}>

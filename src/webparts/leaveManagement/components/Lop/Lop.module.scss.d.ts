@@ -9,6 +9,7 @@ interface CssExports {
   'Head': string;
   'button': string;
   'buttonSubmit': string;
+  'defaultLop': string;
   'error': string;
   'errorBorder': string;
   'errorSection': string;

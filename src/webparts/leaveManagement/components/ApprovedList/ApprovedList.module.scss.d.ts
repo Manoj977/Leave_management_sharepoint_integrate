@@ -8,11 +8,13 @@ interface CssExports {
   'LeaveDetailsNoRecord': string;
   'LeaveDetailsNoRecordP': string;
   'LoaderDivision': string;
+  'defaultLop': string;
   'export': string;
   'exportButton': string;
   'exportButtonIcon': string;
   'exportButtonName': string;
   'exportButtonText': string;
+  'exportOptions': string;
   'fromDate': string;
   'highlight': string;
   'leaveApprovalButtonDiv': string;
