@@ -22,6 +22,7 @@ interface CssExports {
   'errorSection': string;
   'formAlign': string;
   'input': string;
+  'radioFormAlign': string;
 }
 const cssExports: CssExports;
 export default cssExports;

@@ -30,6 +30,8 @@ export const ApplyLeave = () => {
   const [employeeData, setEmployeeData] = useState<employeeData[]>([]);
   const [apileaveType, setApiLeaveType] = useState<leaveType[]>([]);
   const [leave, setLeave] = useState('');
+  const [leaveSelection, setLeaveSelection] = useState('');
+  const [selectUserLeave, setSelectUserLeave] = useState('');
   const [leaveError, setLeaveError] = useState('');
   const [leaveType, setLeaveType] = useState('Full Day');
   const [leaveTypeError, setLeaveTypeError] = useState('');
@@ -47,7 +49,12 @@ export const ApplyLeave = () => {
   const [weekOffError, setWeekOffError] = useState('');
 
   const [userEmail, setUserEmail] = useState('');
+  const [othersEmail, setOthersEmail] = useState('');
+
   const [employeeData1, setEmployeeData1] = useState<empData[]>([]);
+  console.log(selectUserLeave);
+  console.log(employeeData);
+
   const fetchFunc = () => {
     fetch(
       "https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/lists/GetByTitle('Employee%20Master')/items"
@@ -127,17 +134,36 @@ export const ApplyLeave = () => {
 
   let userName = '';
   let ID = '';
-
+  let emailId = '';
+  let emailStatus;
   let state = false;
+
   void sp.web.currentUser.get().then((user) => {
     setUserEmail(user.Email);
   });
-  employeeData.forEach((e) => {
-    if (userEmail === e.email) {
-      ID = e.id;
-      userName = e.name;
-    }
-  });
+  console.log(userEmail);
+
+  if (leaveSelection === 'On behalf of others') {
+    emailStatus = true;
+    userName = selectUserLeave;
+    employeeData.forEach((e) => {
+      if (userName === e.id) {
+        ID = e.id;
+        userName = e.name;
+        emailId = e.email;
+      }
+    });
+
+    console.log('Email Id: ', emailId);
+  } else {
+    employeeData.forEach((e) => {
+      if (userEmail === e.email) {
+        ID = e.id;
+        userName = e.name;
+        emailId = e.email;
+      }
+    });
+  }
   useEffect(() => {
     const url = `https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/web/lists/getbytitle('Leave%20Management')/items?$filter=Title%20eq%20%27${ID}%27`;
 
@@ -210,7 +236,7 @@ export const ApplyLeave = () => {
       console.log(recordEnd, 'recordEnd');
       console.log(requestedStart, 'requestedStart');
       console.log(requestedEnd, 'requestedEnd');
-      
+
       return (
         (requestedStart >= recordStart && requestedStart <= recordEnd) ||
         (requestedEnd >= recordStart && requestedEnd <= recordEnd) ||
@@ -417,7 +443,7 @@ export const ApplyLeave = () => {
       const itemData = {
         Title: ID,
         Name: userName,
-        Email: userEmail,
+        Email: emailId,
         LeaveType: leaveType,
         Leave: leave,
         FormDate: fromDate,
@@ -435,6 +461,7 @@ export const ApplyLeave = () => {
             ? 0
             : leaveCount,
       };
+      console.log("Test Leave",itemData);
 
       // Get a reference to the "Leave Management" list using the website URL
       const web = Web('https://zlendoit.sharepoint.com/sites/ZlendoTools');
@@ -474,6 +501,47 @@ export const ApplyLeave = () => {
           <p className={styles.ApplyLeave_form_heading_name}>Apply Leave</p>
         </div>
         <div className={styles.ApplyLeave_form_layout}>
+          <div className={styles.radioFormAlign}>
+            <div>
+              <input
+                type='radio'
+                name='selector'
+                value='On behalf of myself'
+                onChange={(event) => setLeaveSelection(event.target.value)}
+              />
+              <label htmlFor='f-option'>On behalf of Myself</label>
+            </div>
+            <div>
+              <input
+                type='radio'
+                name='selector'
+                value='On behalf of others'
+                onChange={(event) => setLeaveSelection(event.target.value)}
+              />
+              <label htmlFor='f-option'>On behalf of Others</label>
+            </div>
+          </div>
+          <div>
+            {leaveSelection === 'On behalf of others' ? (
+              <select
+                value={selectUserLeave}
+                onChange={(event) => {
+                  setSelectUserLeave(event.target.value);
+                }}
+              >
+                <option defaultValue='selected'>Select</option>
+                {employeeData.map((e) => {
+                  return (
+                    <option value={e.id}>
+                      {e.id}-{e.name}
+                    </option>
+                  );
+                })}
+              </select>
+            ) : (
+              ''
+            )}
+          </div>
           <div className={styles.formAlign}>
             <label htmlFor='from-date' className={styles.ApplyLeave_form_label}>
               Leave Type
