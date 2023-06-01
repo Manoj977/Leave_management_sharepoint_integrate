@@ -150,7 +150,7 @@ export const ApplyLeave = () => {
       if (userName === e.id) {
         ID = e.id;
         userName = e.name;
-        emailId = e.email;
+        emailId = e.email.toLocaleLowerCase();
       }
     });
 
@@ -461,7 +461,7 @@ export const ApplyLeave = () => {
             ? 0
             : leaveCount,
       };
-      console.log("Test Leave",itemData);
+      console.log('Test Leave', itemData);
 
       // Get a reference to the "Leave Management" list using the website URL
       const web = Web('https://zlendoit.sharepoint.com/sites/ZlendoTools');
@@ -506,24 +506,28 @@ export const ApplyLeave = () => {
               <input
                 type='radio'
                 name='selector'
+                id='myself'
+                defaultChecked
                 value='On behalf of myself'
                 onChange={(event) => setLeaveSelection(event.target.value)}
               />
-              <label htmlFor='f-option'>On behalf of Myself</label>
+              <label htmlFor='myself'>On behalf of Myself</label>
             </div>
             <div>
               <input
                 type='radio'
                 name='selector'
+                id='others'
                 value='On behalf of others'
                 onChange={(event) => setLeaveSelection(event.target.value)}
               />
-              <label htmlFor='f-option'>On behalf of Others</label>
+              <label htmlFor='others'>On behalf of Others</label>
             </div>
           </div>
           <div>
             {leaveSelection === 'On behalf of others' ? (
               <select
+                style={{ width: '42.5% ' }}
                 value={selectUserLeave}
                 onChange={(event) => {
                   setSelectUserLeave(event.target.value);
