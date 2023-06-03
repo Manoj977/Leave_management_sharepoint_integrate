@@ -153,9 +153,10 @@ export const LeaveDetails = () => {
       });
   }, []);
 
-  const filteredLeaveDetails = leaveDetails.filter(
-    (detail) => detail.Email.replace(/\s/g, '') === userEmail
-  );
+  const filteredLeaveDetails = leaveDetails.filter((detail) => {
+    if (detail.Email !== undefined)
+      return detail.Email.toLocaleLowerCase() === userEmail.toLocaleLowerCase();
+  });
 
   // pag
   const indexOfLastPage = currentPage * dataPerPage;

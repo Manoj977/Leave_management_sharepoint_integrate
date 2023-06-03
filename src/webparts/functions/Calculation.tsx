@@ -51,7 +51,7 @@ const Caluclation = () => {
   const func = () => {
     setIsLoading(true);
     fetch(
-      "https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/web/lists/getbytitle('Leave%20Management')/items"
+      "https://zlendoit.sharepoint.com/sites/production/_api/web/lists/getbytitle('Leave%20Management')/items"
     )
       .then((res) => res.text())
       .then((data) => {

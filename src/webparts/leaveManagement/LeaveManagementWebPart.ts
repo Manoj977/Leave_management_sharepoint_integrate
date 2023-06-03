@@ -12,8 +12,8 @@ import {
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import { IReadonlyTheme } from '@microsoft/sp-component-base';
 import * as strings from 'LeaveManagementWebPartStrings';
-import { SPComponentLoader } from "@microsoft/sp-loader";
-import { setup as pnpSetup } from "@pnp/common";
+  import { SPComponentLoader } from "@microsoft/sp-loader";
+  import { setup as pnpSetup } from "@pnp/common";
 import App from "./components/App/App";
 
 

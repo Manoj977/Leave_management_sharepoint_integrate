@@ -48,7 +48,7 @@ const LopCalculation = () => {
     let userEmail = '';
     sp.web.currentUser.get().then((user) => {
       userEmail = user.Email;
-      const url = `https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/web/lists/getbytitle('Leave%20Management')/items?$filter=Email%20eq%20%27${userEmail}%27`;
+      const url = `https://zlendoit.sharepoint.com/sites/production/_api/web/lists/getbytitle('Leave%20Management')/items?$filter=Email%20eq%20%27${userEmail}%27`;
 
       fetch(url)
         .then((res) => res.text())

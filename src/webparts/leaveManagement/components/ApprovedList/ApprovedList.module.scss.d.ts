@@ -16,6 +16,7 @@ interface CssExports {
   'exportButtonText': string;
   'exportOptions': string;
   'fromDate': string;
+  'headSection': string;
   'highlight': string;
   'leaveApprovalButtonDiv': string;
   'leaveApprovalDate': string;

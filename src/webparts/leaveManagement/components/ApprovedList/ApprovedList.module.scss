@@ -140,7 +140,7 @@ $label-font-size: 1.3rem;
   position: -webkit-sticky;
   position: sticky;
   top: 0;
-  width: 100%;
+  width: 60%;
 }
 
 .leaveapprovalInput {
@@ -457,15 +457,17 @@ $label-font-size: 1.3rem;
 }
 .topSection {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   padding: 0rem 4rem;
 }
 .export {
   display: flex;
-  flex-direction: column;
   align-items: center;
 }
-
+.headSection {
+  display: flex;
+}
 .exportButton {
   border: 1px solid #f40;
   border-radius: 3px;
@@ -473,7 +475,7 @@ $label-font-size: 1.3rem;
   background: transparent;
   cursor: pointer;
   transition: all 0.3s ease;
-
+  width: 40%;
   &:hover {
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
   }
@@ -482,6 +484,7 @@ $label-font-size: 1.3rem;
 .exportButtonText {
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 .exportButtonIcon {
@@ -498,6 +501,11 @@ $label-font-size: 1.3rem;
   flex-wrap: wrap;
   gap: 10px;
   margin-bottom: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+  justify-content: flex-start;
+  column-gap: 20px;
+  margin: auto 0.5rem;
 
   label {
     display: flex;
@@ -560,8 +568,25 @@ $label-font-size: 1.3rem;
 @media (max-width: 665px) {
   .leaveapprovalSearchBox {
     justify-content: center;
+    width: 100%;
   }
-
+  .headSection {
+    display: grid;
+    row-gap: 1rem;
+  }
+  .export {
+    row-gap: 0.4rem;
+    flex-direction: column;
+  }
+  .exportOptions {
+    gap: 3rem;
+  }
+  .exportButtonIcon {
+    display: none;
+  }
+  .exportButtonText {
+    margin-left: 0.5rem;
+  }
   .fromDate,
   .toDate {
     white-space: nowrap;

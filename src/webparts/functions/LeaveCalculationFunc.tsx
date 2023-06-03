@@ -10,7 +10,7 @@
 import { sp } from '@pnp/sp/presets/all';
 import React, { useEffect, useState } from 'react';
 import convert from 'xml-js';
-import { MyContext } from '../../context/contextProvider';
+import { MyContext } from '../leaveManagement/context/contextProvider';
 
 type LeaveDetail = {
   ID: string;
@@ -22,8 +22,8 @@ type LeaveDetail = {
   NoofDaysLeave: string;
   Status: string;
 };
-
-const LeaveCalculation = () => {
+let Email = '';
+const LeaveCalculationFunc = () => {
   const [LeaveDetails, setLeaveDetails] = useState<LeaveDetail[]>([]);
   const [lopDates, setLopDates] = useState<Date[]>([]); // Array to store LOP dates
   let {
@@ -32,61 +32,83 @@ const LeaveCalculation = () => {
     totalLeaves,
     setAvailableLeaves,
     defaultLop,
-    
+    lopEmail,
+    lopData,
+    setLopData,
+    setLopEmail,
+    lopCalc,
+    eachData,
+    setEachData,
   } = React.useContext(MyContext);
   defaultLop = parseInt(defaultLop);
+  let Emails = '';
+
+  let i = 0;
+  if (lopEmail.length > 0) {
+    ++i;
+  }
+  const test = Array.from(
+    new Set(lopEmail.map((item) => JSON.stringify(item)))
+  ).map((item) => JSON.parse(item));
+  // const test = ['aiswarya.s@zlendo.com'];
+  // console.log(test);
 
   useEffect(() => {
-    let userEmail = '';
-    sp.web.currentUser.get().then((user) => {
-      userEmail = user.Email;
-      const url = `https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/web/lists/getbytitle('Leave%20Management')/items?$filter=Email%20eq%20%27${userEmail}%27`;
+    if (i !== 0) {
+      // Add this condition
+      for (let e of test) {
+        const url = `https://zlendoit.sharepoint.com/sites/production/_api/web/lists/getbytitle('Leave%20Management')/items?$filter=Email%20eq%20%27${e}%27`;
 
-      fetch(url)
-        .then((res) => res.text())
-        .then((data) => {
-          const jsonData = convert.xml2json(data, { compact: true, spaces: 4 });
-          const parsedData = JSON.parse(jsonData);
-          const entries = Array.isArray(parsedData.feed.entry)
-            ? parsedData.feed.entry
-            : [parsedData.feed.entry];
-          const leaveDetail: LeaveDetail[] = entries.map((entry: any) => {
-            try {
-              return {
-                ID: entry.content['m:properties']['d:Title']._text,
-                Name: entry.content['m:properties']['d:Name']._text,
-                Email: entry.content['m:properties']['d:Email']._text,
-                Leave: entry.content['m:properties']['d:Leave']._text,
-                FromDate: new Date(
-                  entry.content['m:properties']['d:FormDate']._text
-                ),
-                ToDate: new Date(
-                  entry.content['m:properties']['d:ToDate']._text
-                ),
-                Status: entry.content['m:properties']['d:Status']._text,
-                NoofDaysLeave: parseFloat(
-                  entry.content['m:properties']['d:count']._text
-                ),
-              };
-            } catch (error) {
-              if (
-                error instanceof TypeError &&
-                error.message.includes('Cannot read properties of undefined')
-              ) {
-                return null;
-              } else {
-                throw error;
+        fetch(url)
+          .then((res) => res.text())
+          .then((data) => {
+            const jsonData = convert.xml2json(data, {
+              compact: true,
+              spaces: 4,
+            });
+            const parsedData = JSON.parse(jsonData);
+            const entries = Array.isArray(parsedData.feed.entry)
+              ? parsedData.feed.entry
+              : [parsedData.feed.entry];
+            const leaveDetail: LeaveDetail[] = entries.map((entry: any) => {
+              try {
+                return {
+                  ID: entry.content['m:properties']['d:Title']._text,
+                  Name: entry.content['m:properties']['d:Name']._text,
+                  Email: entry.content['m:properties']['d:Email']._text,
+                  Leave: entry.content['m:properties']['d:Leave']._text,
+                  FromDate: new Date(
+                    entry.content['m:properties']['d:FormDate']._text
+                  ),
+                  ToDate: new Date(
+                    entry.content['m:properties']['d:ToDate']._text
+                  ),
+                  Status: entry.content['m:properties']['d:Status']._text,
+                  NoofDaysLeave: parseFloat(
+                    entry.content['m:properties']['d:count']._text
+                  ),
+                };
+              } catch (error) {
+                if (
+                  error instanceof TypeError &&
+                  error.message.includes('Cannot read properties of undefined')
+                ) {
+                  return null;
+                } else {
+                  throw error;
+                }
               }
-            }
-          });
-          const filteredLeaveDetail = leaveDetail.filter(
-            (item) => item !== null && item.Status === 'Approved'
-          );
-          setLeaveDetails(filteredLeaveDetail);
-        })
-        .catch((err) => console.log(err));
-    });
-  }, []);
+            });
+
+            const filteredLeaveDetail = leaveDetail.filter((item) => {
+              return item !== null && item.Status === 'Approved';
+            });
+            setLeaveDetails(filteredLeaveDetail);
+          })
+          .catch((err) => console.log(err));
+      }
+    }
+  }, [i]);
 
   useEffect(() => {
     if (defaultLop === 3) {
@@ -119,6 +141,7 @@ const LeaveCalculation = () => {
           lossOfPay += (excessLeaveCount * totalLeaves) / 12;
 
           ApprovedLeaveDetails.forEach((leaveDetail) => {
+            Emails = leaveDetail.Email;
             const quarterStartMonth = quarterIndex * defaultLop;
             const quarterEndMonth = (quarterIndex + 1) * defaultLop - 1;
             const leaveStartMonth = leaveDetail.FromDate.getMonth();
@@ -167,6 +190,12 @@ const LeaveCalculation = () => {
         setAvailableLeaves(0);
       }
       setLossofPay(lossOfPay);
+      console.log(Emails, lossOfPay);
+
+      lopCalc.push({
+        Email: Emails,
+        lop: lossOfPay,
+      });
     }
     // if (defaultLop === 1) {
     //   let totalTakenLeaves = LeaveDetails.reduce((total, leaveDetail) => {
@@ -218,7 +247,14 @@ const LeaveCalculation = () => {
           }
       });
       leaveDetails.map((e) => {
-        if (e !== undefined) {
+        if (
+          e !== undefined &&
+          parseFloat(e.NoofDaysLeave) !== 1 &&
+          e.FromDate.getDay() !== 0 &&
+          e.FromDate.getDay() !== 6 &&
+          e.ToDate.getDay() !== 0 &&
+          e.FromDate.getDay() !== 6
+        ) {
           data.push(e);
         }
       });
@@ -229,6 +265,8 @@ const LeaveCalculation = () => {
       let TotalLopofYear = 0;
       let TotalLeaveTaken = 0;
       data.map((e) => {
+        console.log(e.Email, e.NoofDaysLeave);
+
         TotalLeaveTaken += e.NoofDaysLeave;
       });
       console.log(TotalLeaveTaken);
@@ -250,7 +288,20 @@ const LeaveCalculation = () => {
           toDate.getDate()
         );
         console.log('data: ', data);
-
+        data.map((e) => {
+          if (
+            e.NoofDaysLeave !== 1 &&
+            e.FromDate.getDay() !== 0 &&
+            e.FromDate.getDay() !== 6 &&
+            e.ToDate.getDay() !== 0 &&
+            e.FromDate.getDay() !== 6
+          ) {
+            console.log(e);
+          }
+        });
+        data.map((e) => {
+          Email = e.Email;
+        });
         let currentDate = startDate;
         const datesInRange = [];
         let TotalLeaveTaken = 0;
@@ -279,7 +330,7 @@ const LeaveCalculation = () => {
 
         if (datesInRange.length !== 0) {
           if (e.NoofDaysLeave >= defaultLop) {
-            console.log('defaultLop: ', defaultLop);
+            console.log('defaultLop: ', defaultLop, e.NoofDaysLeave);
 
             // console.log('From Date:', fromDate.toISOString().split('T')[0]);
             // console.log('To Date:');
@@ -378,7 +429,17 @@ const LeaveCalculation = () => {
       const monthlyLeaveCounts = Object.values(leaveCounts);
 
       console.log('monthlyLeaveCounts: ', monthlyLeaveCounts);
-      const test = eachData.map((e) => {
+
+      let tester: any[] = [];
+      monthlyLeaveCounts.map((e) => {
+        if (e.LeaveCount > 1) {
+          console.log('tester: ', e);
+          tester.push(e);
+        }
+      });
+      console.log(tester);
+
+      const test = tester.map((e) => {
         return {
           ...e,
           TotalLopofYear,
@@ -386,7 +447,9 @@ const LeaveCalculation = () => {
       });
 
       test.map((e) => {
-        TotalLopofYear += e.NoofDaysLeave;
+        // console.log('test', e);
+        eachData.push(e);
+        TotalLopofYear += e.LeaveCount;
       });
 
       // Print the accumulated Leave Days by month
@@ -443,12 +506,18 @@ const LeaveCalculation = () => {
         TotalLeaveTaken,
         TotalLopofYear
       );
-      console.log('TotalLopofYear: ', TotalLopofYear);
+      console.log('TotalLopofYear: ', TotalLopofYear, Email);
 
       setTakenLeaves(TotalLeaveTaken);
       setAvailableLeaves(totalLeaves - (TotalLeaveTaken - TotalLopofYear));
       setLossofPay(TotalLopofYear);
       setLopDates(lopDates); // Update the LOP dates array
+      let datas = [];
+
+      lopCalc.push({
+        Email: Email,
+        lop: TotalLopofYear,
+      });
     }
 
     if (defaultLop === 12) {
@@ -461,26 +530,43 @@ const LeaveCalculation = () => {
       const ApprovedLeaveDetails = LeaveDetails.filter((leaveDetail) => {
         return leaveDetail.Status === 'Approved';
       });
-
+      console.log(LeaveDetails);
+      let lossofPay = 0;
       let remainingLeaves = totalLeaves;
-
+      let count = 0;
       ApprovedLeaveDetails.forEach((leaveDetail) => {
+        Emails = leaveDetail.Email;
+        // console.log(leaveDetail.NoofDaysLeave);
+        count += parseFloat(leaveDetail.NoofDaysLeave);
+        // console.log(count);
+
         remainingLeaves -= parseFloat(leaveDetail.NoofDaysLeave);
+
         if (remainingLeaves < 0) {
+          console.log(remainingLeaves);
           const excessDays = Math.abs(remainingLeaves);
-          for (let i = 0; i < excessDays; i++) {
-            const lopDate = new Date(leaveDetail.FromDate);
-            lopDate.setDate(lopDate.getDate() + i);
-            lopDates.push(lopDate);
-          }
-          remainingLeaves = 0;
+          console.log(excessDays);
+          lossofPay = excessDays;
+          // for (let i = 0; i < excessDays; i++) {
+          //   const lopDate = new Date(leaveDetail.FromDate);
+          //   lopDate.setDate(lopDate.getDate() + i);
+          //   lopDates.push(lopDate);
+          // }
+          // remainingLeaves = 0;
+        } else {
+          lossofPay = 0;
         }
       });
 
       setTakenLeaves(totalTakenLeaves);
       setAvailableLeaves(remainingLeaves);
-      setLossofPay(lopDates.length);
+      setLossofPay(lossofPay);
       setLopDates(lopDates); // Update the LOP dates array
+
+      lopCalc.push({
+        Email: Emails,
+        lop: lossofPay,
+      });
     }
   }, [
     LeaveDetails,
@@ -494,4 +580,4 @@ const LeaveCalculation = () => {
   //   console.log(e.toLocaleString().substr(0, 10));
   // });
 };
-export default LeaveCalculation;
+export default LeaveCalculationFunc;

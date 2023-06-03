@@ -30,6 +30,8 @@ export const ApplyLeave = () => {
   const [employeeData, setEmployeeData] = useState<employeeData[]>([]);
   const [apileaveType, setApiLeaveType] = useState<leaveType[]>([]);
   const [leave, setLeave] = useState('');
+  const [leaveSelection, setLeaveSelection] = useState('');
+  const [selectUserLeave, setSelectUserLeave] = useState('');
   const [leaveError, setLeaveError] = useState('');
   const [leaveType, setLeaveType] = useState('Full Day');
   const [leaveTypeError, setLeaveTypeError] = useState('');
@@ -47,10 +49,15 @@ export const ApplyLeave = () => {
   const [weekOffError, setWeekOffError] = useState('');
 
   const [userEmail, setUserEmail] = useState('');
+  const [othersEmail, setOthersEmail] = useState('');
+
   const [employeeData1, setEmployeeData1] = useState<empData[]>([]);
+  console.log(selectUserLeave);
+  console.log(employeeData);
+
   const fetchFunc = () => {
     fetch(
-      "https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/lists/GetByTitle('Employee%20Master')/items"
+      "https://zlendoit.sharepoint.com/sites/production/_api/lists/GetByTitle('Employee%20Master')/items"
     )
       .then((res) => res.text())
       .then((data) => {
@@ -127,17 +134,36 @@ export const ApplyLeave = () => {
 
   let userName = '';
   let ID = '';
-
+  let emailId = '';
+  let emailStatus;
   let state = false;
+
   void sp.web.currentUser.get().then((user) => {
     setUserEmail(user.Email);
   });
-  employeeData.forEach((e) => {
-    if (userEmail === e.email) {
-      ID = e.id;
-      userName = e.name;
-    }
-  });
+  console.log(userEmail);
+
+  if (leaveSelection === 'On behalf of others') {
+    emailStatus = true;
+    userName = selectUserLeave;
+    employeeData.forEach((e) => {
+      if (userName === e.id) {
+        ID = e.id;
+        userName = e.name;
+        emailId = e.email;
+      }
+    });
+
+    console.log('Email Id: ', emailId);
+  } else {
+    employeeData.forEach((e) => {
+      if (userEmail === e.email) {
+        ID = e.id;
+        userName = e.name;
+        emailId = e.email;
+      }
+    });
+  }
   useEffect(() => {
     const url = `https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/web/lists/getbytitle('Leave%20Management')/items?$filter=Title%20eq%20%27${ID}%27`;
 
@@ -186,37 +212,21 @@ export const ApplyLeave = () => {
     fetchFunc();
     func();
     const overlappingRecords = employeeData.filter((record: any) => {
-      const recordStart = new Date(record.FormDate)
-        .toLocaleString('en-IN', {
-          timeZone: 'Asia/Kolkata',
-        })
-        .substr(0, 10);
-      const recordEnd = new Date(record.ToDate)
-        .toLocaleString('en-IN', {
-          timeZone: 'Asia/Kolkata',
-        })
-        .substr(0, 10);
-      const requestedStart = new Date(fromDate)
-        .toLocaleString('en-IN', {
-          timeZone: 'Asia/Kolkata',
-        })
-        .substr(0, 10);
-      const requestedEnd = new Date(toDate)
-        .toLocaleString('en-IN', {
-          timeZone: 'Asia/Kolkata',
-        })
-        .substr(0, 10);
-      console.log(recordStart, 'recordStart');
-      console.log(recordEnd, 'recordEnd');
-      console.log(requestedStart, 'requestedStart');
-      console.log(requestedEnd, 'requestedEnd');
-      
-      return (
-        (requestedStart >= recordStart && requestedStart <= recordEnd) ||
-        (requestedEnd >= recordStart && requestedEnd <= recordEnd) ||
-        (requestedStart <= recordStart && requestedEnd >= recordEnd)
-      );
+      const recordStart = new Date(record.FormDate).toDateString();
+      const recordEnd = new Date(record.ToDate).toDateString();
+      const requestedStart = new Date(fromDate).toDateString();
+      const requestedEnd = new Date(toDate).toDateString();
+
+      if (recordStart === requestedStart && recordEnd === requestedEnd) {
+        console.log(recordStart, 'recordStart');
+        console.log(recordEnd, 'recordEnd');
+        console.log(requestedStart, 'requestedStart');
+        console.log(requestedEnd, 'requestedEnd');
+      }
+      return recordStart === requestedStart && recordEnd === requestedEnd;
     });
+    console.log(overlappingRecords);
+    console.log(overlappingRecords.length);
 
     if (overlappingRecords.length > 0) {
       const overlappingApprovedOrPendingRecords = overlappingRecords.filter(
@@ -235,30 +245,14 @@ export const ApplyLeave = () => {
             overlappingApprovedOrPendingRecords[0].Status === 'Approved'
               ? `You have already applied for leave on that date, ${new Date(
                   overlappingApprovedOrPendingRecords[0].FormDate
-                )
-                  .toLocaleDateString('en-IN', {
-                    timeZone: 'Asia/Kolkata',
-                  })
-                  .substr(0, 10)} - ${new Date(
+                ).toDateString()} - ${new Date(
                   overlappingApprovedOrPendingRecords[0].ToDate
-                )
-                  .toLocaleDateString('en-IN', {
-                    timeZone: 'Asia/Kolkata',
-                  })
-                  .substr(0, 10)} which is approved.`
+                ).toDateString()} which is approved.`
               : `You have already applied for leave on ${new Date(
                   overlappingApprovedOrPendingRecords[0].FormDate
-                )
-                  .toLocaleDateString('en-IN', {
-                    timeZone: 'Asia/Kolkata',
-                  })
-                  .substr(0, 10)} - ${new Date(
+                ).toDateString()} - ${new Date(
                   overlappingApprovedOrPendingRecords[0].ToDate
-                )
-                  .toLocaleDateString('en-IN', {
-                    timeZone: 'Asia/Kolkata',
-                  })
-                  .substr(0, 10)}. Please wait for approval.`,
+                ).toDateString()}. Please wait for approval.`,
         };
       }
     }
@@ -417,7 +411,7 @@ export const ApplyLeave = () => {
       const itemData = {
         Title: ID,
         Name: userName,
-        Email: userEmail,
+        Email: emailId,
         LeaveType: leaveType,
         Leave: leave,
         FormDate: fromDate,
@@ -435,6 +429,7 @@ export const ApplyLeave = () => {
             ? 0
             : leaveCount,
       };
+      console.log('Test Leave', itemData);
 
       // Get a reference to the "Leave Management" list using the website URL
       const web = Web('https://zlendoit.sharepoint.com/sites/ZlendoTools');
@@ -462,6 +457,7 @@ export const ApplyLeave = () => {
       setToDate('');
     }
   };
+  console.log(leaveSelection);
 
   return (
     <div className={styles.ApplyLeave}>
@@ -474,6 +470,60 @@ export const ApplyLeave = () => {
           <p className={styles.ApplyLeave_form_heading_name}>Apply Leave</p>
         </div>
         <div className={styles.ApplyLeave_form_layout}>
+          <div className={styles.radioForm}>
+            <div className={styles.radioFormAlign}>
+              <div>
+                <input
+                  type='radio'
+                  name='selector'
+                  value='On behalf of myself'
+                  id='myself-option'
+                  defaultChecked
+                  onChange={(event) => setLeaveSelection(event.target.value)}
+                />
+                <label
+                  htmlFor='myself-option'
+                  className={styles.ApplyLeave_form_label}
+                >
+                  On behalf of Myself
+                </label>
+              </div>
+              <div>
+                <input
+                  type='radio'
+                  name='selector'
+                  value='On behalf of others'
+                  id='others-option'
+                  onChange={(event) => setLeaveSelection(event.target.value)}
+                />
+                <label
+                  htmlFor='others-option'
+                  className={styles.ApplyLeave_form_label}
+                >
+                  On behalf of Others
+                </label>
+              </div>
+            </div>
+
+            {leaveSelection === 'On behalf of others' && (
+              <select
+                className={styles.ApplyLeave_form_input}
+                value={selectUserLeave}
+                onChange={(event) => {
+                  setSelectUserLeave(event.target.value);
+                }}
+              >
+                <option value=''>Select</option>
+                {employeeData.map((employee) => (
+                  <option key={employee.id} value={employee.id}>
+                    ID: {employee.id !== undefined ? employee.id : 'Null'} -
+                    Name: {employee.name !== undefined ? employee.name : 'Null'}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
+
           <div className={styles.formAlign}>
             <label htmlFor='from-date' className={styles.ApplyLeave_form_label}>
               Leave Type
@@ -502,21 +552,23 @@ export const ApplyLeave = () => {
             </select>
           </div>
           <div>
-            {leave && leave !== 'Select Leave' && (
-              <div className={styles.ApplyLeave_form_leaveInput}>
-                <svg
-                  className={styles.ApplyLeave_form_leaveInput_svg}
-                  xmlns='http://www.w3.org/2000/svg'
-                  viewBox='0 0 20 20'
-                >
-                  <path d='M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z' />
-                </svg>
+            {leaveSelection === 'On behalf of others' &&
+              leave &&
+              leave !== 'Select Leave' && (
+                <div className={styles.ApplyLeave_form_leaveInput}>
+                  <svg
+                    className={styles.ApplyLeave_form_leaveInput_svg}
+                    xmlns='http://www.w3.org/2000/svg'
+                    viewBox='0 0 20 20'
+                  >
+                    <path d='M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z' />
+                  </svg>
 
-                <p className={styles.ApplyLeave_form_leaveInput_desc}>
-                  Your Total Leave balance is {availableLeaves}
-                </p>
-              </div>
-            )}
+                  <p className={styles.ApplyLeave_form_leaveInput_desc}>
+                    Your Total Leave balance is {availableLeaves}
+                  </p>
+                </div>
+              )}
             {leaveError && <p className={styles.error}> {leaveError}</p>}
           </div>
 

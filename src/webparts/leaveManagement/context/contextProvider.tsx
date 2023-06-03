@@ -93,8 +93,17 @@ type MyContextType = {
   setLopCount: React.Dispatch<React.SetStateAction<LopCount[]>>;
   defaultLop: any;
   setDefaultLop: React.Dispatch<React.SetStateAction<any>>;
+
   lopDate: any;
   setLopDate: React.Dispatch<React.SetStateAction<any[]>>;
+  lopData: number;
+  setLopData: React.Dispatch<React.SetStateAction<number>>;
+  lopEmail: any[];
+  setLopEmail: React.Dispatch<React.SetStateAction<any[]>>;
+  lopCalc: any;
+  setLopCalc: React.Dispatch<React.SetStateAction<any>>;
+  eachData: any[];
+  setEachData: React.Dispatch<React.SetStateAction<any[]>>;
 };
 type LeaveDetail = {
   ID: string;
@@ -115,10 +124,14 @@ type Holiday = {
   Day: string;
 };
 type LopCount = {
+  find: any;
   Title: string;
   count: number;
 };
-
+type lopcalc = {
+  Email: string;
+  lop: number;
+};
 export const MyContext = createContext<MyContextType>({
   nextHoliday: [],
   setNextHoliday: () => {
@@ -329,6 +342,22 @@ export const MyContext = createContext<MyContextType>({
   setLopDate: () => {
     ('');
   },
+  lopData: 0,
+  setLopData: () => {
+    ('');
+  },
+  lopEmail: [],
+  setLopEmail: () => {
+    ('');
+  },
+  lopCalc: [],
+  setLopCalc: () => {
+    ('');
+  },
+  eachData: [],
+  setEachData: () => {
+    ('');
+  },
 });
 
 interface Props {
@@ -362,7 +391,10 @@ export const MyContextProvider = ({ children }: Props) => {
   const [holiday, setHoliday] = useState([]);
   const [LopCount, setLopCount] = useState<LopCount[]>();
   const [defaultLop, setDefaultLop] = useState<number>();
+  const [lopData, setLopData] = useState<number>();
+  const [lopEmail, setLopEmail] = useState<any[]>([]);
   const [lopDate, setLopDate] = useState<any[]>([]);
+  const [eachData, setEachData] = useState<any[]>([]);
   const [earningData] = useState([
     {
       icon: <BiCalendarPlus />,
@@ -463,6 +495,7 @@ export const MyContextProvider = ({ children }: Props) => {
       ],
     },
   ]);
+  const [lopCalc, setLopCalc] = useState([]);
   useEffect(() => {
     lopDate;
   }, [setLopDate, lopDate]);
@@ -528,6 +561,16 @@ export const MyContextProvider = ({ children }: Props) => {
         }
       });
   }, []);
+  useEffect(() => {
+    setLopData(lopData);
+    setLopEmail(lopEmail);
+    setEachData(eachData);
+  }, []);
+  useEffect(() => {
+    setLopData(lopData);
+    setLopEmail(lopEmail);
+    setEachData(eachData);
+  }, [setLopData, lopData, setLopEmail, lopEmail, eachData, setEachData]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -599,11 +642,14 @@ export const MyContextProvider = ({ children }: Props) => {
   }, []);
 
   useEffect(() => {
-    setDefaultLop(defaultLop);
-  }, [defaultLop, setDefaultLop]);
-  useEffect(() => {
     setScreenSize(window.innerWidth);
   }, [screenSize, setScreenSize, activeMenu]);
+  useEffect(() => {
+    setEachData(eachData);
+  }, []);
+  useEffect(() => {
+    setEachData(eachData);
+  }, [eachData, setEachData]);
   const contextValue: MyContextType = {
     isSkeletonLoading,
     setIsSkeletonLoading,
@@ -662,6 +708,14 @@ export const MyContextProvider = ({ children }: Props) => {
     setDefaultLop,
     lopDate,
     setLopDate,
+    lopData,
+    setLopData,
+    lopEmail,
+    setLopEmail,
+    lopCalc,
+    setLopCalc,
+    eachData,
+    setEachData,
   };
 
   return (

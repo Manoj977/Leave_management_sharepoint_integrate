@@ -49,7 +49,7 @@ const TableHeading: TableHeading[] = [
 export const LeaveApproval: React.FC = () => {
   LeaveCalculation();
   LopCalculation();
-  const { action, setAction, setApproveLeave, approveLeave } =
+  const { action, setAction, setApproveLeave, approveLeave, defaultLop } =
     React.useContext(MyContext);
   const [LeaveDetails, setLeaveDetails] = useState<LeaveDetail[]>([]);
   const [approve, setApprove] = useState<string>('Pending');
@@ -87,11 +87,9 @@ export const LeaveApproval: React.FC = () => {
                 Leave: entry.content['m:properties']['d:LeaveType']._text,
                 LeaveType: entry.content['m:properties']['d:Leave']._text,
                 count: entry.content['m:properties']['d:count']._text,
-                LopFromDate: entry.content['m:properties']['d:FormDate']._text,
                 FromDate: new Date(
                   entry.content['m:properties']['d:FormDate']._text
                 ).toLocaleDateString('en-GB'),
-                LopToDate: entry.content['m:properties']['d:ToDate']._text,
                 ToDate: new Date(
                   entry.content['m:properties']['d:ToDate']._text
                 ).toLocaleDateString('en-GB'),
@@ -226,6 +224,14 @@ export const LeaveApproval: React.FC = () => {
       <div className={styles.leaveapproval}>
         {CurrentData && (
           <div>
+            <div style={{ marginLeft: '4rem' }}>
+              <p className={styles.defaultLop}>
+                Default Lop Calculation:
+                {parseInt(defaultLop) === 1 && <span> Monthly</span>}
+                {parseInt(defaultLop) === 3 && <span> Quarterly </span>}
+                {parseInt(defaultLop) === 12 && <span> Yearly </span>}
+              </p>
+            </div>
             <div className={styles.leaveapprovalSearchBox}>
               {/* <p className={styles.searchLabel}>Search:</p> */}
               <input
@@ -245,6 +251,7 @@ export const LeaveApproval: React.FC = () => {
                 <option value="Rejected">Rejected</option>
               </select> */}
             </div>
+
             <div className={styles.leaveDetailsDiv1}>
               <div className={styles.leaveDetailsDiv2}>
                 <div className={styles.leaveDetailsDiv3}>
