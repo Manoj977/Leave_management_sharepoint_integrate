@@ -244,15 +244,15 @@ export const ApplyLeave = () => {
           message:
             overlappingApprovedOrPendingRecords[0].Status === 'Approved'
               ? `You have already applied for leave on that date, ${new Date(
-                  overlappingApprovedOrPendingRecords[0].FormDate
-                ).toDateString()} - ${new Date(
-                  overlappingApprovedOrPendingRecords[0].ToDate
-                ).toDateString()} which is approved.`
+                  overlappingApprovedOrPendingRecords[0].FormDate.toDateString()
+                )} - ${new Date(
+                  overlappingApprovedOrPendingRecords[0].ToDate.toDateString()
+                )} which is approved.`
               : `You have already applied for leave on ${new Date(
-                  overlappingApprovedOrPendingRecords[0].FormDate
-                ).toDateString()} - ${new Date(
-                  overlappingApprovedOrPendingRecords[0].ToDate
-                ).toDateString()}. Please wait for approval.`,
+                  overlappingApprovedOrPendingRecords[0].FormDate.toDateString()
+                )} - ${new Date(
+                  overlappingApprovedOrPendingRecords[0].ToDate.toDateString()
+                )}. Please wait for approval.`,
         };
       }
     }
