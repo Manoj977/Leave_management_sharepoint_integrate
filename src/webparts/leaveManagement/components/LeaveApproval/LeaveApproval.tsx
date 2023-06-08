@@ -43,7 +43,7 @@ const TableHeading: TableHeading[] = [
   { name: 'Date', value: 'Date' },
   { name: 'Days', value: 'Days' },
   { name: 'Status', value: 'Status' },
-  { name: 'Remark', value: 'Remark' },
+  // { name: 'Remark', value: 'Remark' },
   { name: 'Action', value: 'Action' },
 ];
 export const LeaveApproval: React.FC = () => {
@@ -67,7 +67,7 @@ export const LeaveApproval: React.FC = () => {
   const func = () => {
     setIsLoading(true);
     fetch(
-      "https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/web/lists/getbytitle('Leave%20Management')/items"
+      "https://zlendoit.sharepoint.com/sites/production/_api/web/lists/getbytitle('Leave%20Management')/items"
     )
       .then((res) => res.text())
       .then((data) => {
@@ -411,12 +411,12 @@ export const LeaveApproval: React.FC = () => {
                                     </span>
                                   </td>
 
-                                  <td
+                                  {/* <td
                                     className={styles.leaveDetailsDescription}
                                     data-label='Remark'
                                   >
                                     {leave.Remark}
-                                  </td>
+                                  </td> */}
                                   <td
                                     className={styles.leaveDetailsDescription}
                                     data-label='Action'

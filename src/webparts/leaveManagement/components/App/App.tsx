@@ -17,8 +17,10 @@ import { LeaveDetails } from '../Leave Details/LeaveDetails';
 import convert from 'xml-js';
 import { PublicHolidays } from '../Holidays/PublicHolidays';
 import { sp } from '@pnp/sp/presets/all';
-import {ApprovedList} from '../ApprovedList/ApprovedList';
+import { ApprovedList } from '../ApprovedList/ApprovedList';
 import { Lop } from '../Lop/Lop';
+import { ToastProvider, useToasts } from 'react-toast-notifications';
+import { Toaster } from 'react-hot-toast';
 // import LeaveCalculation from '../LeaveCalculation/LeaveCalculation';
 type Admin = {
   ID: string;
@@ -115,74 +117,80 @@ const App: React.FC = () => {
   return (
     <MyContextProvider>
       <HashRouter basename='/'>
-        <div className={styles.mainSection}>
-          <div className={styles.sideBar}>
-            <Sidebar loggedUserRole={loggedUserRole} />
-          </div>
-          <div
-            className={`${styles.section} ${
-              activeMenu
-                ? styles.navbar_section
-                : sidebarActive
-                ? styles.navbar_section_1
-                : ''
-            }`}
-          >
-            <div className={styles.navbar}>
-              <Navbar />
-              {/* <LeaveCalculation /> */}
+        <ToastProvider>
+          <Toaster />
+          <div className={styles.mainSection}>
+            <div className={styles.sideBar}>
+              <Sidebar loggedUserRole={loggedUserRole} />
             </div>
-            <div className={styles.headingPart}>
-              <div className={styles.headingTitle}>
-                <h2
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    position: 'relative',
-                  }}
-                >
-                  <p
+            <div
+              className={`${styles.section} ${
+                activeMenu
+                  ? styles.navbar_section
+                  : sidebarActive
+                  ? styles.navbar_section_1
+                  : ''
+              }`}
+            >
+              <div className={styles.navbar}>
+                <Navbar />
+                {/* <LeaveCalculation /> */}
+              </div>
+              <div className={styles.headingPart}>
+                <div className={styles.headingTitle}>
+                  <h2
                     style={{
-                      position: 'absolute',
-                      left: '0',
-                      bottom: '0',
-                      width: '100%',
-                      height: '7%',
-                      backgroundColor: '#fdcfa1',
-                      borderBottomLeftRadius: '5px',
-                      borderBottomRightRadius: '5px',
-                      zIndex: 1,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      position: 'relative',
                     }}
+                  >
+                    <p
+                      style={{
+                        position: 'absolute',
+                        left: '0',
+                        bottom: '0',
+                        width: '100%',
+                        height: '7%',
+                        backgroundColor: '#fdcfa1',
+                        borderBottomLeftRadius: '5px',
+                        borderBottomRightRadius: '5px',
+                        zIndex: 1,
+                      }}
+                    />
+                    <p className={styles.title}>Leave Management System</p>
+                  </h2>
+                </div>
+              </div>
+              <div className={styles.components}>
+                <Routes>
+                  <Route
+                    path='/'
+                    element={<Profile loggedUserName={loggedUserName} />}
                   />
-                  <p className={styles.title}>Leave Management System</p>
-                </h2>
+                  <Route
+                    path='/Profile'
+                    element={<Profile loggedUserName={loggedUserName} />}
+                  />
+                  {loggedUserRole === 'Admin' && (
+                    <>
+                      <Route path='/pending for Approval' element={<LeaveApproval />} />
+                      <Route
+                        path='/Employee  Approved List'
+                        element={<ApprovedList />}
+                      />
+                      <Route path='/Settings' element={<Lop />} />
+                    </>
+                  )}
+                  <Route path='/Apply Leave' element={<ApplyLeave />} />
+                  <Route path='/Leave Details' element={<LeaveDetails />} />
+                  <Route path='/Public Holidays' element={<PublicHolidays />} />
+                </Routes>
               </div>
             </div>
-            <div className={styles.components}>
-              <Routes>
-                <Route
-                  path='/'
-                  element={<Profile loggedUserName={loggedUserName} />}
-                />
-                <Route
-                  path='/Profile'
-                  element={<Profile loggedUserName={loggedUserName} />}
-                />
-                {loggedUserRole === 'Admin' && (
-                  <>
-                    <Route path='/Leave Approval' element={<LeaveApproval />} />
-                    <Route path='/Approved List' element={<ApprovedList />} />
-                    <Route path='/Lop Calculation' element={<Lop />} />
-                  </>
-                )}
-                <Route path='/Apply Leave' element={<ApplyLeave />} />
-                <Route path='/Leave Details' element={<LeaveDetails />} />
-                <Route path='/Public Holidays' element={<PublicHolidays />} />
-              </Routes>
-            </div>
           </div>
-        </div>
+        </ToastProvider>
       </HashRouter>
     </MyContextProvider>
   );

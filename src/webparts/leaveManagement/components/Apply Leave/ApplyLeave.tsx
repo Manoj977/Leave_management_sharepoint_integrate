@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable react/self-closing-comp */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-void */
@@ -13,6 +14,7 @@ import { IList } from '@pnp/sp/lists';
 import styles from './ApplyLeave.module.scss';
 import { MyContext } from '../../context/contextProvider';
 import LeaveCalculation from '../LeaveCalculation/LeaveCalculation';
+import toast from 'react-hot-toast';
 type employeeData = {
   id: string;
   name: string;
@@ -26,7 +28,7 @@ type leaveType = {
 export const ApplyLeave = () => {
   LeaveCalculation();
   const { availableLeaves } = React.useContext(MyContext);
-
+  const [loading, setLoading] = useState(false);
   const [employeeData, setEmployeeData] = useState<employeeData[]>([]);
   const [apileaveType, setApiLeaveType] = useState<leaveType[]>([]);
   const [leave, setLeave] = useState('');
@@ -52,8 +54,8 @@ export const ApplyLeave = () => {
   const [othersEmail, setOthersEmail] = useState('');
 
   const [employeeData1, setEmployeeData1] = useState<empData[]>([]);
-  console.log(selectUserLeave);
-  console.log(employeeData);
+  // console.log(selectUserLeave);
+  // console.log(employeeData);
 
   const fetchFunc = () => {
     fetch(
@@ -96,7 +98,7 @@ export const ApplyLeave = () => {
   }, []);
   const func = () => {
     fetch(
-      "https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/lists/GetByTitle('Leave%20Type%20Master')/items"
+      "https://zlendoit.sharepoint.com/sites/production/_api/lists/GetByTitle('Leave%20Type%20Master')/items"
     )
       .then((res) => res.text())
       .then((data) => {
@@ -141,7 +143,7 @@ export const ApplyLeave = () => {
   void sp.web.currentUser.get().then((user) => {
     setUserEmail(user.Email);
   });
-  console.log(userEmail);
+  // console.log(userEmail);
 
   if (leaveSelection === 'On behalf of others') {
     emailStatus = true;
@@ -154,7 +156,7 @@ export const ApplyLeave = () => {
       }
     });
 
-    console.log('Email Id: ', emailId);
+    // console.log('Email Id: ', emailId);
   } else {
     employeeData.forEach((e) => {
       if (userEmail === e.email) {
@@ -165,7 +167,7 @@ export const ApplyLeave = () => {
     });
   }
   useEffect(() => {
-    const url = `https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/web/lists/getbytitle('Leave%20Management')/items?$filter=Title%20eq%20%27${ID}%27`;
+    const url = `https://zlendoit.sharepoint.com/sites/production/_api/web/lists/getbytitle('Leave%20Management')/items?$filter=Title%20eq%20%27${ID}%27`;
 
     fetch(url)
       .then((res) => res.text())
@@ -217,16 +219,16 @@ export const ApplyLeave = () => {
       const requestedStart = new Date(fromDate).toDateString();
       const requestedEnd = new Date(toDate).toDateString();
 
-      if (recordStart === requestedStart && recordEnd === requestedEnd) {
-        console.log(recordStart, 'recordStart');
-        console.log(recordEnd, 'recordEnd');
-        console.log(requestedStart, 'requestedStart');
-        console.log(requestedEnd, 'requestedEnd');
-      }
+      // if (recordStart === requestedStart && recordEnd === requestedEnd) {
+      //   console.log(recordStart, 'recordStart');
+      //   console.log(recordEnd, 'recordEnd');
+      //   console.log(requestedStart, 'requestedStart');
+      //   console.log(requestedEnd, 'requestedEnd');
+      // }
       return recordStart === requestedStart && recordEnd === requestedEnd;
     });
-    console.log(overlappingRecords);
-    console.log(overlappingRecords.length);
+    // console.log(overlappingRecords);
+    // console.log(overlappingRecords.length);
 
     if (overlappingRecords.length > 0) {
       const overlappingApprovedOrPendingRecords = overlappingRecords.filter(
@@ -238,21 +240,24 @@ export const ApplyLeave = () => {
           );
         }
       );
+      // console.log(overlappingApprovedOrPendingRecords);
+      // console.log(overlappingApprovedOrPendingRecords.length);
+
       if (overlappingApprovedOrPendingRecords.length > 0) {
         return {
           status: overlappingApprovedOrPendingRecords[0].Status,
           message:
             overlappingApprovedOrPendingRecords[0].Status === 'Approved'
               ? `You have already applied for leave on that date, ${new Date(
-                  overlappingApprovedOrPendingRecords[0].FormDate.toDateString()
-                )} - ${new Date(
-                  overlappingApprovedOrPendingRecords[0].ToDate.toDateString()
-                )} which is approved.`
+                  overlappingApprovedOrPendingRecords[0].FormDate
+                ).toDateString()} - ${new Date(
+                  overlappingApprovedOrPendingRecords[0].ToDate
+                ).toDateString()} which is approved.`
               : `You have already applied for leave on ${new Date(
-                  overlappingApprovedOrPendingRecords[0].FormDate.toDateString()
-                )} - ${new Date(
-                  overlappingApprovedOrPendingRecords[0].ToDate.toDateString()
-                )}. Please wait for approval.`,
+                  overlappingApprovedOrPendingRecords[0].FormDate
+                ).toDateString()} - ${new Date(
+                  overlappingApprovedOrPendingRecords[0].ToDate
+                ).toDateString()}. Please wait for approval.`,
         };
       }
     }
@@ -429,35 +434,61 @@ export const ApplyLeave = () => {
             ? 0
             : leaveCount,
       };
-      console.log('Test Leave', itemData);
+      // console.log('Test Leave', itemData);
 
       // Get a reference to the "Leave Management" list using the website URL
-      const web = Web('https://zlendoit.sharepoint.com/sites/ZlendoTools');
+      const web = Web('https://zlendoit.sharepoint.com/sites/production');
       const list: IList = web.lists.getByTitle('Leave Management');
 
       // Add the new item to the list
       list.items
         .add(itemData)
         .then(() => {
-          alert(
-            `Your Leave ${fromDate} - ${toDate} Has been Applied Successfully... `
+          const successMessage = `Your Leave ${fromDate} - ${toDate} has been applied successfully.`;
+          setLoading(true);
+
+          toast.promise(
+            new Promise((resolve) => setTimeout(resolve, 2000)), // Simulating an asynchronous operation
+            {
+              loading: 'Loading',
+              success: () => {
+                setLoading(false);
+
+                // Additional state updates and actions
+                setLeave('');
+                setLeaveType('');
+                setReason('');
+                setLeaveType('Full Day');
+                setFromDate(new Date().toISOString().substr(0, 10));
+                setToDate('');
+
+                return successMessage;
+              },
+
+              error: '',
+            }
           );
         })
         .catch((error) => {
-          alert(`Error Occur Try Again.... ${error}`);
+          setLoading(true);
+
+          toast.promise(
+            new Promise((resolve) => setTimeout(resolve, 2000)), // Simulating an asynchronous operation
+            {
+              loading: 'Loading',
+              error: () => {
+                return error;
+              },
+              success: '',
+            }
+          );
         });
 
       // navigate('/Leave Details');
       // window.location.reload();
-      setLeave('');
-      setLeaveType('');
-      setReason('');
-      setLeaveType('Full Day');
-      setFromDate(new Date().toISOString().substr(0, 10));
-      setToDate('');
     }
   };
-  console.log(leaveSelection);
+  // console.log(leaveSelection);
 
   return (
     <div className={styles.ApplyLeave}>
@@ -675,6 +706,7 @@ export const ApplyLeave = () => {
           <div className='px-2' style={{ padding: '0rem 0.5rem' }}>
             <button
               onClick={(e) => handleSubmit(e)}
+              disabled={loading}
               className={`${styles.buttonSubmit} ${
                 leave.length === 0 ||
                 reason.length === 0 ||
@@ -685,7 +717,7 @@ export const ApplyLeave = () => {
               }`}
               type='submit'
             >
-              Submit
+              {loading ? 'Applying...' : 'Submit'}
             </button>
           </div>
         </div>

@@ -8,7 +8,7 @@ const Table = ({
   data: any[];
   leaveTotal: any;
   currentData: any;
-}) => {
+}): JSX.Element => {  // Add return type annotation for the component function
   const employeesWithMoreLeaves: string[] = [];
   data.forEach((item: any) => {
     const id = item.ID;
@@ -42,8 +42,8 @@ const Table = ({
             <tr key={id}>
               <td>{id}</td>
               <td>{employee?.Name}</td>
-              <td>{status}</td>
               <td>{totalLeaveDays}</td>
+              <td>{status}</td>
             </tr>
           );
         })}

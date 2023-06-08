@@ -37,7 +37,7 @@
 .totalLeaveHeaderDiv {
   color: #1f2937;
   font-weight: 600;
-  text-transform: capitalize;
+  text-transform: none;
   position: relative;
   top: 0.5vw;
 }
@@ -54,7 +54,6 @@
 
 .totalLeaveTableContainer {
   max-width: 100%;
-  overflow: hidden;
   padding: 0.75rem;
 }
 
@@ -119,6 +118,7 @@
   position: relative;
   display: flex;
   top: 1vw;
+  padding-bottom: 0.5%;
 }
 
 .approveButton {
@@ -220,7 +220,6 @@
     margin-top: 11rem;
     margin-left: 18rem;
     width: 50%;
-    height: 40%;
   }
 }
 
@@ -228,7 +227,7 @@
   .approvalLeaveDiv1 {
     width: 50%;
     margin-left: 22rem;
-    height: 40%;
+
     margin-top: 11rem;
   }
 }

@@ -5,9 +5,11 @@
 /* eslint-disable */
 
 interface CssExports {
+  'Heads': string;
   'LeaveDetailsNoRecord': string;
   'LeaveDetailsNoRecordP': string;
   'LoaderDivision': string;
+  'closeButton': string;
   'defaultLop': string;
   'export': string;
   'exportButton': string;
@@ -60,8 +62,10 @@ interface CssExports {
   'loader': string;
   'searchLabel': string;
   'spin': string;
+  'tableRow': string;
   'toDate': string;
   'topSection': string;
+  'totalLeaveCloseButton': string;
 }
 const cssExports: CssExports;
 export default cssExports;

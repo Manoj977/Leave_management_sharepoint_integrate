@@ -1,10 +1,16 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-floating-promises */
 import React, { useEffect, useState } from 'react';
 import { MyContext } from '../../context/contextProvider';
 import styles from './Lop.module.scss';
 import { Web } from '@pnp/sp/webs';
 import { IList } from '@pnp/sp/lists';
+import { toast } from 'react-hot-toast';
 
 export const Lop: React.FC = () => {
+  const [loading, setLoading] = useState(false);
   const [LopError, setLopError] = useState<string>('');
   const { LopCount, setDefaultLop, defaultLop } = React.useContext(MyContext);
   const [defaultLopLabel, setDefaultLopLabel] = useState<string>('');
@@ -30,11 +36,24 @@ export const Lop: React.FC = () => {
         label = 'Yearly';
       }
 
-      setDefaultLop(count);
-      setDefaultLopLabel(label);
-      console.log('count: ', count);
-      // Display success alert
-      alert('Updated successfully!');
+      const updateMessage = `The calculation has been successfully updated ${label}.`;
+      setLoading(true);
+      toast.promise(
+        new Promise((resolve) => setTimeout(resolve, 1000)), // Simulating an asynchronous operation
+        {
+          loading: 'Updating',
+          success: () => {
+            setLoading(false);
+            setDefaultLop(count);
+            setDefaultLopLabel(label);
+            // Additional state updates and actions
+
+            return updateMessage;
+          },
+
+          error: '',
+        }
+      );
     } catch (error) {
       console.log(`Error updating leaveDetail status: ${error}`);
       // Display error alert
@@ -42,7 +61,7 @@ export const Lop: React.FC = () => {
     }
   };
 
-  console.log(parseInt(defaultLop));
+  // console.log(parseInt(defaultLop));
 
   const handleSubmit = async (selectedLop: any, e: any) => {
     console.log(e.target.value);
@@ -122,7 +141,7 @@ export const Lop: React.FC = () => {
                   LopCount.map((value: any, index: number) => {
                     return value.map(
                       (LopData: any, index: number) =>
-                        LopData.count === selectedLopValue &&
+                        LopData.count === selectedLopValue  &&
                         handleSubmit(LopData, e)
                     );
                   });

@@ -78,6 +78,19 @@ const Sidebar = ({ loggedUserRole }: any) => {
                       })
                       .map((link) => (
                         <div className={styles.sidebarDetail} key={link.name}>
+                          <div>
+                            {link.name === 'Settings' && (
+                              <hr
+                                style={{
+                                  display: 'block',
+                                  margin: '0.5em',
+                                  marginRight: "1rem",
+                                  borderStyle: 'inset',
+                                  borderWidth: '1px',
+                                }}
+                              />
+                            )}
+                          </div>
                           <NavLink
                             to={`/${encodeURIComponent(link.name)}`}
                             onClick={() => {
@@ -86,19 +99,18 @@ const Sidebar = ({ loggedUserRole }: any) => {
                             style={({ isActive }) => ({
                               backgroundColor:
                                 isActive ||
-                                location === `/${encodeURIComponent(link.name)}`
+                                  location === `/${encodeURIComponent(link.name)}`
                                   ? currentColor
                                   : '',
                             })}
                             className={({ isActive }) =>
                               isActive ||
-                              location === `/${encodeURIComponent(link.name)}`
+                                location === `/${encodeURIComponent(link.name)}`
                                 ? activeLink
                                 : normalLink
                             }
                           >
                             {link.icon}
-
                             <span className={styles.linkName}>{link.name}</span>
                           </NavLink>
                         </div>
@@ -168,20 +180,20 @@ const Sidebar = ({ loggedUserRole }: any) => {
                             style={({ isActive }) => ({
                               backgroundColor:
                                 isActive ||
-                                location === `/${encodeURIComponent(link.name)}`
+                                  location === `/${encodeURIComponent(link.name)}`
                                   ? currentColor
                                   : '',
                             })}
                             className={({ isActive }) =>
                               isActive ||
-                              location === `/${encodeURIComponent(link.name)}`
+                                location === `/${encodeURIComponent(link.name)}`
                                 ? activeLink
                                 : normalLink
                             }
                           >
                             {link.icon}
 
-                            <span className='capitalize'>{link.name}</span>
+                            <p style={{ textTransform: "capitalize", whiteSpace: "pre" }}>{link.name}</p>
                           </NavLink>
                         </div>
                       ))}

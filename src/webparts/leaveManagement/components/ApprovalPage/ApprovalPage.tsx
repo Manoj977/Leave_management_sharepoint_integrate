@@ -10,6 +10,8 @@ import { MyContext } from '../../context/contextProvider';
 import { RxBorderDotted } from 'react-icons/rx';
 import { MdOutlineCancel } from 'react-icons/md';
 import { RiLoader4Line } from 'react-icons/ri';
+import { toast } from 'react-hot-toast';
+
 type LeaveDetail = {
   ID: string;
   Name: string;
@@ -52,9 +54,10 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
 
   const [leaveDetails, setLeaveDetails] = useState<LeaveDetail[]>([]);
   // const [contactNum, setContactNum] = useState(null);
+  const [loading, setLoading] = useState(false);
+
   const [employeeDetail, setEmployeeDetail] = useState<EmployeeDetail[]>([]);
   const [reason, setReason] = useState('');
-  const [reasonError, setReasonError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [reasonpopup, setReasonPopup] = useState(false);
   const location = useLocation();
@@ -80,7 +83,7 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
   const func = () => {
     setIsLoading(true);
 
-    const url = `https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/web/lists/getbytitle('Leave%20Management')/items?&$filter=ID%20eq%20%27${employeeId}%27`;
+    const url = `https://zlendoit.sharepoint.com/sites/production/_api/web/lists/getbytitle('Leave%20Management')/items?&$filter=ID%20eq%20%27${employeeId}%27`;
 
     fetch(url)
       .then((res) => res.text())
@@ -136,7 +139,7 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
   useEffect(() => {
     setIsLoading(true);
     fetch(
-      "https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/web/lists/getbytitle('Employee%20Master')/items"
+      "https://zlendoit.sharepoint.com/sites/production/_api/web/lists/getbytitle('Employee%20Master')/items"
     )
       .then((res) => res.text())
       .then((data) => {
@@ -169,15 +172,15 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
     remark: string
   ) => {
     try {
-      const web = Web('https://zlendoit.sharepoint.com/sites/ZlendoTools');
+      const web = Web('https://zlendoit.sharepoint.com/sites/production');
       const list: IList = web.lists.getByTitle('Leave Management');
 
       const itemToUpdate = list.items.getById(id);
       await itemToUpdate.update({ Status: status });
       await itemToUpdate.update({ Remark: remark });
-      alert('Leave status updated successfully!');
+      func();
     } catch (error) {
-      alert(`Error updating leaveDetail status: ${error}`);
+      console.clear();
     }
   };
   const handleApproval = (leaveId: any) => {
@@ -193,30 +196,35 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
     status: string,
     remark: string
   ) => {
-    if (!reason) {
-      setReasonError('Please enter the reason');
-      setTimeout(() => {
-        setReasonError('');
-      }, 3500);
-    } else {
-      setReasonError('');
-    }
+    await updateLeaveStatus(id, status, remark);
+    // Update the leaveDetails state to reflect the new status
+    const updatedLeaveDetails = leaveDetails.map((leaveDetail) =>
+      leaveDetail.leaveId === id
+        ? { ...leaveDetail, Status: status, Remark: remark }
+        : leaveDetail
+    );
+    const updateMessage = `Leave status updated successfully!.`;
+    setLoading(true);
+    toast.promise(
+      new Promise((resolve) => setTimeout(resolve, 1000)), // Simulating an asynchronous operation
+      {
+        loading: 'Updating',
+        success: () => {
+          setLoading(false);
+          setLeaveDetails(updatedLeaveDetails);
+          setApprove(status);
+          setRemark(remark);
+          setAction(false);
+          setApproveLeave(false);
+          setReasonPopup(!reasonpopup);
+          // Additional state updates and actions
 
-    if (reason) {
-      await updateLeaveStatus(id, status, remark);
-      // Update the leaveDetails state to reflect the new status
-      const updatedLeaveDetails = leaveDetails.map((leaveDetail) =>
-        leaveDetail.leaveId === id
-          ? { ...leaveDetail, Status: status, Remark: remark }
-          : leaveDetail
-      );
-      setLeaveDetails(updatedLeaveDetails);
-      setApprove(status);
-      setRemark(remark);
-      setAction(false);
-      setApproveLeave(false);
-      setReasonPopup(!reasonpopup);
-    }
+          return updateMessage;
+        },
+
+        error: '',
+      }
+    );
   };
 
   return (
@@ -226,7 +234,16 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
           <div className={styles.totalLeaveDiv1}>
             <div className={styles.totalLeaveDiv2}>
               <header className={styles.totalLeaveHeader}>
-                <div className={styles.totalLeaveHeaderDiv}>Action</div>
+                {!isLoading && (
+                  <div className={styles.totalLeaveHeaderDiv}>
+                    <p>
+                      <span>Leave Details of </span>
+                      <span>
+                        {leaveDetails.length > 0 && leaveDetails[0].ID}
+                      </span>
+                    </p>
+                  </div>
+                )}
               </header>
 
               <button
@@ -291,7 +308,10 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
 
                         <tr>
                           <th className={styles.approvalTableHeading}>Email</th>
-                          <td className={styles.approvalTableDescription}>
+                          <td
+                            style={{ textTransform: 'lowercase' }}
+                            className={styles.approvalTableDescription}
+                          >
                             {leaveDetail.Email}
                           </td>
                         </tr>
@@ -438,7 +458,6 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
                   <div className={styles.totalLeaveDiv2}>
                     <header className={styles.totalLeaveHeader}>
                       <div className={styles.totalLeaveHeaderDiv}>
-                        Enter the comments to{' '}
                         {status === 'Approved' ? status.slice(0, -1) : ''}
                         {status === 'Rejected' ? status.slice(0, -2) : ''}
                       </div>
@@ -464,17 +483,13 @@ export const ApprovalPage: React.FC<ApprovalPageProps> = ({
                           rows={3}
                           cols={50}
                           style={{ resize: 'none' }}
-                          placeholder='Enter the Reason...'
+                          placeholder='Reason...'
                           onChange={(event) => setReason(event.target.value)}
-                          className={`${styles.ApprovalLeaveTextarea} ${
-                            reasonError !== '' ? `${styles.errorBorder}` : ''
-                          }`}
+                          className={`${styles.ApprovalLeaveTextarea} `}
                           value={reason}
                         />
                       </div>
-                      {reasonError && (
-                        <p className={styles.error}> {reasonError}</p>
-                      )}
+
                       <div>
                         <div className={styles.button}>
                           <button

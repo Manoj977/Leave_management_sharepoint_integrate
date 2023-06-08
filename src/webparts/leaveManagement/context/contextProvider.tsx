@@ -19,7 +19,7 @@ import { MdOutlineDashboard } from 'react-icons/md';
 import { TfiCheckBox } from 'react-icons/tfi';
 import { RiFileTextLine } from 'react-icons/ri';
 import { BsPersonLinesFill } from 'react-icons/bs';
-import { MdAdminPanelSettings } from 'react-icons/md';
+import { MdSettings } from 'react-icons/md';
 import convert from 'xml-js';
 type MyContextType = {
   isSkeletonLoading: boolean;
@@ -250,18 +250,18 @@ export const MyContext = createContext<MyContextType>({
       title: 'Admin',
       links: [
         {
-          name: 'Leave Approval',
+          name: 'pending for Approval',
           icon: <TfiCheckBox />,
           role: 'Admin',
         },
         {
-          name: 'Approved List',
+          name: 'Employee Approved List',
           icon: <BsPersonLinesFill />,
           role: 'Admin',
         },
         {
-          name: 'Lop Calculation',
-          icon: <MdAdminPanelSettings />,
+          name: 'Settings',
+          icon: <MdSettings />,
           role: 'Admin',
         },
       ],
@@ -452,18 +452,18 @@ export const MyContextProvider = ({ children }: Props) => {
       title: 'Admin',
       links: [
         {
-          name: 'Leave Approval',
+          name: 'pending for Approval',
           icon: <TfiCheckBox />,
           role: 'Admin',
         },
         {
-          name: 'Approved List',
+          name: 'Employee  Approved List',
           icon: <BsPersonLinesFill />,
           role: 'Admin',
         },
         {
-          name: 'LOP Calculation',
-          icon: <MdAdminPanelSettings />,
+          name: 'Settings',
+          icon: <MdSettings />,
           role: 'Admin',
         },
       ],
@@ -563,14 +563,14 @@ export const MyContextProvider = ({ children }: Props) => {
   }, []);
   useEffect(() => {
     setLopData(lopData);
-    setLopEmail(lopEmail);
+
     setEachData(eachData);
   }, []);
   useEffect(() => {
     setLopData(lopData);
-    setLopEmail(lopEmail);
+
     setEachData(eachData);
-  }, [setLopData, lopData, setLopEmail, lopEmail, eachData, setEachData]);
+  }, [setLopData, lopData, eachData, setEachData]);
 
   useEffect(() => {
     const handleResize = () => {

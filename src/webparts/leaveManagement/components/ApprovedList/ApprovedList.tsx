@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 /* eslint-disable no-unmodified-loop-condition */
 /* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -15,8 +16,8 @@ import { MyContext } from '../../context/contextProvider';
 
 import CurrentMonth from '../Currentmonth/CurrentMonth';
 import Table from '../Table/Table';
-import CurrentMonthLop from '../../../functions/CurrentMonthLop';
 import LeaveCalculationFunc from '../../../functions/LeaveCalculationFunc';
+import EachEmployeeData from '../EachEmployeeData/EachEmployeeData';
 type LeaveDetail = {
   leaveID: number;
   ID: string;
@@ -56,7 +57,7 @@ const TableHeading: TableHeading[] = [
   // { name: 'Date', value: 'Date' },
   { name: 'Total Leave Taken', value: 'Total Leave Taken' },
   { name: 'Loss of Pay', value: 'Loss of Pay' },
-  { name: 'Status', value: 'Status' },
+  // { name: 'Status', value: 'Status' },
   // { name: 'Remark', value: 'Remark' },
   // { name: 'Action', value: 'Action' },
 ];
@@ -73,18 +74,11 @@ export const ApprovedList: React.FC = () => {
   } = React.useContext(MyContext);
   // Assuming lopCalc is an array containing the objects you mentioned
 
-  useEffect(() => {
-    setLopData(lopData);
-    setLopEmail(lopEmail);
-  }, []);
-  useEffect(() => {
-    setLopData(lopData);
-    setLopEmail(lopEmail);
-  }, [setLopData, lopData, setLopEmail, lopEmail]);
   lopCalc = lopCalc.filter((item: any) => item.Email !== '');
-
+  let EachEmployeeLeave: any[] = [];
   const [LeaveDetails, setLeaveDetails] = useState<EachLeaveDetail[]>([]);
   const [EachLeave, setEachLeave] = useState<LeaveDetail[]>([]);
+  const [action, setAction] = useState(false);
   const [EachLeaveDetails, setEachLeaveDetails] = useState<LeaveDetail[]>([]);
   const tableRef = useRef(null);
   const [sortBy, setSortBy] = useState<string>('');
@@ -246,7 +240,12 @@ export const ApprovedList: React.FC = () => {
   }, []);
 
   const awaitDetails = LeaveDetails.map((e: any) => {
-    if (e.Status !== 'Pending' && e.Status !== 'Cancelled') return e;
+    if (
+      e.Status !== 'Pending' &&
+      e.Status !== 'Cancelled' &&
+      e.Status !== 'Rejected'
+    )
+      return e;
   });
 
   const state = awaitDetails.filter((details) => {
@@ -419,6 +418,7 @@ export const ApprovedList: React.FC = () => {
   currentMonthLeave = Array.from(
     new Set(currentMonthLeave.map((item) => JSON.stringify(item)))
   ).map((item) => JSON.parse(item));
+
   notInMonth = Array.from(
     new Set(notInMonth.map((item) => JSON.stringify(item)))
   ).map((item) => JSON.parse(item));
@@ -437,7 +437,7 @@ export const ApprovedList: React.FC = () => {
     new Set(curtLop.map((item) => JSON.stringify(item)))
   ).map((item) => JSON.parse(item));
 
-  CurrentMonthLop(uniqueData, EachLeaveDetails);
+
   let totalLeaves = 12;
 
   // if (parseInt(defaultLop) === 3) {
@@ -520,7 +520,7 @@ export const ApprovedList: React.FC = () => {
   //   console.log('Loss of Pay Dates:', lopDates);
   // }
   let emails: any[] = [];
-  CurrentData.map((e) => {
+  filteredEmployees.map((e) => {
     if (e.Status === 'Approved') {
       emails.push(e.Email);
     }
@@ -570,6 +570,13 @@ export const ApprovedList: React.FC = () => {
       }
     });
   });
+  const [datas, setDatas] = useState([]);
+  const EachEmployeeDetails = (e: any) => {
+    setAction(!action);
+
+    setDatas(e);
+  };
+
   return (
     <div>
       <div className={styles.leaveapproval}>
@@ -631,13 +638,8 @@ export const ApprovedList: React.FC = () => {
                                 TableHeading.map((option) => {
                                   const shouldDisplayIcon =
                                     option.value !== 'S.No' &&
-                                    option.value !== 'Date' &&
-                                    option.value !== 'Leave Type' &&
-                                    option.value !== 'Reason' &&
-                                    option.value !== 'Status' &&
-                                    // option.value !== 'Loss of Pay' &&
-                                    // option.value !== 'No of Days Leave' &&
-                                    option.value !== 'Action';
+                                    option.value !== 'Total Leave Taken' &&
+                                    option.value !== 'Loss of Pay';
 
                                   return (
                                     <th
@@ -651,6 +653,16 @@ export const ApprovedList: React.FC = () => {
                                       <p
                                         className={
                                           styles.leaveDetailsTableHeadSection
+                                        }
+                                        style={
+                                          option.name === 'Name'
+                                            ? {
+                                                textAlign: 'left',
+                                                justifyContent: 'start',
+                                                paddingLeft: '12px',
+                                                width: '10%',
+                                              }
+                                            : null
                                         }
                                       >
                                         {option.name}
@@ -694,7 +706,29 @@ export const ApprovedList: React.FC = () => {
                               CurrentData.map(
                                 (leave, index) =>
                                   leave.Status === 'Approved' && (
-                                    <tr key={index}>
+                                    <tr
+                                      className={styles.tableRow}
+                                      key={index}
+                                      onClick={() => {
+                                        let employeeData: any[] = []; // Array to store the employee data
+
+                                        EachLeave.map(
+                                          (filteredEmployees, index) => {
+                                            if (
+                                              filteredEmployees.Email ===
+                                                leave.Email &&
+                                              filteredEmployees.Status ===
+                                                'Approved'
+                                            ) {
+                                              employeeData.push(
+                                                filteredEmployees
+                                              ); // Push the employee data into the array
+                                            }
+                                          }
+                                        );
+                                        EachEmployeeDetails(employeeData);
+                                      }}
+                                    >
                                       {window.innerWidth > 590 && (
                                         <td
                                           className={
@@ -793,7 +827,7 @@ export const ApprovedList: React.FC = () => {
                                       >
                                         {leave.lop}
                                       </td>
-                                      <td
+                                      {/* <td
                                         className={
                                           styles.leaveDetailsDescription
                                         }
@@ -815,7 +849,7 @@ export const ApprovedList: React.FC = () => {
                                             {leave.Status}
                                           </span>
                                         </span>
-                                      </td>
+                                      </td> */}
 
                                       {/* <td
                                         className={
@@ -892,7 +926,16 @@ export const ApprovedList: React.FC = () => {
           </div>
         )}
       </div>
-      {console.log(eachData)}
+      {action && (
+        <EachEmployeeData
+          data={{
+            // table: uniqueData,
+            EachEmployeeDetails: datas,
+            action: action,
+            setAction: setAction,
+          }}
+        />
+      )}
     </div>
   );
 };

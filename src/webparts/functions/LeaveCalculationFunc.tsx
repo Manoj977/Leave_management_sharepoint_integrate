@@ -50,8 +50,6 @@ const LeaveCalculationFunc = () => {
   const test = Array.from(
     new Set(lopEmail.map((item) => JSON.stringify(item)))
   ).map((item) => JSON.parse(item));
-  // const test = ['aiswarya.s@zlendo.com'];
-  // console.log(test);
 
   useEffect(() => {
     if (i !== 0) {
@@ -189,7 +187,13 @@ const LeaveCalculationFunc = () => {
         setTakenLeaves(totalTakenLeaves);
         setAvailableLeaves(0);
       }
-      setLossofPay(lossOfPay);
+      console.log('lossOfPay: ', lossOfPay);
+
+      if (lossOfPay !== 0) {
+        setLossofPay(lossOfPay);
+      } else {
+        setLossofPay(0);
+      }
       console.log(Emails, lossOfPay);
 
       lopCalc.push({
@@ -511,6 +515,7 @@ const LeaveCalculationFunc = () => {
       setTakenLeaves(TotalLeaveTaken);
       setAvailableLeaves(totalLeaves - (TotalLeaveTaken - TotalLopofYear));
       setLossofPay(TotalLopofYear);
+
       setLopDates(lopDates); // Update the LOP dates array
       let datas = [];
 
@@ -530,7 +535,7 @@ const LeaveCalculationFunc = () => {
       const ApprovedLeaveDetails = LeaveDetails.filter((leaveDetail) => {
         return leaveDetail.Status === 'Approved';
       });
-      console.log(LeaveDetails);
+
       let lossofPay = 0;
       let remainingLeaves = totalLeaves;
       let count = 0;
@@ -543,9 +548,8 @@ const LeaveCalculationFunc = () => {
         remainingLeaves -= parseFloat(leaveDetail.NoofDaysLeave);
 
         if (remainingLeaves < 0) {
-          console.log(remainingLeaves);
           const excessDays = Math.abs(remainingLeaves);
-          console.log(excessDays);
+
           lossofPay = excessDays;
           // for (let i = 0; i < excessDays; i++) {
           //   const lopDate = new Date(leaveDetail.FromDate);

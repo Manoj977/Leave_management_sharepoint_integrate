@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable no-self-compare */
 /* eslint-disable no-void */
 /* eslint-disable no-unused-expressions */
@@ -15,6 +16,7 @@ import { MdOutlineCancel } from 'react-icons/md';
 import { RiLoader4Line } from 'react-icons/ri';
 import { RxBorderDotted } from 'react-icons/rx';
 import { MdKeyboardDoubleArrowUp } from 'react-icons/md';
+import { toast } from 'react-hot-toast';
 // import { RiLoader4Line } from 'react-icons/ri';
 type LeaveDetail = {
   ID: string;
@@ -45,6 +47,8 @@ const sortOptions: SortOption[] = [
 ];
 export const LeaveDetails = () => {
   const { cancelReason, setCancelReason } = React.useContext(MyContext);
+  const [loading, setLoading] = useState(false);
+
   const [leaveDetails, setLeaveDetails] = useState<LeaveDetail[]>([]);
   const [userEmail, setUserEmail] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -76,10 +80,10 @@ export const LeaveDetails = () => {
       setUserEmail(user.Email.toLocaleLowerCase());
     });
   }, []);
-  useEffect(() => {
+  const func = () => {
     setIsLoading(true);
     fetch(
-      "https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/web/lists/getbytitle('Leave%20Management')/items"
+      "https://zlendoit.sharepoint.com/sites/production/_api/web/lists/getbytitle('Leave%20Management')/items"
     )
       .then((res) => res.text())
       .then((data) => {
@@ -151,6 +155,9 @@ export const LeaveDetails = () => {
           console.log(err);
         }
       });
+  };
+  useEffect(() => {
+    func();
   }, []);
 
   const filteredLeaveDetails = leaveDetails.filter((detail) => {
@@ -171,15 +178,15 @@ export const LeaveDetails = () => {
     status: string
   ) => {
     try {
-      const web = Web('https://zlendoit.sharepoint.com/sites/ZlendoTools');
+      const web = Web('https://zlendoit.sharepoint.com/sites/production');
       const list: IList = web.lists.getByTitle('Leave Management');
 
       const itemToUpdate = list.items.getById(id);
       await itemToUpdate.update({ Status: status, Remark: Remark });
-      alert('Leave status updated successfully!');
-      window.location.reload();
+
+      func();
     } catch (error) {
-      alert(`Error updating leave status: ${error}`);
+      console.clear();
     }
   };
   const handleCancel = async (id: number, Remark: string, status: string) => {
@@ -188,9 +195,25 @@ export const LeaveDetails = () => {
     const updatedLeaveDetails = leaveDetails.map((leave: any) =>
       leave.leaveID === id ? { ...leave, Status: status } : leave
     );
-    setLeaveDetails(updatedLeaveDetails);
-    setLeaveStatus(status);
-    setCancelReason(false);
+    const updateMessage = `Leave status updated successfully!.`;
+    setLoading(true);
+    toast.promise(
+      new Promise((resolve) => setTimeout(resolve, 1000)), // Simulating an asynchronous operation
+      {
+        loading: 'Updating',
+        success: () => {
+          setLoading(false);
+          setLeaveDetails(updatedLeaveDetails);
+          setLeaveStatus(status);
+          setCancelReason(false);
+          // Additional state updates and actions
+
+          return updateMessage;
+        },
+
+        error: '',
+      }
+    );
   };
 
   return (
@@ -443,7 +466,7 @@ export const LeaveDetails = () => {
                                     }}
                                     className={styles.leaveCancelButton}
                                   >
-                                    Cancel
+                                    {loading ? 'Updating' : ' Cancel'}
                                   </button>
                                 ) : (
                                   <p
