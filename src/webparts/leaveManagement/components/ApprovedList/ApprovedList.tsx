@@ -611,7 +611,7 @@ export const ApprovedList: React.FC = () => {
                 <option value="Rejected">Rejected</option>
               </select> */}
                 </div>
-                <div className={styles.export}>
+                <div style={{ zIndex: 10 }} className={styles.export}>
                   <CurrentMonth
                     data={{
                       // table: uniqueData,
@@ -657,11 +657,11 @@ export const ApprovedList: React.FC = () => {
                                         style={
                                           option.name === 'Name'
                                             ? {
-                                                textAlign: 'left',
-                                                justifyContent: 'start',
-                                                paddingLeft: '12px',
-                                                width: '10%',
-                                              }
+                                              textAlign: 'left',
+                                              justifyContent: 'start',
+                                              paddingLeft: '12px',
+                                              width: '10%',
+                                            }
                                             : null
                                         }
                                       >
@@ -716,9 +716,9 @@ export const ApprovedList: React.FC = () => {
                                           (filteredEmployees, index) => {
                                             if (
                                               filteredEmployees.Email ===
-                                                leave.Email &&
+                                              leave.Email &&
                                               filteredEmployees.Status ===
-                                                'Approved'
+                                              'Approved'
                                             ) {
                                               employeeData.push(
                                                 filteredEmployees

@@ -21,7 +21,7 @@ type employeeData = {
   email: string;
   leaveID: number;
 };
-type empData = { FormDate: Date; ToDate: Date; Status: string | any };
+type empData = { FormDate: Date; ToDate: Date; Status: string | any; };
 type leaveType = {
   leaveType: string;
 };
@@ -88,6 +88,7 @@ export const ApplyLeave = () => {
             }
           })
           .filter(Boolean);
+        console.log(empData);
 
         setEmployeeData(empData);
       })
@@ -98,7 +99,7 @@ export const ApplyLeave = () => {
   }, []);
   const func = () => {
     fetch(
-      "https://zlendoit.sharepoint.com/sites/production/_api/lists/GetByTitle('Leave%20Type%20Master')/items"
+      "https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/lists/GetByTitle('Leave%20Type%20Master')/items"
     )
       .then((res) => res.text())
       .then((data) => {
@@ -141,15 +142,17 @@ export const ApplyLeave = () => {
   let state = false;
 
   void sp.web.currentUser.get().then((user) => {
-    setUserEmail(user.Email);
+    setUserEmail(user.Email = "janani.s@zlendo.com");
   });
-  // console.log(userEmail);
+  console.log(userEmail);
 
   if (leaveSelection === 'On behalf of others') {
     emailStatus = true;
     userName = selectUserLeave;
     employeeData.forEach((e) => {
       if (userName === e.id) {
+        console.log(userName, e.id, e.name, e.email);
+
         ID = e.id;
         userName = e.name;
         emailId = e.email;
@@ -167,7 +170,7 @@ export const ApplyLeave = () => {
     });
   }
   useEffect(() => {
-    const url = `https://zlendoit.sharepoint.com/sites/production/_api/web/lists/getbytitle('Leave%20Management')/items?$filter=Title%20eq%20%27${ID}%27`;
+    const url = `https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/web/lists/getbytitle('Leave%20Management')/items?$filter=Title%20eq%20%27${ID}%27`;
 
     fetch(url)
       .then((res) => res.text())
@@ -248,16 +251,18 @@ export const ApplyLeave = () => {
           status: overlappingApprovedOrPendingRecords[0].Status,
           message:
             overlappingApprovedOrPendingRecords[0].Status === 'Approved'
-              ? `You have already applied for leave on that date, ${new Date(
-                  overlappingApprovedOrPendingRecords[0].FormDate
-                ).toDateString()} - ${new Date(
-                  overlappingApprovedOrPendingRecords[0].ToDate
-                ).toDateString()} which is approved.`
-              : `You have already applied for leave on ${new Date(
-                  overlappingApprovedOrPendingRecords[0].FormDate
-                ).toDateString()} - ${new Date(
-                  overlappingApprovedOrPendingRecords[0].ToDate
-                ).toDateString()}. Please wait for approval.`,
+              && leaveSelection !== 'On behalf of others' ? `You have already applied for leave on that date, ${new Date(
+                overlappingApprovedOrPendingRecords[0].FormDate
+              ).toDateString()} - ${new Date(
+                overlappingApprovedOrPendingRecords[0].ToDate
+              ).toDateString()} which is approved.`
+
+
+              : leaveSelection !== 'On behalf of others' && `You have already applied for leave on ${new Date(
+                overlappingApprovedOrPendingRecords[0].FormDate
+              ).toDateString()} - ${new Date(
+                overlappingApprovedOrPendingRecords[0].ToDate
+              ).toDateString()}. Please wait for approval.`,
         };
       }
     }
@@ -429,15 +434,15 @@ export const ApplyLeave = () => {
           leaveCount < 3
             ? 0
             : leaveCount > 3
-            ? leaveCount - 3
-            : leaveCount === 3
-            ? 0
-            : leaveCount,
+              ? leaveCount - 3
+              : leaveCount === 3
+                ? 0
+                : leaveCount,
       };
       // console.log('Test Leave', itemData);
 
       // Get a reference to the "Leave Management" list using the website URL
-      const web = Web('https://zlendoit.sharepoint.com/sites/production');
+      const web = Web('https://zlendoit.sharepoint.com/sites/ZlendoTools');
       const list: IList = web.lists.getByTitle('Leave Management');
 
       // Add the new item to the list
@@ -565,9 +570,8 @@ export const ApplyLeave = () => {
               onChange={(event) => {
                 setLeave(event.target.value);
               }}
-              className={`${styles.ApplyLeave_form_input} ${
-                leaveError !== '' ? `${styles.errorBorder}` : ''
-              }`}
+              className={`${styles.ApplyLeave_form_input} ${leaveError !== '' ? `${styles.errorBorder}` : ''
+                }`}
             >
               <option defaultValue='selected'>Select Leave </option>
               {apileaveType.map((e) => {
@@ -583,7 +587,7 @@ export const ApplyLeave = () => {
             </select>
           </div>
           <div>
-            {leaveSelection === 'On behalf of others' &&
+            {leaveSelection !== 'On behalf of others' &&
               leave &&
               leave !== 'Select Leave' && (
                 <div className={styles.ApplyLeave_form_leaveInput}>
@@ -611,9 +615,8 @@ export const ApplyLeave = () => {
               type='date'
               id='from-date'
               value={fromDate}
-              className={`${styles.ApplyLeave_form_input} ${
-                dateSameError !== '' ? `${styles.errorBorder}` : ''
-              } ${weekOffError !== '' ? `${styles.errorBorder}` : ''}`}
+              className={`${styles.ApplyLeave_form_input} ${dateSameError !== '' ? `${styles.errorBorder}` : ''
+                } ${weekOffError !== '' ? `${styles.errorBorder}` : ''}`}
               onChange={(event) => setFromDate(event.target.value)}
             />
           </div>
@@ -626,9 +629,8 @@ export const ApplyLeave = () => {
               type='date'
               id='to-date'
               value={toDate}
-              className={`${styles.ApplyLeave_form_input} ${
-                dateSameError !== '' ? `${styles.errorBorder}` : ''
-              } ${toDateError !== '' ? `${styles.errorBorder}` : ''}
+              className={`${styles.ApplyLeave_form_input} ${dateSameError !== '' ? `${styles.errorBorder}` : ''
+                } ${toDateError !== '' ? `${styles.errorBorder}` : ''}
               ${dateValidationError !== '' ? `${styles.errorBorder}` : ''}
               ${weekOffError !== '' ? `${styles.errorBorder}` : ''}`}
               onChange={(event) => setToDate(event.target.value)}
@@ -687,9 +689,8 @@ export const ApplyLeave = () => {
               type='text'
               id='reason'
               placeholder='Enter the reason...'
-              className={`${styles.ApplyLeave_form_input} ${
-                reasonError !== '' ? `${styles.errorBorder}` : ''
-              }`}
+              className={`${styles.ApplyLeave_form_input} ${reasonError !== '' ? `${styles.errorBorder}` : ''
+                }`}
               value={reason}
               onChange={(event) => setReason(event.target.value)}
             />
@@ -707,14 +708,13 @@ export const ApplyLeave = () => {
             <button
               onClick={(e) => handleSubmit(e)}
               disabled={loading}
-              className={`${styles.buttonSubmit} ${
-                leave.length === 0 ||
+              className={`${styles.buttonSubmit} ${leave.length === 0 ||
                 reason.length === 0 ||
                 fromDate.length === 0 ||
                 toDate.length === 0
-                  ? `${''}`
-                  : ` ${''}`
-              }`}
+                ? `${''}`
+                : ` ${''}`
+                }`}
               type='submit'
             >
               {loading ? 'Applying...' : 'Submit'}

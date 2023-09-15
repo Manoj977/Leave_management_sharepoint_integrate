@@ -77,7 +77,7 @@ export const LeaveDetails = () => {
   useEffect(() => {
     // eslint-disable-next-line no-void
     void sp.web.currentUser.get().then((user) => {
-      setUserEmail(user.Email.toLocaleLowerCase());
+      setUserEmail("janani.s@zlendo.com".toLocaleLowerCase());
     });
   }, []);
   const func = () => {
@@ -459,7 +459,7 @@ export const LeaveDetails = () => {
                               >
                                 {leave.Status === 'Pending' ? (
                                   <button
-                                    style={{ margin: '0px 2rem' }}
+                                    // style={{ margin: '0px 2rem' }}
                                     onClick={() => {
                                       setLeaveID(leave.leaveID);
                                       setCancelReason(true);

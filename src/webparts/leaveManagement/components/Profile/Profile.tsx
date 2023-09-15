@@ -50,8 +50,8 @@ export default function Profile(props: ProfileProps) {
       })
       .split(' ')
       .join('-');
-    date = `${date.substr(0, 2)}-${date.substr(3, 3)}-${date.substr(7)}`;
-    today = `${today.substr(0, 2)}-${today.substr(3, 3)}-${today.substr(7)}`;
+    date = `${date.substr(0, 2)}-${date.substr(3, 3)}-${date.substr(-4)}`;
+    today = `${today.substr(0, 2)}-${today.substr(3, 3)}-${today.substr(-4)}`;
   }
 
   useEffect(() => {
@@ -103,16 +103,14 @@ export default function Profile(props: ProfileProps) {
         </div>
       </div>
       <div
-        className={`${style.profilesection_layout} ${
-          activeMenu ? style.activeMenu : style.activeMenuNot
-        }`}
+        className={`${style.profilesection_layout} ${activeMenu ? style.activeMenu : style.activeMenuNot
+          }`}
       >
         <div
-          className={`${style.employeeNameCard} ${
-            activeMenu
+          className={`${style.employeeNameCard} ${activeMenu
               ? style.employeeNameCardActiveMenu + ' ' + style.bgDecor
               : style.employeeNameCardActiveMenuNot + ' ' + style.bgDecor
-          }`}
+            }`}
         >
           <div className={style.nameBoard_layout}>
             <div className={style.nameBoard_layout_title}>
@@ -139,9 +137,8 @@ export default function Profile(props: ProfileProps) {
         </div>
 
         <div
-          className={`${style.card} ${
-            activeMenu === true ? style.card_gap1 : style.card_gap2
-          }`}
+          className={`${style.card} ${activeMenu === true ? style.card_gap1 : style.card_gap2
+            }`}
         >
           {earningData.map((item, index) => (
             <div key={index} className={style.card_layout}>
@@ -155,9 +152,8 @@ export default function Profile(props: ProfileProps) {
                 onClick={(event: React.MouseEvent<HTMLButtonElement>) =>
                   HandleLeave(event, item.title)
                 }
-                className={`${style.icon}${
-                  item.count === 0 ? ` ${style.icon1}` : ''
-                }`}
+                className={`${style.icon}${item.count === 0 ? ` ${style.icon1}` : ''
+                  }`}
               >
                 {item.icon}
               </button>
@@ -173,9 +169,8 @@ export default function Profile(props: ProfileProps) {
                   {item.title === 'Loss of Pay' ? lossOfPay : ''}
                 </span>
                 <span
-                  className={`${style.icon_title}${
-                    !item.count ? ` ${style.icon_title1}` : ''
-                  }`}
+                  className={`${style.icon_title}${!item.count ? ` ${style.icon_title1}` : ''
+                    }`}
                 >
                   {item.title}
                 </span>

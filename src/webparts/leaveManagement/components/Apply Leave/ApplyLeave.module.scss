@@ -58,6 +58,7 @@
   font-weight: 700;
   margin-top: 0.6rem !important;
 }
+
 .radioForm {
   display: flex;
   flex-direction: column;
@@ -73,7 +74,7 @@
   white-space: pre;
 }
 
-.radioFormAlign > div > label {
+.radioFormAlign>div>label {
   // padding: 0px 10px 0px 10px;
   // cursor: pointer;
   padding: 0.5em 1em 0.5em 0;
@@ -99,7 +100,8 @@
   display: flex;
   padding: 1em 0.5em;
 }
-.formAlign > label {
+
+.formAlign>label {
   color: #ff4400be;
   white-space: pre;
   margin-right: 1.5rem;
@@ -221,37 +223,29 @@
     padding-bottom: 5rem;
   }
 
-  .ApplyLeave .formAlign .radioForm .radioFormAlign {
+  .formAlign {
+    flex-direction: column;
+  }
+
+  .ApplyLeave .radioForm .radioFormAlign {
     display: grid;
   }
 
-  .formAlign
-    .ApplyLeave_form_label
-    .radioFormAlign
-    .ApplyLeave_form_input
-    .radioForm {
+  .formAlign .ApplyLeave_form_label .radioFormAlign .ApplyLeave_form_input .radioForm {
     padding: 0.5em 1em 0.5em 0;
     width: 80vw;
   }
 }
 
 @media (min-width: 600px) {
-  .formAlign
-    .ApplyLeave_form_label
-    .radioFormAlign
-    .ApplyLeave_form_input
-    .radioForm {
+  .formAlign .ApplyLeave_form_label .radioFormAlign .ApplyLeave_form_input .radioForm {
     padding: 0.5em 1em 0.5em 0;
     width: 20vw;
   }
 }
 
 @media (min-width: 800px) {
-  .formAlign
-    .ApplyLeave_form_label
-    .radioFormAlign
-    .ApplyLeave_form_input
-    .radioForm {
+  .formAlign .ApplyLeave_form_label .radioFormAlign .ApplyLeave_form_input .radioForm {
     padding: 0.5em 1em 0.5em 0;
     width: 14vw;
   }

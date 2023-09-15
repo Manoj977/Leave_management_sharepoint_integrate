@@ -35,6 +35,7 @@
     "@syncfusion/ej2-base": "^20.4.51",
     "@types/canvas-confetti": "^1.6.0",
     "autoprefixer": "^10.4.14",
+    "caniuse-lite": "^1.0.30001534",
     "canvas-confetti": "^1.6.0",
     "intl": "^1.2.5",
     "lodash": "^4.17.21",
