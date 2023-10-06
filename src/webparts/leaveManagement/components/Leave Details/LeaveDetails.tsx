@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable no-self-compare */
 /* eslint-disable no-void */
 /* eslint-disable no-unused-expressions */
@@ -16,7 +15,6 @@ import { MdOutlineCancel } from 'react-icons/md';
 import { RiLoader4Line } from 'react-icons/ri';
 import { RxBorderDotted } from 'react-icons/rx';
 import { MdKeyboardDoubleArrowUp } from 'react-icons/md';
-import { toast } from 'react-hot-toast';
 // import { RiLoader4Line } from 'react-icons/ri';
 type LeaveDetail = {
   ID: string;
@@ -31,7 +29,7 @@ type LeaveDetail = {
   Status: string;
   leaveID: number;
 };
-type SortOption = { name: string; value: string };
+type SortOption = { name: string; value: string; };
 const sortOptions: SortOption[] = [
   { name: 'S.No', value: 'S.No' },
   { name: 'ID', value: 'ID' },
@@ -47,8 +45,6 @@ const sortOptions: SortOption[] = [
 ];
 export const LeaveDetails = () => {
   const { cancelReason, setCancelReason } = React.useContext(MyContext);
-  const [loading, setLoading] = useState(false);
-
   const [leaveDetails, setLeaveDetails] = useState<LeaveDetail[]>([]);
   const [userEmail, setUserEmail] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -77,10 +73,10 @@ export const LeaveDetails = () => {
   useEffect(() => {
     // eslint-disable-next-line no-void
     void sp.web.currentUser.get().then((user) => {
-      setUserEmail("janani.s@zlendo.com".toLocaleLowerCase());
+      setUserEmail(user.Email.toLocaleLowerCase());
     });
   }, []);
-  const func = () => {
+  useEffect(() => {
     setIsLoading(true);
     fetch(
       "https://zlendoit.sharepoint.com/sites/production/_api/web/lists/getbytitle('Leave%20Management')/items"
@@ -155,9 +151,6 @@ export const LeaveDetails = () => {
           console.log(err);
         }
       });
-  };
-  useEffect(() => {
-    func();
   }, []);
 
   const filteredLeaveDetails = leaveDetails.filter((detail) => {
@@ -183,10 +176,10 @@ export const LeaveDetails = () => {
 
       const itemToUpdate = list.items.getById(id);
       await itemToUpdate.update({ Status: status, Remark: Remark });
-
-      func();
+      alert('Leave status updated successfully!');
+      window.location.reload();
     } catch (error) {
-      console.clear();
+      alert(`Error updating leave status: ${error}`);
     }
   };
   const handleCancel = async (id: number, Remark: string, status: string) => {
@@ -195,25 +188,9 @@ export const LeaveDetails = () => {
     const updatedLeaveDetails = leaveDetails.map((leave: any) =>
       leave.leaveID === id ? { ...leave, Status: status } : leave
     );
-    const updateMessage = `Leave status updated successfully!.`;
-    setLoading(true);
-    toast.promise(
-      new Promise((resolve) => setTimeout(resolve, 1000)), // Simulating an asynchronous operation
-      {
-        loading: 'Updating',
-        success: () => {
-          setLoading(false);
-          setLeaveDetails(updatedLeaveDetails);
-          setLeaveStatus(status);
-          setCancelReason(false);
-          // Additional state updates and actions
-
-          return updateMessage;
-        },
-
-        error: '',
-      }
-    );
+    setLeaveDetails(updatedLeaveDetails);
+    setLeaveStatus(status);
+    setCancelReason(false);
   };
 
   return (
@@ -337,18 +314,16 @@ export const LeaveDetails = () => {
                                 data-label='Reason'
                               >
                                 <div
-                                  className={`${
-                                    styles.leaveApprovalButtonDiv
-                                  } ${
-                                    expandedID === null
+                                  className={`${styles.leaveApprovalButtonDiv
+                                    } ${expandedID === null
                                       ? styles.leaveApprovalButtonDiv1
                                       : styles.leaveApprovalButtonDiv2
-                                  }`}
+                                    }`}
                                 >
                                   {leave.Reason.length > MAX_LENGTH ? (
                                     <>
                                       {!expandedID ||
-                                      expandedID !== leave.leaveID ? (
+                                        expandedID !== leave.leaveID ? (
                                         <div className={styles.scrollable}>
                                           <p className={styles.reason}>
                                             <p
@@ -421,23 +396,19 @@ export const LeaveDetails = () => {
                                 data-label='Status'
                               >
                                 <span
-                                  className={`${
-                                    leave.Status === 'Pending'
+                                  className={`${leave.Status === 'Pending'
                                       ? `${styles.leaveStatusPending}`
                                       : ''
-                                  } ${
-                                    leave.Status === 'Approved'
+                                    } ${leave.Status === 'Approved'
                                       ? `${styles.leaveStatusApprove}`
                                       : ''
-                                  } ${
-                                    leave.Status === 'Cancelled'
+                                    } ${leave.Status === 'Cancelled'
                                       ? `${styles.leaveStatusCancel}`
                                       : ''
-                                  } ${
-                                    leave.Status === 'Rejected'
+                                    } ${leave.Status === 'Rejected'
                                       ? `${styles.leaveStatusReject}`
                                       : ''
-                                  }`}
+                                    }`}
                                 >
                                   <span
                                     aria-hidden
@@ -459,14 +430,14 @@ export const LeaveDetails = () => {
                               >
                                 {leave.Status === 'Pending' ? (
                                   <button
-                                    // style={{ margin: '0px 2rem' }}
+                                    style={{ margin: '0px 2rem' }}
                                     onClick={() => {
                                       setLeaveID(leave.leaveID);
                                       setCancelReason(true);
                                     }}
                                     className={styles.leaveCancelButton}
                                   >
-                                    {loading ? 'Updating' : ' Cancel'}
+                                    Cancel
                                   </button>
                                 ) : (
                                   <p

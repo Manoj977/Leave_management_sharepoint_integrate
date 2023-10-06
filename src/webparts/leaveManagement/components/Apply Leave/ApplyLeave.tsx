@@ -99,7 +99,7 @@ export const ApplyLeave = () => {
   }, []);
   const func = () => {
     fetch(
-      "https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/lists/GetByTitle('Leave%20Type%20Master')/items"
+  "https://zlendoit.sharepoint.com/sites/production/_api/lists/GetByTitle('Leave%20Type%20Master')/items"
     )
       .then((res) => res.text())
       .then((data) => {
@@ -142,7 +142,7 @@ export const ApplyLeave = () => {
   let state = false;
 
   void sp.web.currentUser.get().then((user) => {
-    setUserEmail(user.Email = "janani.s@zlendo.com");
+    setUserEmail(user.Email.toLocaleLowerCase());
   });
   console.log(userEmail);
 
@@ -170,7 +170,7 @@ export const ApplyLeave = () => {
     });
   }
   useEffect(() => {
-    const url = `https://zlendoit.sharepoint.com/sites/ZlendoTools/_api/web/lists/getbytitle('Leave%20Management')/items?$filter=Title%20eq%20%27${ID}%27`;
+    const url = `https://zlendoit.sharepoint.com/sites/production/_api/web/lists/getbytitle('Leave%20Management')/items?$filter=Title%20eq%20%27${ID}%27`;
 
     fetch(url)
       .then((res) => res.text())
@@ -442,9 +442,8 @@ export const ApplyLeave = () => {
       // console.log('Test Leave', itemData);
 
       // Get a reference to the "Leave Management" list using the website URL
-      const web = Web('https://zlendoit.sharepoint.com/sites/ZlendoTools');
+      const web = Web('https://zlendoit.sharepoint.com/sites/production');
       const list: IList = web.lists.getByTitle('Leave Management');
-
       // Add the new item to the list
       list.items
         .add(itemData)
